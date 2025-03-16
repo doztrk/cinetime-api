@@ -25,7 +25,7 @@ public class Image {
 
     @NotNull
     @Column(nullable = false)
-    private MultipartFile data;
+    private byte[] data;
 
     @NotBlank
     @Column(nullable = false)

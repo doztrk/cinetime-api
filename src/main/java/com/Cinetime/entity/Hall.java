@@ -36,6 +36,7 @@ public class Hall {
     @JoinColumn(name = "cinema_id", nullable = false)
     private Cinema cinema;
 
+
     @NotNull
     @CreationTimestamp
     @Column(nullable = false)
@@ -68,7 +69,7 @@ public class Hall {
         return Objects.hash(id, name, seatCapacity, isSpecial);
     }
 
-    @Override
+  /*  @Override
     public String toString() {
         return "Hall{" +
                 "id=" + id +
@@ -79,5 +80,5 @@ public class Hall {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
-    }
+    }*/
 }
