@@ -79,7 +79,7 @@ public class Movie {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @NotBlank
-    @Column(nullable = false)
+    @Column(name = "cast_list", nullable = false)
     private List<String> cast;
 
     @NotBlank
@@ -93,7 +93,6 @@ public class Movie {
     private List<String> genre;
 
     @NotNull
-    @Column(nullable = false)
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "poster_id", nullable = false)
     private PosterImage poster;
