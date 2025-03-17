@@ -23,9 +23,8 @@ public class Role {
     @NotNull
     private RoleName roleName;
 
+
     public Role(RoleName roleName) {
         this.roleName = roleName;
     }
-
-
 }

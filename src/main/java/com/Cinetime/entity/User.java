@@ -1,13 +1,9 @@
 package com.Cinetime.entity;
 
 import com.Cinetime.enums.Gender;
-import com.Cinetime.enums.RoleName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,11 +25,11 @@ public class User {
 
     @NotBlank
     @Size(min = 3, max = 20)
-    private String name;
+    private String firstname;
 
     @NotBlank
     @Size(min = 3, max = 20)
-    private String surname;
+    private String lastname;
 
     @NotNull
     private String password;
@@ -43,7 +39,7 @@ public class User {
     private String email;
 
     @NotNull
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$")
+    @Pattern(regexp = "^\\(\\d{3}\\) \\d{3}-\\d{4}$")
     private String phoneNumber;
 
     @Past
@@ -68,10 +64,21 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Column(nullable = true) //default
-    private String resetPasswordCode;
+    private String resetPasswordCode;    //TODO: Password kod resetpassword edildikten sonra DB'ye otomatik kaydedilecek. Musteriye bu kod gonderilecek.Eslesirse sifre degistirilecek
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+    }
 }
