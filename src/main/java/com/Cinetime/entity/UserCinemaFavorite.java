@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "USER_MOVIE_FAVORITE", uniqueConstraints = {
+@Table(name = "USER_CINEMA_FAVORITE", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "cinema_id"})
 })
 public class UserCinemaFavorite {
@@ -29,9 +30,11 @@ public class UserCinemaFavorite {
     private Cinema cinema;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime updatedAt;
 
 }
