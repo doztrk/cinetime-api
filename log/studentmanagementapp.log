@@ -1,119 +1,91 @@
-"2025-03-18 00:17:37,581 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m24s694ms).
-""2025-03-18 00:28:07,137 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10m29s556ms).
-""2025-03-18 00:43:52,136 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m44s999ms).
-""2025-03-18 01:14:40,686 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m48s550ms).
-""2025-03-18 01:24:34,301 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m53s615ms).
-""2025-03-18 01:40:05,323 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m31s22ms).
-""2025-03-18 01:55:45,324 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m40s).
-""2025-03-18 02:11:30,366 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m45s43ms).
-""2025-03-18 02:25:49,997 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m19s631ms).
-""2025-03-18 02:56:21,545 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m31s548ms).
-""2025-03-18 03:11:52,331 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s785ms).
-""2025-03-18 03:27:23,073 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s743ms).
-""2025-03-18 03:57:54,547 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m31s474ms).
-""2025-03-18 04:13:26,213 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m31s666ms).
-""2025-03-18 04:28:57,015 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s802ms).
-""2025-03-18 04:44:27,797 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s782ms).
-""2025-03-18 05:10:59,115 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=26m31s318ms).
-""2025-03-18 05:26:29,838 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s723ms).
-""2025-03-18 05:42:00,487 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s649ms).
-""2025-03-18 06:12:31,175 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m30s688ms).
-""2025-03-18 06:16:06,051 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3m34s876ms).
-""2025-03-18 06:46:35,827 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m29s776ms).
-""2025-03-18 07:02:05,762 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m29s934ms).
-""2025-03-18 07:17:36,590 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s829ms).
-""2025-03-18 07:48:08,039 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m31s448ms).
-""2025-03-18 08:03:38,729 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s691ms).
-""2025-03-18 08:17:11,281 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=13m32s552ms).
-""2025-03-18 08:32:42,030 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s749ms).
-""2025-03-18 08:48:12,757 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s727ms).
-""2025-03-18 09:17:59,459 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=29m46s701ms).
-""2025-03-18 09:33:30,202 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s744ms).
-""2025-03-18 09:49:00,964 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s762ms).
-""2025-03-18 10:04:31,778 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m30s814ms).
-""2025-03-18 10:34:19,266 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=29m47s488ms).
-""2025-03-18 11:05:19,858 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=30m30s575ms).
-""2025-03-18 11:20:06,005 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14m46s147ms).
-""2025-03-18 11:35:35,916 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m29s911ms).
-""2025-03-18 11:51:05,739 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m29s823ms).
-""2025-03-18 12:06:35,616 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m29s877ms).
-""2025-03-18 12:25:01,905 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=18m26s289ms).
-""2025-03-18 12:58:11,877 WARN  [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=33m9s972ms).
-""2025-03-18 13:34:45,904 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
-""2025-03-18 13:34:45,909 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
-""2025-03-18 13:34:45,914 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
-""2025-03-18 15:10:48,176 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Starting CineTimeApplication using Java 22.0.1 with PID 17280 (/Users/dogu/IdeaProjects/cinetime-api-selfmade/target/classes started by dogu in /Users/dogu/IdeaProjects/cinetime-api-selfmade)
-""2025-03-18 15:10:48,177 INFO  [restartedMain] com.Cinetime.CineTimeApplication:No active profile set, falling back to 1 default profile: "default"
-""2025-03-18 15:10:48,200 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-""2025-03-18 15:10:48,200 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-""2025-03-18 15:10:48,580 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-""2025-03-18 15:10:48,608 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 24 ms. Found 2 JPA repository interfaces.
-""2025-03-18 15:10:48,896 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
-""2025-03-18 15:10:48,902 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
-""2025-03-18 15:10:48,903 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.20]
-""2025-03-18 15:10:48,922 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
-""2025-03-18 15:10:48,922 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 721 ms
-""2025-03-18 15:10:48,945 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
-""2025-03-18 15:10:49,046 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@481d55dd
-""2025-03-18 15:10:49,046 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
-""2025-03-18 15:10:49,052 INFO  [restartedMain] org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration:H2 console available at '/h2-console'. Database available at 'jdbc:postgresql://localhost:5432/cinetime-api'
-""2025-03-18 15:10:49,101 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
-""2025-03-18 15:10:49,132 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.4.Final
-""2025-03-18 15:10:49,148 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
-""2025-03-18 15:10:49,219 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-""2025-03-18 15:10:49,296 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
-""2025-03-18 15:10:49,830 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-""2025-03-18 15:10:50,028 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
-""2025-03-18 15:10:50,326 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-""2025-03-18 15:10:50,472 INFO  [restartedMain] org.springframework.security.web.DefaultSecurityFilterChain:Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@43d38625, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@250195c4, org.springframework.security.web.context.SecurityContextHolderFilter@1b30ddf6, org.springframework.security.web.header.HeaderWriterFilter@2b5dfc51, org.springframework.web.filter.CorsFilter@20b1a20, org.springframework.security.web.authentication.logout.LogoutFilter@75e3003a, com.Cinetime.security.JwtAuthFilter@32f9729d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2b68cb22, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@53d945bc, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@d2463d4, org.springframework.security.web.session.SessionManagementFilter@53d9d6c, org.springframework.security.web.access.ExceptionTranslationFilter@7186f9c3, org.springframework.security.web.access.intercept.AuthorizationFilter@2a498fb4]
-""2025-03-18 15:10:50,600 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
-""2025-03-18 15:10:50,609 WARN  [restartedMain] org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext:Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
-""2025-03-18 15:10:50,611 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
-""2025-03-18 15:10:50,612 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
-""2025-03-18 15:10:50,613 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
-""2025-03-18 15:10:50,621 INFO  [restartedMain] org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLogger:
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-""2025-03-18 15:10:50,628 ERROR [restartedMain] org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter:
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Web server failed to start. Port 8080 was already in use.
-
-Action:
-
-Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
-
-""2025-03-18 15:11:00,610 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Starting CineTimeApplication using Java 22.0.1 with PID 17312 (/Users/dogu/IdeaProjects/cinetime-api-selfmade/target/classes started by dogu in /Users/dogu/IdeaProjects/cinetime-api-selfmade)
-""2025-03-18 15:11:00,611 INFO  [restartedMain] com.Cinetime.CineTimeApplication:No active profile set, falling back to 1 default profile: "default"
-""2025-03-18 15:11:00,631 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-""2025-03-18 15:11:00,632 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-""2025-03-18 15:11:00,972 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-""2025-03-18 15:11:00,998 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 22 ms. Found 2 JPA repository interfaces.
-""2025-03-18 15:11:01,264 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
-""2025-03-18 15:11:01,269 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
-""2025-03-18 15:11:01,269 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.20]
-""2025-03-18 15:11:01,287 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
-""2025-03-18 15:11:01,287 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 655 ms
-""2025-03-18 15:11:01,304 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
-""2025-03-18 15:11:01,400 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@4ff086d2
-""2025-03-18 15:11:01,401 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
-""2025-03-18 15:11:01,406 INFO  [restartedMain] org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration:H2 console available at '/h2-console'. Database available at 'jdbc:postgresql://localhost:5432/cinetime-api'
-""2025-03-18 15:11:01,452 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
-""2025-03-18 15:11:01,472 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.4.Final
-""2025-03-18 15:11:01,485 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
-""2025-03-18 15:11:01,535 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-""2025-03-18 15:11:01,613 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
-""2025-03-18 15:11:02,125 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-""2025-03-18 15:11:02,278 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
-""2025-03-18 15:11:02,561 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-""2025-03-18 15:11:02,710 INFO  [restartedMain] org.springframework.security.web.DefaultSecurityFilterChain:Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1aef83d2, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@8476b5a, org.springframework.security.web.context.SecurityContextHolderFilter@1fffe24c, org.springframework.security.web.header.HeaderWriterFilter@36e902b, org.springframework.web.filter.CorsFilter@2a93860e, org.springframework.security.web.authentication.logout.LogoutFilter@16375244, com.Cinetime.security.JwtAuthFilter@185ff2ab, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3861617f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1c64761a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6d4fbc9e, org.springframework.security.web.session.SessionManagementFilter@504a17d2, org.springframework.security.web.access.ExceptionTranslationFilter@379f4989, org.springframework.security.web.access.intercept.AuthorizationFilter@21367184]
-""2025-03-18 15:11:02,841 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
-""2025-03-18 15:11:02,857 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat started on port 8080 (http) with context path ''
-""2025-03-18 15:11:02,863 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Started CineTimeApplication in 2.497 seconds (process running for 2.72)
-""2025-03-18 15:11:19,699 INFO  [http-nio-8080-exec-1] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring DispatcherServlet 'dispatcherServlet'
+"2025-03-18 15:35:40,748 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Starting CineTimeApplication using Java 22.0.1 with PID 20050 (/Users/dogu/IdeaProjects/cinetime-api-selfmade/target/classes started by dogu in /Users/dogu/IdeaProjects/cinetime-api-selfmade)
+""2025-03-18 15:35:40,749 INFO  [restartedMain] com.Cinetime.CineTimeApplication:No active profile set, falling back to 1 default profile: "default"
+""2025-03-18 15:35:40,768 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+""2025-03-18 15:35:40,768 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+""2025-03-18 15:35:41,122 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+""2025-03-18 15:35:41,147 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 22 ms. Found 2 JPA repository interfaces.
+""2025-03-18 15:35:41,433 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
+""2025-03-18 15:35:41,439 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
+""2025-03-18 15:35:41,439 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.20]
+""2025-03-18 15:35:41,457 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
+""2025-03-18 15:35:41,457 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 689 ms
+""2025-03-18 15:35:41,475 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
+""2025-03-18 15:35:41,575 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@374f880a
+""2025-03-18 15:35:41,576 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
+""2025-03-18 15:35:41,581 INFO  [restartedMain] org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration:H2 console available at '/h2-console'. Database available at 'jdbc:postgresql://localhost:5432/cinetime-api'
+""2025-03-18 15:35:41,629 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
+""2025-03-18 15:35:41,658 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.4.Final
+""2025-03-18 15:35:41,674 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
+""2025-03-18 15:35:41,736 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+""2025-03-18 15:35:41,815 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
+""2025-03-18 15:35:42,357 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+""2025-03-18 15:35:42,510 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
+""2025-03-18 15:35:42,783 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+""2025-03-18 15:35:42,917 INFO  [restartedMain] org.springframework.security.web.DefaultSecurityFilterChain:Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4e93e660, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@41e5a839, org.springframework.security.web.context.SecurityContextHolderFilter@61dff534, org.springframework.security.web.header.HeaderWriterFilter@3b6385c5, org.springframework.web.filter.CorsFilter@17e2924e, org.springframework.security.web.authentication.logout.LogoutFilter@8476b5a, com.Cinetime.security.JwtAuthFilter@89f8349, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6d37aa54, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@55eb4949, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@63870b84, org.springframework.security.web.session.SessionManagementFilter@7b0ec77a, org.springframework.security.web.access.ExceptionTranslationFilter@7612444d, org.springframework.security.web.access.intercept.AuthorizationFilter@4bc88625]
+""2025-03-18 15:35:43,035 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
+""2025-03-18 15:35:43,050 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat started on port 8080 (http) with context path ''
+""2025-03-18 15:35:43,056 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Started CineTimeApplication in 2.546 seconds (process running for 2.805)
+""2025-03-18 15:40:47,372 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
+""2025-03-18 15:40:47,377 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
+""2025-03-18 15:40:47,380 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
+""2025-03-18 15:40:49,153 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Starting CineTimeApplication using Java 22.0.1 with PID 20718 (/Users/dogu/IdeaProjects/cinetime-api-selfmade/target/classes started by dogu in /Users/dogu/IdeaProjects/cinetime-api-selfmade)
+""2025-03-18 15:40:49,154 INFO  [restartedMain] com.Cinetime.CineTimeApplication:No active profile set, falling back to 1 default profile: "default"
+""2025-03-18 15:40:49,176 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+""2025-03-18 15:40:49,177 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+""2025-03-18 15:40:49,515 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+""2025-03-18 15:40:49,539 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 21 ms. Found 2 JPA repository interfaces.
+""2025-03-18 15:40:49,805 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
+""2025-03-18 15:40:49,811 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
+""2025-03-18 15:40:49,811 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.20]
+""2025-03-18 15:40:49,828 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
+""2025-03-18 15:40:49,828 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 651 ms
+""2025-03-18 15:40:49,847 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
+""2025-03-18 15:40:49,939 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@374f880a
+""2025-03-18 15:40:49,940 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
+""2025-03-18 15:40:49,945 INFO  [restartedMain] org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration:H2 console available at '/h2-console'. Database available at 'jdbc:postgresql://localhost:5432/cinetime-api'
+""2025-03-18 15:40:49,992 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
+""2025-03-18 15:40:50,013 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.4.Final
+""2025-03-18 15:40:50,026 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
+""2025-03-18 15:40:50,085 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+""2025-03-18 15:40:50,160 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
+""2025-03-18 15:40:50,676 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+""2025-03-18 15:40:50,839 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
+""2025-03-18 15:40:51,113 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+""2025-03-18 15:40:51,244 INFO  [restartedMain] org.springframework.security.web.DefaultSecurityFilterChain:Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@32765172, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5ebe8365, org.springframework.security.web.context.SecurityContextHolderFilter@4b836095, org.springframework.security.web.header.HeaderWriterFilter@3861617f, org.springframework.web.filter.CorsFilter@5dcd0a1e, org.springframework.security.web.authentication.logout.LogoutFilter@38f6f46c, com.Cinetime.security.JwtAuthFilter@4aee3ede, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4958723f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@46f6db5c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6cde108, org.springframework.security.web.session.SessionManagementFilter@6ce7cb62, org.springframework.security.web.access.ExceptionTranslationFilter@1fffe24c, org.springframework.security.web.access.intercept.AuthorizationFilter@41e5a839]
+""2025-03-18 15:40:51,379 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
+""2025-03-18 15:40:51,393 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat started on port 8080 (http) with context path ''
+""2025-03-18 15:40:51,399 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Started CineTimeApplication in 2.472 seconds (process running for 2.696)
+""2025-03-18 15:57:16,555 INFO  [SpringApplicationShutdownHook] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Closing JPA EntityManagerFactory for persistence unit 'default'
+""2025-03-18 15:57:16,568 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown initiated...
+""2025-03-18 15:57:16,570 INFO  [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Shutdown completed.
+""2025-03-18 15:57:18,574 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Starting CineTimeApplication using Java 22.0.1 with PID 23435 (/Users/dogu/IdeaProjects/cinetime-api-selfmade/target/classes started by dogu in /Users/dogu/IdeaProjects/cinetime-api-selfmade)
+""2025-03-18 15:57:18,575 INFO  [restartedMain] com.Cinetime.CineTimeApplication:No active profile set, falling back to 1 default profile: "default"
+""2025-03-18 15:57:18,598 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+""2025-03-18 15:57:18,598 INFO  [restartedMain] org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor:For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+""2025-03-18 15:57:18,970 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+""2025-03-18 15:57:18,995 INFO  [restartedMain] org.springframework.data.repository.config.RepositoryConfigurationDelegate:Finished Spring Data repository scanning in 21 ms. Found 2 JPA repository interfaces.
+""2025-03-18 15:57:19,281 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat initialized with port 8080 (http)
+""2025-03-18 15:57:19,287 INFO  [restartedMain] org.apache.catalina.core.StandardService:Starting service [Tomcat]
+""2025-03-18 15:57:19,287 INFO  [restartedMain] org.apache.catalina.core.StandardEngine:Starting Servlet engine: [Apache Tomcat/10.1.20]
+""2025-03-18 15:57:19,306 INFO  [restartedMain] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring embedded WebApplicationContext
+""2025-03-18 15:57:19,306 INFO  [restartedMain] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext:Root WebApplicationContext: initialization completed in 708 ms
+""2025-03-18 15:57:19,325 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Starting...
+""2025-03-18 15:57:19,423 INFO  [restartedMain] com.zaxxer.hikari.pool.HikariPool:HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2b2e17aa
+""2025-03-18 15:57:19,423 INFO  [restartedMain] com.zaxxer.hikari.HikariDataSource:HikariPool-1 - Start completed.
+""2025-03-18 15:57:19,428 INFO  [restartedMain] org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration:H2 console available at '/h2-console'. Database available at 'jdbc:postgresql://localhost:5432/cinetime-api'
+""2025-03-18 15:57:19,477 INFO  [restartedMain] org.hibernate.jpa.internal.util.LogHelper:HHH000204: Processing PersistenceUnitInfo [name: default]
+""2025-03-18 15:57:19,506 INFO  [restartedMain] org.hibernate.Version:HHH000412: Hibernate ORM core version 6.4.4.Final
+""2025-03-18 15:57:19,522 INFO  [restartedMain] org.hibernate.cache.internal.RegionFactoryInitiator:HHH000026: Second-level cache disabled
+""2025-03-18 15:57:19,583 WARN  [restartedMain] org.hibernate.orm.deprecation:HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+""2025-03-18 15:57:19,659 INFO  [restartedMain] org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo:No LoadTimeWeaver setup: ignoring JPA class transformer
+""2025-03-18 15:57:20,186 INFO  [restartedMain] org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator:HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+""2025-03-18 15:57:20,352 INFO  [restartedMain] org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean:Initialized JPA EntityManagerFactory for persistence unit 'default'
+""2025-03-18 15:57:20,631 WARN  [restartedMain] org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration:spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+""2025-03-18 15:57:20,766 INFO  [restartedMain] org.springframework.security.web.DefaultSecurityFilterChain:Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1997b119, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@703bc682, org.springframework.security.web.context.SecurityContextHolderFilter@6d0cb0f5, org.springframework.security.web.header.HeaderWriterFilter@70b5b42, org.springframework.web.filter.CorsFilter@7060ce2a, org.springframework.security.web.authentication.logout.LogoutFilter@17482328, com.Cinetime.security.JwtAuthFilter@2377b7fb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@70d1a32, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1fa79fdd, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@229667cf, org.springframework.security.web.session.SessionManagementFilter@46f6db5c, org.springframework.security.web.access.ExceptionTranslationFilter@cef4f81, org.springframework.security.web.access.intercept.AuthorizationFilter@6cde108]
+""2025-03-18 15:57:20,888 INFO  [restartedMain] org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer:LiveReload server is running on port 35729
+""2025-03-18 15:57:20,903 INFO  [restartedMain] org.springframework.boot.web.embedded.tomcat.TomcatWebServer:Tomcat started on port 8080 (http) with context path ''
+""2025-03-18 15:57:20,909 INFO  [restartedMain] com.Cinetime.CineTimeApplication:Started CineTimeApplication in 2.571 seconds (process running for 2.823)
+""2025-03-18 15:59:57,886 INFO  [http-nio-8080-exec-1] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]:Initializing Spring DispatcherServlet 'dispatcherServlet'
+""2025-03-18 15:59:57,910 WARN  [http-nio-8080-exec-1] org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver:Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+""2025-03-18 15:59:57,918 ERROR [http-nio-8080-exec-1] com.Cinetime.security.JwtAuthEntryPoint:Unauthorized error: Full authentication is required to access this resource
 "
