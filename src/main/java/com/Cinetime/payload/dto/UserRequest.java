@@ -46,7 +46,6 @@ public class UserRequest {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-
     @NotNull
     @Past
     private LocalDate dateOfBirth;
