@@ -36,9 +36,10 @@ public class UserDetailsImpl implements UserDetails {
         return user.getPassword();
     }
 
+
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getPhoneNumber();  // Return phone number instead of email and we are going to use phoneNumber as username credentials
     }
 
     @Override

@@ -42,11 +42,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // Process token if present
             if (jwt != null) {
-                String username = jwtUtils.getUsernameFromToken(jwt);
+                String phoneNumber = jwtUtils.getPhoneNumberFromToken(jwt);
 
-                // Only proceed if we have a username and no authentication is already set
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                // Only proceed if we have a phoneNumber and no authentication is already set
+                if (phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
 
                     // Validate the token against user details
                     if (jwtUtils.validateToken(jwt, userDetails)) {
@@ -60,9 +60,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                         // Set authentication in security context
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                        logger.debug("User authenticated: {}", username);
+                        logger.debug("User authenticated with phone number: {}", phoneNumber);
                     } else {
-                        logger.debug("Invalid JWT token");
+                        logger.debug("Invalid JWT token for phone number: {}", phoneNumber);
                     }
                 }
             }

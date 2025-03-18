@@ -54,12 +54,12 @@ public class JwtUtils {
             throw new IllegalArgumentException("Authentication cannot be null");
         }
 
-        String username = authentication.getName();
+        String phoneNumber = authentication.getName();
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(phoneNumber)
                 .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -67,13 +67,13 @@ public class JwtUtils {
     }
 
     /**
-     * Extract username from token.
+     * Extract username(phoneNumber) from token.
      */
-    public String getUsernameFromToken(String token) {
+    public String getPhoneNumberFromToken(String token) {
         try {
             return getClaimFromToken(token, Claims::getSubject);
         } catch (Exception e) {
-            logger.error("Could not get username from token: {}", e.getMessage());
+            logger.error("Could not get phone from token: {}", e.getMessage());
             return null;
         }
     }
@@ -106,9 +106,9 @@ public class JwtUtils {
         }
 
         try {
-            final String username = getUsernameFromToken(token);
-            return username != null &&
-                    username.equals(userDetails.getUsername()) &&
+            final String phoneNumber = getPhoneNumberFromToken(token);
+            return phoneNumber != null &&
+                    phoneNumber.equals(userDetails.getUsername()) &&
                     !isTokenExpired(token);
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
