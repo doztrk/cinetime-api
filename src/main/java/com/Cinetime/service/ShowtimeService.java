@@ -1,6 +1,7 @@
 package com.Cinetime.service;
 
 import com.Cinetime.entity.Showtime;
+import com.Cinetime.payload.messages.NoShowTimesAvailableException;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShowtimeService {
 
-    private ShowtimeRepository showtimeRepository;
+    private final ShowtimeRepository showtimeRepository;
 
-    public List<Showtime> getUpcomingShowtimes(Long movieId){
+    public List<Showtime> getUpcomingShowtimes(Long movieId) {
         List<Showtime> allShowtimes = showtimeRepository.findByMovieId(movieId);
-        return allShowtimes.stream()
-                .filter(showtime -> showtime.getStartTime().isAfter(LocalTime.from(LocalDateTime.now())))
-                .collect(Collectors.toList());
+
+        List<Showtime> upcomingShowtimes = allShowtimes.stream()
+                .filter(showtime -> showtime.getStartTime()
+                                .isAfter(LocalTime.from(LocalDateTime.now())))
+                                .collect(Collectors.toList());
+
+        if (upcomingShowtimes.isEmpty()) {
+            throw new NoShowTimesAvailableException("No upcoming showtimes found for movie ID: " + movieId);
+        }
+
+        return upcomingShowtimes;
     }
+
 }
