@@ -4,6 +4,7 @@ import com.Cinetime.converter.MovieStatusConverter;
 import com.Cinetime.enums.MovieStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -78,16 +79,16 @@ public class Movie {
     private String director;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @NotBlank
+    @NotEmpty
     @Column(name = "cast_list", nullable = false)
     private List<String> cast;
 
-    @NotBlank
+    @NotEmpty
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false)
     private List<String> formats;
 
-    @NotBlank
+    @NotEmpty
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false)
     private List<String> genre;
