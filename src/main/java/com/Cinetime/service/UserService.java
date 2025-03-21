@@ -43,7 +43,7 @@ public class UserService {
 
         //Soru: Role tipi icin her seferinde DB'ye sorgu atmak yerine nasil setleriz ?
         //Cevap ↴
-        user.setRole(roleService.getRole(RoleName.MEMBER));
+        user.setRole(roleService.getRole(RoleName.ADMIN));
 
         //Password encoding
         user.setPassword(passwordEncoder.encode(user.getPassword()));

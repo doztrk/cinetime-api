@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "IMAGE")
+@Table(name = "POSTER_IMAGE")
 public class PosterImage {
 
     @Id

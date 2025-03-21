@@ -59,13 +59,13 @@ public class MovieHelper {
         }
 
 
-        if (movieRequest.getHallId() == null) {
-            validationErrors.add("Hall ID is required");
-        }
+//        if (movieRequest.getHallId() == null) {
+//            validationErrors.add("Hall ID is required");
+//        }
 
-        if (movieRequest.getShowtimeId() == null) {
-            validationErrors.add("Showtime ID is required");
-        }
+//        if (movieRequest.getShowtimeId() == null) {
+//            validationErrors.add("Showtime ID is required");
+//        }
 
 
         if (movieRequest.getPosterImage() == null || movieRequest.getPosterImage().isEmpty()) {
