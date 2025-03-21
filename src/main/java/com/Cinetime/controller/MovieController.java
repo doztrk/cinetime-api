@@ -4,6 +4,7 @@ import com.Cinetime.entity.Movie;
 import com.Cinetime.payload.dto.MovieRequest;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,8 +34,10 @@ public class MovieController {
 
     //M11
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseMessage<Movie> createMovie(@ModelAttribute MovieRequest movieRequest) {
+    @PreAuthorize("permitAll()")  // Explicitly allow all access to this method
+    public ResponseMessage<Movie> createMovie(HttpServletRequest request, @ModelAttribute MovieRequest movieRequest) {
+        System.out.println("Request URI: " + request.getRequestURI());
+
         return movieService.createMovie(movieRequest);
     }
 }

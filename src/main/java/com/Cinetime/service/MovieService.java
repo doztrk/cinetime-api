@@ -56,7 +56,7 @@ public class MovieService {
         }
     }
 
-    @Transactional
+
     public ResponseMessage<Movie> createMovie(MovieRequest movieRequest) {
         // Validate input
         movieHelper.validateMovieRequest(movieRequest);

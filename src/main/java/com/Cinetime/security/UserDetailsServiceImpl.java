@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * Load a user by email and convert to Spring Security's UserDetails.
      * This method is used by Spring Security during authentication.
      *
-     * @param email The user's email (used as username)
+     * @param phoneNumber The user's phoneNumber (used as username)
      * @return UserDetails object populated with user information
      * @throws UsernameNotFoundException if user not found
      */
