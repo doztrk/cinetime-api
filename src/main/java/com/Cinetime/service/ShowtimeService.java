@@ -2,10 +2,15 @@ package com.Cinetime.service;
 
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.messages.NoShowTimesAvailableException;
+import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -17,19 +22,21 @@ public class ShowtimeService {
 
     private final ShowtimeRepository showtimeRepository;
 
-    public List<Showtime> getUpcomingShowtimes(Long movieId) {
-        List<Showtime> allShowtimes = showtimeRepository.findByMovieId(movieId);
+    public ResponseEntity<List<Showtime>> getUpcomingShowtimes(Long movieId) {
+        List<Showtime> allShowtimes = showtimeRepository.findByMovieId(movieId);// Tum showtimeler gelsin
 
-        List<Showtime> upcomingShowtimes = allShowtimes.stream()
-                .filter(showtime -> showtime.getStartTime()
-                                .isAfter(LocalTime.from(LocalDateTime.now())))
-                                .collect(Collectors.toList());
+        LocalDateTime now = LocalDateTime.now(); // Su anin tarih/saati
 
-        if (upcomingShowtimes.isEmpty()) {
-            throw new NoShowTimesAvailableException("No upcoming showtimes found for movie ID: " + movieId);
+        if (allShowtimes.isEmpty()) { //Eger bossa noContent dondur
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(
+                    allShowtimes.stream().filter(showtime -> {
+                                LocalDateTime showTimeDateTime = LocalDateTime.of(showtime.getDate(), showtime.getStartTime());//Showtime'in sadece tarih ve saati gelsin
+                                return showTimeDateTime.isAfter(now); //Showtime'i su andan sonra olanlari return et
+                            })
+                            .collect(Collectors.toList()));//Liste haline getir
         }
-
-        return upcomingShowtimes;
     }
 
 }
