@@ -11,6 +11,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     List<Movie> findByStatus(MovieStatus status, Pageable pageable);
 
+    List<Movie> findByHalls_NameIgnoreCase(String hallName, Pageable pageable);
+
     boolean existsBySlug(String slug);
 }
 
