@@ -19,6 +19,27 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    //M03
+    @GetMapping("/{hall}")
+    public ResponseEntity<List<Movie>>getMovieByHall(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "releaseDate") String sort, @RequestParam(defaultValue = "asc") String type,
+            @PathVariable String hall){
+
+        return movieService.getMovieByHall(page,size,sort,type,hall);
+    }
+
+    //M04
+    @GetMapping("/in-theaters")
+    public ResponseEntity<List<Movie>> getInTheatersMovies(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "releaseDate") String sort,
+            @RequestParam(defaultValue = "asc") String type) {
+
+        return movieService.getInTheatersMovies(page, size, sort, type);
+    }
 
     //M05
     @GetMapping("/coming-soon")
