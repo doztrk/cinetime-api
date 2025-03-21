@@ -48,6 +48,8 @@ public class SecurityConfig {
             "/api/cinemas/**",
             "/api/special-halls",
             "/api/images/**",
+            "/api/debug-auth",
+            "/api/debug-token",
 
             // Swagger/OpenAPI
             "/v3/api-docs/**",

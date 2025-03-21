@@ -16,6 +16,7 @@ import com.Cinetime.payload.response.BaseUserResponse;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.repo.HallRepository;
 import com.Cinetime.repo.MovieRepository;
+import com.Cinetime.repo.PosterImageRepository;
 import com.Cinetime.repo.ShowtimeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class MovieService {
     private final HallRepository hallRepository;
     private final ShowtimeRepository showtimeRepository;
     private final MovieHelper movieHelper;
+    private final PosterImageRepository posterImageRepository;
 
 
     public ResponseEntity<List<Movie>> getComingSoonMovies(int page, int size, String sort, String type) {
@@ -64,7 +66,7 @@ public class MovieService {
         Movie newMovie = movieMapper.mapMovieRequestToMovie(movieRequest);
 
         // Handle Hall relationship
-        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
+/*        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
         newMovie.getHalls().add(hallToBeSet);
         hallToBeSet.getMovies().add(newMovie); // Update both sides of the relationship
@@ -73,20 +75,31 @@ public class MovieService {
         Showtime showtimeToBeSet = showtimeRepository.findById(movieRequest.getShowtimeId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
         newMovie.getShowtimes().add(showtimeToBeSet);
-        showtimeToBeSet.setMovie(newMovie); // Update both sides of the relationship
+        showtimeToBeSet.setMovie(newMovie); // Update both sides of the relationship*/
 
         // Handle poster image
-        try {
-            PosterImage posterImage = new PosterImage();
-            posterImage.setName(movieRequest.getTitle() + "_poster");
-            posterImage.setType(movieRequest.getPosterImage().getContentType());
-            posterImage.setData(movieRequest.getPosterImage().getBytes());
-            newMovie.setPoster(posterImage);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to process poster image", e);
+        if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
+            try {
+                PosterImage posterImage = new PosterImage();
+                posterImage.setName(movieRequest.getPosterImage().getOriginalFilename());
+                posterImage.setType(movieRequest.getPosterImage().getContentType());
+                posterImage.setData(movieRequest.getPosterImage().getBytes());
+                PosterImage posterImageSaved = posterImageRepository.save(posterImage);
+
+                newMovie.setPoster(posterImageSaved);
+            } catch (IOException e) {
+                return ResponseMessage.<Movie>builder()
+                        .message("Failed to process image: " + e.getMessage())
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+
+
         }
 
         // Save the movie
+        newMovie.setCreatedAt(LocalDate.now());
+        newMovie.setUpdatedAt(LocalDate.now());
         Movie savedMovie = movieRepository.save(newMovie);
 
         return ResponseMessage.<Movie>builder()

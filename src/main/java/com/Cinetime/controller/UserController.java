@@ -7,9 +7,12 @@ import com.Cinetime.payload.response.BaseUserResponse;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.service.UserService;
 import com.Cinetime.service.authentication.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,4 +33,17 @@ public class UserController {
         return authenticationService.authenticateUser(loginRequest);
     }
 
+    @GetMapping("/debug-auth")
+    public String debugAuth() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return "User: " + auth.getName() +
+                "\nAuthenticated: " + auth.isAuthenticated() +
+                "\nAuthorities: " + auth.getAuthorities();
+    }
+
+    @GetMapping("/debug-token")
+    public String debugToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        return "Token header: " + token;
+    }
 }

@@ -34,10 +34,8 @@ public class MovieController {
 
     //M11
     @PostMapping
-    @PreAuthorize("permitAll()")  // Explicitly allow all access to this method
-    public ResponseMessage<Movie> createMovie(HttpServletRequest request, @ModelAttribute MovieRequest movieRequest) {
-        System.out.println("Request URI: " + request.getRequestURI());
-
+    @PreAuthorize("hasRole('ADMIN')") // Explicitly allow all access to this method
+    public ResponseMessage<Movie> createMovie(@ModelAttribute MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
     }
 }

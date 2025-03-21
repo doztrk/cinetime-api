@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "IMAGE")
 public class Image {
 
 
@@ -23,7 +24,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Lob
     @Column(nullable = false)
     private byte[] data;
 
