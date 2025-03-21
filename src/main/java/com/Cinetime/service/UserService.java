@@ -60,4 +60,5 @@ public class UserService {
                 .object(userMapper.mapUserToBaseUserResponse(savedUser))
                 .build();
     }
+
 }

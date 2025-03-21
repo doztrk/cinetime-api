@@ -13,22 +13,14 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/movie")
+@RequestMapping("/api/movies")
 public class ShowtimeController {
 
     private final ShowtimeService showtimeService;
 
-
     @GetMapping("/{movieId}/show-times")
-    public ResponseEntity<List<Showtime>> getUpcomingShowtimes(@PathVariable Long movieId){
-
-        List<Showtime> showtimes = showtimeService.getUpcomingShowtimes(movieId);
-
-        if (showtimes.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(showtimes);
-
-        }
+    public ResponseEntity<List<Showtime>> getUpcomingShowtimes(@PathVariable Long movieId) {
+        //Business service'e aktarildi.
+        return showtimeService.getUpcomingShowtimes(movieId);
     }
 }
