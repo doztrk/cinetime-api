@@ -51,6 +51,15 @@ public class MovieController {
         return movieService.getMovies(page, size, sort, type);
     }
 
+    // M02 - Return Movies Based on Cinema Slug
+    @GetMapping("/{slug}")
+    public ResponseEntity<List<MovieResponse>> getMoviesByCinemaSlug(@PathVariable String slug) {
+        List<MovieResponse> movies = movieService.getMoviesByCinemaSlug(slug);
+        return ResponseEntity.ok(movies);
+    }
+
+
+
 
 }
 

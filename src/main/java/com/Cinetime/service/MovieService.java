@@ -12,10 +12,7 @@ import com.Cinetime.payload.mappers.MovieMapper;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.response.MovieResponse;
 import com.Cinetime.payload.response.ResponseMessage;
-import com.Cinetime.repo.HallRepository;
-import com.Cinetime.repo.MovieRepository;
-import com.Cinetime.repo.PosterImageRepository;
-import com.Cinetime.repo.ShowtimeRepository;
+import com.Cinetime.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+
 
 
 @Service
@@ -115,5 +113,10 @@ public class MovieService {
         return movies.map(movieMapper::mapMovieToMovieResponse);
     }
 
+    // M02 - Return Movies Based on Cinema Slug
+    public List<MovieResponse> getMoviesByCinemaSlug(String slug) {
+        List<Movie> movies = movieRepository.findByCinemaSlug(slug);
+        return movies.stream().map(movieMapper::mapMovieToMovieResponse).toList();
+    }
 }
 
