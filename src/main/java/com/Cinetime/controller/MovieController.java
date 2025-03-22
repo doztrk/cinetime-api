@@ -2,13 +2,14 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
 import com.Cinetime.payload.dto.MovieRequest;
+import com.Cinetime.payload.response.MovieResponse;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -38,5 +39,18 @@ public class MovieController {
     public ResponseMessage<Movie> createMovie(@ModelAttribute MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
     }
+
+    //M01
+    @GetMapping
+    public Page<MovieResponse> findMoviesByPage(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return movieService.getMovies(page, size, sort, type);
+    }
+
+
 }
 

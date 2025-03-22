@@ -1,37 +1,31 @@
 package com.Cinetime.service;
 
-import com.Cinetime.entity.Hall;
+
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.PosterImage;
-import com.Cinetime.entity.Showtime;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.exception.ResourceNotFoundException;
 import com.Cinetime.helpers.MovieHelper;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.MovieRequest;
 import com.Cinetime.payload.mappers.MovieMapper;
-import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
-import com.Cinetime.payload.response.BaseUserResponse;
+import com.Cinetime.payload.response.MovieResponse;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.repo.HallRepository;
 import com.Cinetime.repo.MovieRepository;
 import com.Cinetime.repo.PosterImageRepository;
 import com.Cinetime.repo.ShowtimeRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
@@ -108,5 +102,18 @@ public class MovieService {
                 .object(savedMovie)
                 .build();
     }
+    public Page<MovieResponse> getMovies(int page, int size, String sort, String type) {
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+        Page<Movie> movies = movieRepository.findAll(pageable);
+
+        // Boş Liste Kontrolü
+        if (movies.isEmpty()) {
+            throw new ResourceNotFoundException("No movies found in the database.");
+        }
+
+        // DTO Mapping
+        return movies.map(movieMapper::mapMovieToMovieResponse);
+    }
+
 }
 
