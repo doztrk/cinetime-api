@@ -2,7 +2,6 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
 import com.Cinetime.payload.dto.MovieRequest;
-import com.Cinetime.payload.response.MovieResponse;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +60,8 @@ public class MovieController {
         return movieService.createMovie(movieRequest);
     }
 
-    //M01
+    //M01 get movies by page based on query
+    //TODO: Postman testi yapilmadi
     @GetMapping
     public ResponseEntity<Page<Movie>> getMoviesByQuery(
             @RequestParam(required = false) String q,
@@ -74,6 +74,7 @@ public class MovieController {
     }
 
     // M02 - Return Movies Based on Cinema Slug
+    //TODO:postman testi yapilmadi
     @GetMapping("/{slug}")
     public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(@PathVariable String slug) {
         List<Movie> movies = movieService.getMoviesByCinemaSlug(slug);
