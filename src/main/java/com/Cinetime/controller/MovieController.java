@@ -20,6 +20,27 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    //M03
+    @GetMapping("/{hall}")
+    public ResponseEntity<List<Movie>>getMovieByHall(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "releaseDate") String sort, @RequestParam(defaultValue = "asc") String type,
+            @PathVariable String hall){
+
+        return movieService.getMovieByHall(page,size,sort,type,hall);
+    }
+
+    //M04
+    @GetMapping("/in-theaters")
+    public ResponseEntity<List<Movie>> getInTheatersMovies(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "releaseDate") String sort,
+            @RequestParam(defaultValue = "asc") String type) {
+
+        return movieService.getInTheatersMovies(page, size, sort, type);
+    }
 
     //M05
     @GetMapping("/coming-soon")
@@ -42,13 +63,14 @@ public class MovieController {
 
     //M01
     @GetMapping
-    public Page<MovieResponse> getMoviesByPage(
+    public ResponseEntity<Page<Movie>> getMoviesByPage(
+            @RequestParam(required = false) String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "title") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
-        return movieService.getMoviesByPage(page, size, sort, type);
+        return ResponseEntity.ok(movieService.getMoviesByPage(q, page, size, sort, type));
     }
 
     // M02 - Return Movies Based on Cinema Slug

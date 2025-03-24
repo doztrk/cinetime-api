@@ -31,9 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
 
 #Apllication Properties#
 src
 /main
 /resources
 /application.properties
+=======
+##Application  Properties
+src/main/resources/application.properties
+>>>>>>> main
+
+# Log Files
+*.log/studentmanagementapp.log

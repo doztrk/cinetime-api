@@ -1,29 +1,37 @@
 package com.Cinetime.service;
 
-
+import com.Cinetime.entity.Hall;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.PosterImage;
+import com.Cinetime.entity.Showtime;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.exception.ResourceNotFoundException;
 import com.Cinetime.helpers.MovieHelper;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.MovieRequest;
 import com.Cinetime.payload.mappers.MovieMapper;
+import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
-import com.Cinetime.payload.response.MovieResponse;
+import com.Cinetime.payload.response.BaseUserResponse;
 import com.Cinetime.payload.response.ResponseMessage;
-import com.Cinetime.repo.*;
+import com.Cinetime.repo.HallRepository;
+import com.Cinetime.repo.MovieRepository;
+import com.Cinetime.repo.PosterImageRepository;
+import com.Cinetime.repo.ShowtimeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-
-
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +45,32 @@ public class MovieService {
     private final MovieHelper movieHelper;
     private final PosterImageRepository posterImageRepository;
 
+
+
+    public ResponseEntity<List<Movie>> getMovieByHall(int page, int size, String sort, String type, String hall) {
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        List<Movie> movies = movieRepository.findByHalls_NameIgnoreCase(hall,pageable);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(movies);
+        }
+    }
+
+    public ResponseEntity<List<Movie>> getInTheatersMovies(int page, int size, String sort, String type) {
+
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        List<Movie> movies = movieRepository.findByStatus(MovieStatus.IN_THEATERS, pageable);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(movies);
+        }
+    }
 
     public ResponseEntity<List<Movie>> getComingSoonMovies(int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
@@ -101,24 +135,8 @@ public class MovieService {
                 .build();
     }
 
-    //M01 - Get Movies By Page
-    public Page<MovieResponse> getMoviesByPage(int page, int size, String sort, String type) {
-        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
-        Page<Movie> movies = movieRepository.findAll(pageable);
 
-        // Boş Liste Kontrolü
-        if (movies.isEmpty()) {
-            throw new ResourceNotFoundException("No movies found in the database.");
-        }
 
-        // DTO Mapping
-        return movies.map(movieMapper::mapMovieToMovieResponse);
-    }
 
-    // M02 - Return Movies Based on Cinema Slug
-    public List<MovieResponse> getMoviesByCinemaSlug(String slug) {
-        List<Movie> movies = movieRepository.findByCinemaSlug(slug);
-        return movies.stream().map(movieMapper::mapMovieToMovieResponse).toList();
-    }
 }
 
