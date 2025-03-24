@@ -100,7 +100,9 @@ public class MovieService {
                 .object(savedMovie)
                 .build();
     }
-    public Page<MovieResponse> getMovies(int page, int size, String sort, String type) {
+
+    //M01 - Get Movies By Page
+    public Page<MovieResponse> getMoviesByPage(int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
         Page<Movie> movies = movieRepository.findAll(pageable);
 

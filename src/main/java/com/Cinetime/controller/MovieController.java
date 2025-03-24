@@ -42,13 +42,13 @@ public class MovieController {
 
     //M01
     @GetMapping
-    public Page<MovieResponse> findMoviesByPage(
+    public Page<MovieResponse> getMoviesByPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "title") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
-        return movieService.getMovies(page, size, sort, type);
+        return movieService.getMoviesByPage(page, size, sort, type);
     }
 
     // M02 - Return Movies Based on Cinema Slug
