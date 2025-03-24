@@ -20,6 +20,7 @@ import com.Cinetime.repo.PosterImageRepository;
 import com.Cinetime.repo.ShowtimeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -133,6 +134,21 @@ public class MovieService {
                 .httpStatus(HttpStatus.CREATED)
                 .object(savedMovie)
                 .build();
+    }
+    //M01 - Get Movies By Query
+    public Page<Movie> getMoviesByQuery(String query, int page, int size, String sort, String type) {
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        if (query != null && !query.isEmpty()) {
+            return movieRepository.findByTitleContainingIgnoreCase(query, pageable);
+        }
+
+        return movieRepository.findAll(pageable);
+    }
+    // M02 - Return Movies Based on Cinema Slug
+    public List<Movie> getMoviesByCinemaSlug(String slug) {
+        List<Movie> movies = movieRepository.findByCinemaSlug(slug);
+        return movies.stream().toList();
     }
 
 

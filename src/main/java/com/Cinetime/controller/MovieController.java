@@ -63,20 +63,20 @@ public class MovieController {
 
     //M01
     @GetMapping
-    public ResponseEntity<Page<Movie>> getMoviesByPage(
+    public ResponseEntity<Page<Movie>> getMoviesByQuery(
             @RequestParam(required = false) String q,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "title") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
-        return ResponseEntity.ok(movieService.getMoviesByPage(q, page, size, sort, type));
+        return ResponseEntity.ok(movieService.getMoviesByQuery(q, page, size, sort, type));
     }
 
     // M02 - Return Movies Based on Cinema Slug
     @GetMapping("/{slug}")
-    public ResponseEntity<List<MovieResponse>> getMoviesByCinemaSlug(@PathVariable String slug) {
-        List<MovieResponse> movies = movieService.getMoviesByCinemaSlug(slug);
+    public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(@PathVariable String slug) {
+        List<Movie> movies = movieService.getMoviesByCinemaSlug(slug);
         return ResponseEntity.ok(movies);
     }
 

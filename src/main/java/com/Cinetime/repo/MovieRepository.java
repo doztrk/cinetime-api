@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
@@ -21,11 +22,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m JOIN m.halls h JOIN h.cinema c WHERE c.slug = :slug")
     List<Movie> findByCinemaSlug(@Param("slug") String slug);
 
-    Page<Movie> findByTitleContainingOrSummaryContaining(
-            String titleKeyword, String summaryKeyword, Pageable pageable
-    );
-
-
-
+    @Query("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<Movie> findByTitleContainingIgnoreCase(@Param("query") String query, Pageable pageable);
 }
+
+
 
