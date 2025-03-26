@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -48,6 +45,13 @@ public class CinemaController {
             Principal principal  //giriş yapan (authenticated) kullanıcının kimliğini temsil eder.
     ){
         return cinemaService.getUserFavoriteCinemas(page,size,sort,type,principal);
+    }
+
+    //C03 return cinema details by id
+
+    @GetMapping("/{id}")
+    public CinemaResponse getCinemaDetails(@PathVariable Long id) {
+        return cinemaService.getCinemaById(id);
     }
 
 

@@ -58,6 +58,11 @@ public class CinemaService {
     }
 
 
+    public CinemaResponse getCinemaById(Long id) {
+        Cinema cinema = cinemaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cinema not found"));
 
+        return cinemaMapper.mapCinemaToCinemaResponse(cinema); //Todo: Hall listesini, seansları ya da favorilere eklenip eklenmediği listelenebilir
     }
+}
 
