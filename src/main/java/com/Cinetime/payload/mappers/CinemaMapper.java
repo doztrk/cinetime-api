@@ -2,8 +2,10 @@ package com.Cinetime.payload.mappers;
 
 import com.Cinetime.entity.Cinema;
 import com.Cinetime.payload.response.CinemaResponse;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
+@Data
 @Component
 public class CinemaMapper {
     public CinemaResponse mapCinemaToCinemaResponse(Cinema cinema) {
