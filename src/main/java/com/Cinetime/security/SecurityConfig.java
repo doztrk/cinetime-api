@@ -42,6 +42,8 @@ public class SecurityConfig {
             "/api/register",
             "/api/forgot-password",
             "/api/forgot-password/**",
+            "/api/validate-reset-password-code",
+            "/api/reset-password",
 
             // Public API endpoints
             "/api/movies",
