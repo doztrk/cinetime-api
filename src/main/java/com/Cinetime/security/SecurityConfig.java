@@ -41,6 +41,7 @@ public class SecurityConfig {
             "/api/login",
             "/api/register",
             "/api/forgot-password",
+            "/api/forgot-password/**",
 
             // Public API endpoints
             "/api/movies",
