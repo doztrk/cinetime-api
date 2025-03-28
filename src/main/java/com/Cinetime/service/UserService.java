@@ -1,6 +1,5 @@
 package com.Cinetime.service;
 
-import com.Cinetime.entity.Role;
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.RoleName;
 import com.Cinetime.helpers.UniquePropertyValidator;
@@ -18,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -26,8 +28,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UniquePropertyValidator uniquePropertyValidator;
     private final UserMapper userMapper;
-    private final RoleRepository roleRepository;
     private final RoleService roleService;
+
 
     @Transactional
     public ResponseMessage<BaseUserResponse> register(UserRequest userRequest) {
@@ -60,5 +62,6 @@ public class UserService {
                 .object(userMapper.mapUserToBaseUserResponse(savedUser))
                 .build();
     }
+
 
 }
