@@ -1,10 +1,7 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.payload.authentication.LoginRequest;
-import com.Cinetime.payload.dto.ResetCodeRequest;
-import com.Cinetime.payload.dto.ForgotPasswordRequest;
-import com.Cinetime.payload.dto.ResetPasswordRequest;
-import com.Cinetime.payload.dto.UserRequest;
+import com.Cinetime.payload.dto.*;
 import com.Cinetime.payload.response.AuthResponse;
 import com.Cinetime.payload.response.BaseUserResponse;
 import com.Cinetime.payload.response.ResponseMessage;
@@ -67,6 +64,13 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
     public ResponseMessage<BaseUserResponse> createUser(@RequestBody @Valid UserRequest userCreateDTO) {
         return userService.createUser(userCreateDTO);
+    }
+
+    //U06
+    @PutMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
+    public ResponseMessage<BaseUserResponse> updateUser(@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
+        return userService.updateUser(userUpdateRequest);
     }
 
 

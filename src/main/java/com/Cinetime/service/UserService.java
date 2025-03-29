@@ -3,23 +3,28 @@ package com.Cinetime.service;
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.RoleName;
 import com.Cinetime.helpers.UniquePropertyValidator;
+import com.Cinetime.helpers.UpdateUserHelper;
 import com.Cinetime.payload.dto.UserRequest;
+import com.Cinetime.payload.dto.UserUpdateRequest;
 import com.Cinetime.payload.mappers.UserMapper;
 import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.response.ResponseMessage;
-import com.Cinetime.repo.RoleRepository;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.payload.response.BaseUserResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.security.SecureRandom;
+
 import java.time.LocalDateTime;
-import java.util.Random;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +35,7 @@ public class UserService {
     private final UniquePropertyValidator uniquePropertyValidator;
     private final UserMapper userMapper;
     private final RoleService roleService;
+    private final UpdateUserHelper updateUserHelper;
 
 
     @Transactional
@@ -51,6 +57,7 @@ public class UserService {
         //Password encoding
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        user.setBuiltIn(false);
         User savedUser = userRepository.save(user);
 
 
@@ -65,6 +72,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public ResponseMessage<BaseUserResponse> createUser(UserRequest userCreateDTO) {
         boolean isUnique =
                 uniquePropertyValidator
@@ -85,6 +93,8 @@ public class UserService {
 
         user.setRole(roleService.getRole(RoleName.MEMBER));
 
+        user.setBuiltIn(false);
+
         userRepository.save(user);
 
         return ResponseMessage.<BaseUserResponse>builder()
@@ -93,4 +103,56 @@ public class UserService {
                 .object(userMapper.mapUserToBaseUserResponse(user))
                 .build();
     }
+
+    @Transactional
+    public ResponseMessage<BaseUserResponse> updateUser(UserUpdateRequest userUpdateRequest) {
+
+        //Istek gonderen kullaniciyi buluyoruz
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String phoneNumber = authentication.getName();
+
+
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found in database. This indicates a system error."));
+
+
+        if (user.getBuiltIn().equals(true)) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.BUILTIN_USER_UPDATE)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+        if (StringUtils.hasText(userUpdateRequest.getEmail()) &&
+                !userUpdateRequest.getEmail().equals(user.getEmail()) &&
+                userRepository.existsByEmail(userUpdateRequest.getEmail())) {
+
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.DUPLICATE_USER_PROPERTIES)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+        if (StringUtils.hasText(userUpdateRequest.getPhoneNumber()) &&
+                !userUpdateRequest.getPhoneNumber().equals(user.getPhoneNumber()) &&
+                userRepository.existsByPhoneNumber(userUpdateRequest.getPhoneNumber())) {
+
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.DUPLICATE_USER_PROPERTIES)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+
+        User updatedUser = updateUserHelper.updateUserIfUpdatesExistInRequest(userUpdateRequest, user);
+
+        userRepository.save(updatedUser);
+
+        return ResponseMessage.<BaseUserResponse>builder()
+                .message(SuccessMessages.USER_UPDATE)
+                .httpStatus(HttpStatus.OK)
+                .object(userMapper.mapUserToBaseUserResponse(updatedUser))
+                .build();
+    }
+
 }
