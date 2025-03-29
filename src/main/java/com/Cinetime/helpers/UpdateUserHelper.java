@@ -1,7 +1,7 @@
 package com.Cinetime.helpers;
 
 import com.Cinetime.entity.User;
-import com.Cinetime.payload.dto.UserUpdateRequest;
+import com.Cinetime.payload.dto.user.UserUpdateRequest;
 import org.apache.commons.lang3.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

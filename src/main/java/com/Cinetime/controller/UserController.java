@@ -2,6 +2,10 @@ package com.Cinetime.controller;
 
 import com.Cinetime.payload.authentication.LoginRequest;
 import com.Cinetime.payload.dto.*;
+import com.Cinetime.payload.dto.user.AbstractUserRequest;
+import com.Cinetime.payload.dto.user.UserRequest;
+import com.Cinetime.payload.dto.user.UserRequestWithPasswordOnly;
+import com.Cinetime.payload.dto.user.UserUpdateRequest;
 import com.Cinetime.payload.response.AuthResponse;
 import com.Cinetime.payload.response.BaseUserResponse;
 import com.Cinetime.payload.response.ResponseMessage;
@@ -28,7 +32,7 @@ public class UserController {
 
     //U02
     @PostMapping("/register")
-    public ResponseMessage<BaseUserResponse> register(@RequestBody @Valid UserRequest userRegisterDTO) {
+    public ResponseMessage<BaseUserResponse> register(@RequestBody @Valid AbstractUserRequest userRegisterDTO) {
         return userService.register(userRegisterDTO);
     }
 
@@ -73,6 +77,12 @@ public class UserController {
         return userService.updateUser(userUpdateRequest);
     }
 
+    //U07
+    @DeleteMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('MEMBER')")
+    public ResponseMessage<BaseUserResponse> deleteUser(@RequestBody @Valid UserRequestWithPasswordOnly request) {
+        return userService.deleteUser(request);
+    }
 
     @GetMapping("/debug-auth")
     public String debugAuth() {

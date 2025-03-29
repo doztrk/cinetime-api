@@ -2,17 +2,19 @@ package com.Cinetime.service;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.RoleName;
+import com.Cinetime.helpers.TicketHelper;
 import com.Cinetime.helpers.UniquePropertyValidator;
 import com.Cinetime.helpers.UpdateUserHelper;
-import com.Cinetime.payload.dto.UserRequest;
-import com.Cinetime.payload.dto.UserUpdateRequest;
+import com.Cinetime.payload.dto.user.AbstractUserRequest;
+import com.Cinetime.payload.dto.user.UserRequest;
+import com.Cinetime.payload.dto.user.UserRequestWithPasswordOnly;
+import com.Cinetime.payload.dto.user.UserUpdateRequest;
 import com.Cinetime.payload.mappers.UserMapper;
 import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.payload.response.BaseUserResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -36,10 +39,11 @@ public class UserService {
     private final UserMapper userMapper;
     private final RoleService roleService;
     private final UpdateUserHelper updateUserHelper;
+    private final TicketHelper ticketHelper;
 
 
     @Transactional
-    public ResponseMessage<BaseUserResponse> register(UserRequest userRequest) {
+    public ResponseMessage<BaseUserResponse> register(AbstractUserRequest userRequest) {
 
         if (!uniquePropertyValidator.isRegistrationPropertiesUnique(userRequest.getEmail(), userRequest.getPhoneNumber())) {
             return ResponseMessage.<BaseUserResponse>builder()
@@ -155,4 +159,54 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
+    public ResponseMessage<BaseUserResponse> deleteUser(UserRequestWithPasswordOnly request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String phoneNumber = authentication.getName();
+
+
+        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+
+        if (user.isEmpty()) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message("Authenticated user not found in database. This indicates a system error.")
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.INVALID_PASSWORD)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+        if (user.get().getBuiltIn()) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.BUILTIN_USER_DELETE)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+        if (!ticketHelper.canDeleteUser(user.get())) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.USER_HAS_UNUSED_TICKETS)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .object(userMapper.mapUserToBaseUserResponse(user.get()))
+                    .build();
+        }
+
+        BaseUserResponse userResponse = userMapper.mapUserToBaseUserResponse(user.get());
+
+        userRepository.delete(user.get());
+
+        SecurityContextHolder.clearContext();
+
+        return ResponseMessage.<BaseUserResponse>builder()
+                .message(SuccessMessages.USER_DELETE)
+                .httpStatus(HttpStatus.OK)
+                .object(userResponse)
+                .build();
+
+    }
 }
