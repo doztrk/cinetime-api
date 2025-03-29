@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -30,7 +31,7 @@ public class CinemaService {
     private final CinemaMapper cinemaMapper;
 
 
-    public Page<Cinema> getCinemasByFilters(Long cityId, Boolean specialHall, int page, int size, String sort, String type) {
+    public ResponseEntity<Page<Cinema>>  getCinemasByFilters(Long cityId, Boolean specialHall, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
         Page<Cinema> cinemas = cinemaRepository.findCinemasByFilters(cityId, specialHall, pageable);
@@ -38,10 +39,12 @@ public class CinemaService {
 
         // Eğer hiç sonuç yoksa, boş sayfa döner
         if (cinemas.isEmpty()) {
-            return new PageImpl<>(Collections.emptyList(), pageable, 0);
+            return ResponseEntity.ok(
+                    new PageImpl<Cinema>(Collections.emptyList(), pageable, 0)
+            );
         }
 
-        return cinemas;
+        return ResponseEntity.ok(cinemas);
     }
 
     public Page<CinemaResponse> getUserFavoriteCinemas(int page, int size, String sort, String type, Principal principal) {

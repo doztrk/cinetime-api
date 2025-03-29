@@ -32,10 +32,10 @@ public class CinemaController {
             @RequestParam(defaultValue = "name") String sort,
             @RequestParam(defaultValue = "asc") String type
     ) {
-        Page<Cinema> cinemas = cinemaService.getCinemasByFilters(cityId, specialHall, page, size, sort, type);
 
 
-        return ResponseEntity.ok(cinemas);
+        return cinemaService.getCinemasByFilters(cityId, specialHall, page, size, sort, type);
+
     }
 
     //C02 return cinemas based on user's favorites
