@@ -28,10 +28,10 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
 ### VS Code ###
 .vscode/
 ##Application  Properties
 src/main/resources/application.properties
-##Log
-/Users/dogu/IdeaProjects/cinetime-api-selfmade/log
+# Log files
+log/
+/log
