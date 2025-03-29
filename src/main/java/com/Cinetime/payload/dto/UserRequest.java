@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-public class UserRequest {
+public  class UserRequest {
 
 
     @NotBlank(message = "Please provide your name")

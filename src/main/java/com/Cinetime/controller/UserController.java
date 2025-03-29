@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -51,14 +52,21 @@ public class UserController {
     //Dokumantasyonda mantik hatasi var. Eger kullanici forgot-passworddan buraya gelecekse zaten old passwordu bilmiyordur.
     //TODO:Onun icin change-password isimli bir endpoint yazacagiz.
     @PutMapping("/reset-password")
-    public ResponseMessage<?> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
-        return passwordResetService.resetPassword(request);
+    public ResponseMessage<?> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordDTO) {
+        return passwordResetService.resetPassword(resetPasswordDTO);
     }
 
     //U04 -- After Forgot Password, this endpoint should run
     @PostMapping("/validate-reset-password-code")
-    public ResponseMessage<?> validateResetPasswordCode(@RequestBody @Valid ResetCodeRequest request) {
-        return passwordResetService.validateResetPasswordCode(request);
+    public ResponseMessage<?> validateResetPasswordCode(@RequestBody @Valid ResetCodeRequest resetCodeDTO) {
+        return passwordResetService.validateResetPasswordCode(resetCodeDTO);
+    }
+
+    //U05
+    @PostMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
+    public ResponseMessage<BaseUserResponse> createUser(@RequestBody @Valid UserRequest userCreateDTO) {
+        return userService.createUser(userCreateDTO);
     }
 
 

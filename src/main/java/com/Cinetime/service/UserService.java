@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -64,4 +65,32 @@ public class UserService {
     }
 
 
+    public ResponseMessage<BaseUserResponse> createUser(UserRequest userCreateDTO) {
+        boolean isUnique =
+                uniquePropertyValidator
+                        .isRegistrationPropertiesUnique(userCreateDTO.getEmail(), userCreateDTO.getPhoneNumber());
+
+        if (!isUnique) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message(ErrorMessages.DUPLICATE_USER_PROPERTIES)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+        User user = userMapper.mapUserRequestToUser(userCreateDTO);
+
+        user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
+
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        user.setRole(roleService.getRole(RoleName.MEMBER));
+
+        userRepository.save(user);
+
+        return ResponseMessage.<BaseUserResponse>builder()
+                .message(SuccessMessages.USER_CREATE)
+                .httpStatus(HttpStatus.OK)
+                .object(userMapper.mapUserToBaseUserResponse(user))
+                .build();
+    }
 }
