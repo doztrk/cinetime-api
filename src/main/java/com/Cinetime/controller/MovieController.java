@@ -1,9 +1,11 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
+import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.dto.MovieRequest;
 import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
+import com.Cinetime.service.ShowtimeService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,20 +16,21 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/movies")
+@RequestMapping("/api/movie")
 public class MovieController {
 
     private final MovieService movieService;
+    private final ShowtimeService showtimeService;
 
     //M03
     @GetMapping("/{hall}")
-    public ResponseEntity<List<Movie>>getMovieByHall(
+    public ResponseEntity<List<Movie>> getMovieByHall(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "releaseDate") String sort, @RequestParam(defaultValue = "asc") String type,
-            @PathVariable String hall){
+            @PathVariable String hall) {
 
-        return movieService.getMovieByHall(page,size,sort,type,hall);
+        return movieService.getMovieByHall(page, size, sort, type, hall);
     }
 
     //M04
@@ -58,6 +61,14 @@ public class MovieController {
     @PreAuthorize("hasRole('ADMIN')") // Explicitly allow all access to this method
     public ResponseMessage<Movie> createMovie(@ModelAttribute MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
+    }
+
+
+    //M14
+    @GetMapping("/{movieId}/show-times")
+    public ResponseEntity<List<Showtime>> getUpcomingShowtimes(@PathVariable Long movieId) {
+        //Business service'e aktarildi.
+        return showtimeService.getUpcomingShowtimes(movieId);
     }
 }
 
