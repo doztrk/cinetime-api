@@ -15,7 +15,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cinemas")
 @RequiredArgsConstructor
 public class CinemaController {
 
@@ -23,7 +23,7 @@ public class CinemaController {
     private final HallService hallService;
 
     //C01
-    @GetMapping("/cinemas")
+    @GetMapping
     public ResponseEntity<Page<Cinema>> getCinemas(
             @RequestParam(required = false) Long cityId,
             @RequestParam(required = false) Boolean specialHall,
@@ -66,11 +66,11 @@ public class CinemaController {
     }
 
     //C05 return all of special halls
-
+    /*
     @GetMapping("/special-halls")
     public List<HallResponse> getSpecialHalls() {
         return hallService.getSpecialHalls();
-    }
+    } */
 
 
 
