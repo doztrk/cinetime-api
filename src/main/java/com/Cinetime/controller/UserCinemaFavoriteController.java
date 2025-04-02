@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserCinemaFavoriteController {
     private final UserCinemaFavoriteService favoriteService;
 
-
+    //C02 return cinemas based on user's favorites
     @GetMapping("/auth")
     public ResponseEntity<Page<CinemaResponse>> getUserFavoriteCinemas(
             @RequestParam(defaultValue = "0") int page,

@@ -1,4 +1,4 @@
-package com.Cinetime.service.authentication;
+package com.Cinetime.service;
 
 import com.Cinetime.entity.Cinema;
 import com.Cinetime.entity.Hall;
@@ -33,10 +33,11 @@ public class HallService {
     }
 
     //C05 return all of special halls
+    /*
     public List<HallResponse> getSpecialHalls() {
         return hallRepository.findByIsSpecialTrue()
                 .stream()
                 .map(HallMapper::mapHallToHallResponse)
                 .toList();
-    }
+    }*/
 }
