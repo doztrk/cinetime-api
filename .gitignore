@@ -31,17 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
-<<<<<<< HEAD
 
-#Apllication Properties#
-src
-/main
-/resources
-/application.properties
-=======
-##Application  Properties
+## Application Properties
 src/main/resources/application.properties
->>>>>>> main
 
 # Log Files
 *.log
+*.log.*
+*.gz
+log/
