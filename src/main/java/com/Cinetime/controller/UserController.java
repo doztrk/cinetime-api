@@ -15,6 +15,7 @@ import com.Cinetime.service.authentication.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -83,6 +84,19 @@ public class UserController {
     public ResponseMessage<BaseUserResponse> deleteUser(@RequestBody @Valid UserRequestWithPasswordOnly request) {
         return userService.deleteUser(request);
     }
+
+    //U08
+    @GetMapping("/users/admin")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public Page<BaseUserResponse> getUserWithParam(
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "releaseDate") String sort,
+            @RequestParam(defaultValue = "asc") String type) {
+        return userService.getUserWithParam(q, page, size, sort, type);
+    }
+
 
     @GetMapping("/debug-auth")
     public String debugAuth() {
