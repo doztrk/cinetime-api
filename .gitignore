@@ -28,10 +28,15 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+
 ### VS Code ###
 .vscode/
-##Application  Properties
+
+## Application Properties
 src/main/resources/application.properties
-##Log
+
+## Log Files
+*.log
+*.log.*
+*.gz
 log/
-/log
