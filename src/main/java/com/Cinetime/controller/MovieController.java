@@ -58,7 +58,7 @@ public class MovieController {
 
     //M11
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')") // Explicitly allow all access to this method
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseMessage<Movie> createMovie(@ModelAttribute MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
     }

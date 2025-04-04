@@ -2,6 +2,7 @@ package com.Cinetime.service;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.RoleName;
+import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.helpers.TicketHelper;
 import com.Cinetime.helpers.UniquePropertyValidator;
 import com.Cinetime.helpers.UpdateUserHelper;
@@ -17,6 +18,8 @@ import com.Cinetime.repo.UserRepository;
 import com.Cinetime.payload.response.BaseUserResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +43,7 @@ public class UserService {
     private final RoleService roleService;
     private final UpdateUserHelper updateUserHelper;
     private final TicketHelper ticketHelper;
+    private final PageableHelper pageableHelper;
 
 
     @Transactional
@@ -207,6 +211,13 @@ public class UserService {
                 .httpStatus(HttpStatus.OK)
                 .object(userResponse)
                 .build();
+
+    }
+
+    public Page<BaseUserResponse> getUserWithParam(String q, int page, int size, String sort, String type) {
+
+      Pageable pageable =  pageableHelper.pageableSortWithSearchQuery(q, page, size, sort, type);
+
 
     }
 }
