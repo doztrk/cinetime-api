@@ -31,5 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
-##Application  Properties
+
+## Application Properties
 src/main/resources/application.properties
+
+## Log Files
+*.log
+*.log.*
+*.gz
+log/

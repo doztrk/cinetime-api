@@ -3,6 +3,7 @@ package com.Cinetime.payload.mappers;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.payload.dto.MovieRequest;
+import com.Cinetime.payload.response.MovieResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,4 +30,20 @@ public class MovieMapper {
                         movieRequest.getStatus() : MovieStatus.COMING_SOON)
                 .build();
     }
+
+    public MovieResponse mapMovieToMovieResponse(Movie movie) {
+        return MovieResponse.builder()
+                .title(movie.getTitle())
+                .slug(movie.getSlug())
+                .summary(movie.getSummary())
+                .releaseDate(movie.getReleaseDate())
+                .duration(movie.getDuration())
+                .rating(movie.getRating())
+                .director(movie.getDirector())
+                .cast(movie.getCast())
+                .formats(movie.getFormats())
+                .genre(movie.getGenre())
+                .build();
+    }
+
 }

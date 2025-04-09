@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -55,20 +56,37 @@ public class MovieController {
         return movieService.getComingSoonMovies(page, size, sort, type);
     }
 
-
     //M11
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')") // Explicitly allow all access to this method
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseMessage<Movie> createMovie(@ModelAttribute MovieRequest movieRequest) {
         return movieService.createMovie(movieRequest);
     }
 
+    //M01 get movies by page based on query
+    //TODO: Postman testi yapilmadi
+    @GetMapping
+    public ResponseEntity<Page<Movie>> getMoviesByQuery(
+            @RequestParam(required = false) String q,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return ResponseEntity.ok(movieService.getMoviesByQuery(q, page, size, sort, type));
+    }
+
+    // M02 - Return Movies Based on Cinema Slug
+    //TODO:postman testi yapilmadi
+    @GetMapping("/{slug}")
+    public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(@PathVariable String slug) {
+        List<Movie> movies = movieService.getMoviesByCinemaSlug(slug);
+        return ResponseEntity.ok(movies);
+    }
 
     //M14
     @GetMapping("/{movieId}/show-times")
     public ResponseEntity<List<Showtime>> getUpcomingShowtimes(@PathVariable Long movieId) {
-        //Business service'e aktarildi.
         return showtimeService.getUpcomingShowtimes(movieId);
     }
 }
-

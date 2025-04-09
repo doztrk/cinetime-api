@@ -1,10 +1,11 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.payload.authentication.LoginRequest;
-import com.Cinetime.payload.dto.ResetCodeRequest;
-import com.Cinetime.payload.dto.ForgotPasswordRequest;
-import com.Cinetime.payload.dto.ResetPasswordRequest;
-import com.Cinetime.payload.dto.UserRequest;
+import com.Cinetime.payload.dto.*;
+import com.Cinetime.payload.dto.user.AbstractUserRequest;
+import com.Cinetime.payload.dto.user.UserRequest;
+import com.Cinetime.payload.dto.user.UserRequestWithPasswordOnly;
+import com.Cinetime.payload.dto.user.UserUpdateRequest;
 import com.Cinetime.payload.response.AuthResponse;
 import com.Cinetime.payload.response.BaseUserResponse;
 import com.Cinetime.payload.response.ResponseMessage;
@@ -14,7 +15,9 @@ import com.Cinetime.service.authentication.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,7 @@ public class UserController {
 
     //U02
     @PostMapping("/register")
-    public ResponseMessage<BaseUserResponse> register(@RequestBody @Valid UserRequest userRegisterDTO) {
+    public ResponseMessage<BaseUserResponse> register(@RequestBody @Valid AbstractUserRequest userRegisterDTO) {
         return userService.register(userRegisterDTO);
     }
 
@@ -51,14 +54,47 @@ public class UserController {
     //Dokumantasyonda mantik hatasi var. Eger kullanici forgot-passworddan buraya gelecekse zaten old passwordu bilmiyordur.
     //TODO:Onun icin change-password isimli bir endpoint yazacagiz.
     @PutMapping("/reset-password")
-    public ResponseMessage<?> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
-        return passwordResetService.resetPassword(request);
+    public ResponseMessage<?> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordDTO) {
+        return passwordResetService.resetPassword(resetPasswordDTO);
     }
 
     //U04 -- After Forgot Password, this endpoint should run
     @PostMapping("/validate-reset-password-code")
-    public ResponseMessage<?> validateResetPasswordCode(@RequestBody @Valid ResetCodeRequest request) {
-        return passwordResetService.validateResetPasswordCode(request);
+    public ResponseMessage<?> validateResetPasswordCode(@RequestBody @Valid ResetCodeRequest resetCodeDTO) {
+        return passwordResetService.validateResetPasswordCode(resetCodeDTO);
+    }
+
+    //U05
+    @PostMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
+    public ResponseMessage<BaseUserResponse> createUser(@RequestBody @Valid UserRequest userCreateDTO) {
+        return userService.createUser(userCreateDTO);
+    }
+
+    //U06
+    @PutMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
+    public ResponseMessage<BaseUserResponse> updateUser(@RequestBody @Valid UserUpdateRequest userUpdateRequest) {
+        return userService.updateUser(userUpdateRequest);
+    }
+
+    //U07
+    @DeleteMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('MEMBER')")
+    public ResponseMessage<BaseUserResponse> deleteUser(@RequestBody @Valid UserRequestWithPasswordOnly request) {
+        return userService.deleteUser(request);
+    }
+
+    //U08
+    @GetMapping("/users/admin")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public Page<BaseUserResponse> getUserWithParam(
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "releaseDate") String sort,
+            @RequestParam(defaultValue = "asc") String type) {
+        return userService.getUserWithParam(q, page, size, sort, type);
     }
 
 

@@ -1,7 +1,7 @@
 package com.Cinetime.payload.mappers;
 
 import com.Cinetime.entity.User;
-import com.Cinetime.payload.dto.UserRequest;
+import com.Cinetime.payload.dto.user.AbstractUserRequest;
 import com.Cinetime.payload.response.BaseUserResponse;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
 
-    public User mapUserRequestToUser(UserRequest userRequest) {
+    public User mapUserRequestToUser(AbstractUserRequest userRequest) {
 
 
         return User.builder()
