@@ -3,7 +3,9 @@ package com.Cinetime.enums;
 public enum TicketStatus {
     RESERVED(0),
     PAID(1),
-    CANCELLED(2);
+    CANCELLED(2),
+    USED(3);
+
 
     private final int value;
 
