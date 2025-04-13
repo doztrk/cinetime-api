@@ -30,6 +30,12 @@ public class Hall {
     @NotNull
     private Integer seatCapacity;
 
+    @NotNull
+    private Integer rowCount;
+
+    @NotNull
+    private Integer columnCount;
+
     private Boolean isSpecial = false;
 
     @ManyToOne

@@ -2,15 +2,14 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.TicketDto;
+import com.Cinetime.payload.dto.user.TicketRequestDto;
 import com.Cinetime.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,4 +48,15 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
 
+    //T03 reserve movie ticket
+    @PostMapping("/reserve")
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<TicketDto> reserveTicket(
+            @RequestBody TicketRequestDto request,
+            Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+        TicketDto reserved = ticketService.reserveTicket(request, user);
+        return ResponseEntity.ok(reserved);
+    }
 }

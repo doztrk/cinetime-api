@@ -1,5 +1,6 @@
 package com.Cinetime.repo;
 
+import com.Cinetime.entity.Showtime;
 import com.Cinetime.entity.Ticket;
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.TicketStatus;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
@@ -20,5 +22,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
 
     Page<Ticket> findByUserAndStatus(User user, TicketStatus status, Pageable pageable);
+
+    Optional<Ticket> findByShowtimeAndSeatLetterAndSeatNumber(Showtime showtime, String seatLetter, Integer seatNumber);
+
+    List<Ticket> findByShowtime(Showtime showtime);
 
 }
