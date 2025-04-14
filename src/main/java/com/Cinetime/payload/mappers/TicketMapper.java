@@ -37,4 +37,24 @@ public class TicketMapper {
         ticket.setPayment(null);
         return ticket;
     }
+
+    public Ticket mapBuyRequestToTicket(String seat, Showtime showtime, User user) {
+        String letter = seat.substring(0, 1);
+        Integer number = Integer.parseInt(seat.substring(1));
+
+        Ticket ticket = new Ticket();
+        ticket.setMovie(showtime.getMovie());
+        ticket.setShowtime(showtime);
+        ticket.setSeatLetter(letter);
+        ticket.setSeatNumber(number);
+        ticket.setStatus(TicketStatus.PAID);
+        ticket.setPrice(15.0); // sabit fiyat
+        ticket.setHall(showtime.getHall());
+        ticket.setPayment(null);
+        if (user != null) {
+            ticket.setUser(user);
+        }
+
+        return ticket;
+    }
 }

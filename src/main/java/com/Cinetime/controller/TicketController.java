@@ -2,6 +2,7 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.TicketDto;
+import com.Cinetime.payload.dto.TicketPurchaseRequest;
 import com.Cinetime.payload.dto.user.TicketRequestDto;
 import com.Cinetime.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,5 +61,21 @@ public class TicketController {
         User user = (User) authentication.getPrincipal();
         TicketDto reserved = ticketService.reserveTicket(request, user);
         return ResponseEntity.ok(reserved);
+    }
+
+    //T04 Buy Ticket
+
+    @PostMapping("/buy-ticket")
+    public ResponseEntity<List<TicketDto>> buyTickets(@RequestBody TicketPurchaseRequest request,
+                                                      Authentication authentication) {
+
+        // Giriş yapmamış kullanıcı olabilir (anonim alışveriş)
+        User user = (authentication != null && authentication.isAuthenticated()
+                && !(authentication.getPrincipal() instanceof String))
+                ? (User) authentication.getPrincipal()
+                : null;
+
+        List<TicketDto> tickets = ticketService.buyTickets(request, user);
+        return ResponseEntity.ok(tickets);
     }
 }

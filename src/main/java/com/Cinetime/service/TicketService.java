@@ -9,6 +9,7 @@ import com.Cinetime.exception.ConflictException;
 import com.Cinetime.exception.ResourceNotFoundException;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.TicketDto;
+import com.Cinetime.payload.dto.TicketPurchaseRequest;
 import com.Cinetime.payload.dto.user.TicketRequestDto;
 import com.Cinetime.payload.mappers.TicketMapper;
 import com.Cinetime.repo.MovieRepository;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,5 +72,49 @@ public class TicketService {
         Ticket savedTicket = ticketRepository.save(ticket);
         return ticketMapper.toDto(savedTicket);
 
+    }
+
+    //T04 Buy Ticket
+
+    public List<TicketDto> buyTickets(TicketPurchaseRequest request, User user) {
+
+        // 1. Showtime kontrolü
+        Showtime showtime = showtimeRepository.findById(request.getShowtimeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Showtime not found"));
+
+        // 2. Geçmiş tarih kontrolü
+        LocalDateTime showtimeDateTime = LocalDateTime.of(
+                showtime.getDate(),
+                showtime.getStartTime()
+        );
+
+        if (showtimeDateTime.isBefore(LocalDateTime.now())) {
+            throw new ConflictException("Cannot buy tickets for past showtimes");
+        }
+
+        // 3. Çakışan koltuk kontrolü
+        List<String> seatLetters = request.getSeatInformation().stream()
+                .map(s -> s.substring(0, 1)) // "B12" → "B"
+                .toList();
+
+        List<Integer> seatNumbers = request.getSeatInformation().stream()
+                .map(s -> Integer.parseInt(s.substring(1))) // "B12" → 12
+                .toList();
+
+        List<Ticket> existing = ticketRepository
+                .findByShowtimeAndSeatLetterInAndSeatNumberIn(showtime, seatLetters, seatNumbers);
+
+        if (!existing.isEmpty()) {
+            throw new ConflictException("Some selected seats are already reserved");
+        }
+
+        // 4. Yeni ticket’ları oluştur (mapper ile)
+        List<Ticket> tickets = request.getSeatInformation().stream()
+                .map(seat -> ticketMapper.mapBuyRequestToTicket(seat, showtime, user))
+                .toList();
+
+        // 5. Kaydet ve Dto’ya çevir
+        List<Ticket> saved = ticketRepository.saveAll(tickets);
+        return saved.stream().map(ticketMapper::toDto).toList();
     }
 }

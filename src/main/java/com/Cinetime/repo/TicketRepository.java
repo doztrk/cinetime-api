@@ -27,4 +27,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     List<Ticket> findByShowtime(Showtime showtime);
 
+    List<Ticket> findByShowtimeAndSeatLetterInAndSeatNumberIn(Showtime showtime, List<String> letters, List<Integer> numbers);
+
 }
