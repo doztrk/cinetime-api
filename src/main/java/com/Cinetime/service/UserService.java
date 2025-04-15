@@ -47,7 +47,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseMessage<BaseUserResponse> register(AbstractUserRequest userRequest) {
+    public ResponseMessage<BaseUserResponse> register(UserRequest userRequest) {
 
         if (!uniquePropertyValidator.isRegistrationPropertiesUnique(userRequest.getEmail(), userRequest.getPhoneNumber())) {
             return ResponseMessage.<BaseUserResponse>builder()
