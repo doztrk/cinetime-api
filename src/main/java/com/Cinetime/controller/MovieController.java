@@ -2,11 +2,10 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
-import com.Cinetime.payload.dto.MovieRequest;
-import com.Cinetime.payload.response.ResponseMessage;
+import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
 import com.Cinetime.service.ShowtimeService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +23,7 @@ public class MovieController {
     private final ShowtimeService showtimeService;
 
     //M03
-    @GetMapping("/{hall}")
+    @GetMapping("/{hallId}")
     public ResponseEntity<List<Movie>> getMovieByHall(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -73,15 +72,14 @@ public class MovieController {
             @RequestParam(value = "sort", defaultValue = "title") String sort,
             @RequestParam(value = "type", defaultValue = "asc") String type
     ) {
-        return ResponseEntity.ok(movieService.getMoviesByQuery(q, page, size, sort, type));
+        return movieService.getMoviesByQuery(q, page, size, sort, type);
     }
 
     // M02 - Return Movies Based on Cinema Slug
     //TODO:postman testi yapilmadi
     @GetMapping("/{slug}")
     public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(@PathVariable String slug) {
-        List<Movie> movies = movieService.getMoviesByCinemaSlug(slug);
-        return ResponseEntity.ok(movies);
+        return movieService.getMoviesByCinemaSlug(slug);
     }
 
     //M14

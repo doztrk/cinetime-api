@@ -1,14 +1,16 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.payload.authentication.LoginRequest;
-import com.Cinetime.payload.dto.*;
-import com.Cinetime.payload.dto.user.AbstractUserRequest;
-import com.Cinetime.payload.dto.user.UserRequest;
-import com.Cinetime.payload.dto.user.UserRequestWithPasswordOnly;
-import com.Cinetime.payload.dto.user.UserUpdateRequest;
-import com.Cinetime.payload.response.AuthResponse;
-import com.Cinetime.payload.response.BaseUserResponse;
-import com.Cinetime.payload.response.ResponseMessage;
+import com.Cinetime.payload.dto.request.ForgotPasswordRequest;
+import com.Cinetime.payload.dto.request.ResetCodeRequest;
+import com.Cinetime.payload.dto.request.ResetPasswordRequest;
+import com.Cinetime.payload.dto.request.user.AbstractUserRequest;
+import com.Cinetime.payload.dto.request.user.UserRequest;
+import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
+import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
+import com.Cinetime.payload.dto.response.AuthResponse;
+import com.Cinetime.payload.dto.response.BaseUserResponse;
+import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.service.passwordbusiness.PasswordResetService;
 import com.Cinetime.service.UserService;
 import com.Cinetime.service.authentication.AuthenticationService;

@@ -1,6 +1,5 @@
-package com.Cinetime.payload.dto;
+package com.Cinetime.payload.dto.request;
 
-import com.Cinetime.entity.PosterImage;
 import com.Cinetime.enums.MovieStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

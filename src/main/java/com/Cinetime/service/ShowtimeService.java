@@ -1,18 +1,12 @@
 package com.Cinetime.service;
 
 import com.Cinetime.entity.Showtime;
-import com.Cinetime.payload.messages.NoShowTimesAvailableException;
-import com.Cinetime.payload.response.ResponseMessage;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 

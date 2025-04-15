@@ -10,16 +10,13 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface CinemaRepository extends JpaRepository<Cinema,Long> {
+public interface CinemaRepository extends JpaRepository<Cinema, Long> {
 
-    @Query("SELECT c FROM Cinema c " +
-            "JOIN City city ON c.city.id = city.id " +
-            "LEFT JOIN Hall h ON h.cinema.id = c.id " +
-            "WHERE (:cityId IS NULL OR city.id = :cityId) " +  //cityhall ve speial null ise tum sinemalar gelir, optional old icin
-            "AND (:specialHall IS NULL OR h.isSpecial = true) ")
+    @Query("SELECT DISTINCT c FROM Cinema c " +
+            "WHERE (:cityId IS NULL OR c.city.id = :cityId) " +
+            "AND (:specialHall IS NULL OR EXISTS (SELECT h FROM Hall h WHERE h.cinema = c AND LOWER(h.name) LIKE LOWER(CONCAT('%', :specialHall, '%'))))")
     Page<Cinema> findCinemasByFilters(
             @Param("cityId") Long cityId,
-            @Param("specialHall") Boolean specialHall,
-            Pageable pageable
-    );
+            @Param("specialHall") String specialHall,
+            Pageable pageable);
 }
