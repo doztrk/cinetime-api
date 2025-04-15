@@ -21,14 +21,4 @@ public class PageableHelper {
         return pageable;
     }
 
-    public Pageable pageableSortWithSearchQuery(String query, int page, int size, String sort, String type) {
-
-        Pageable pageable = Pageable.unpaged();
-        if (type.equalsIgnoreCase("desc")) {
-            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-        } else {
-            pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-        }
-        return pageable;
-    }
 }

@@ -6,16 +6,16 @@ import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.helpers.TicketHelper;
 import com.Cinetime.helpers.UniquePropertyValidator;
 import com.Cinetime.helpers.UpdateUserHelper;
-import com.Cinetime.payload.dto.user.AbstractUserRequest;
-import com.Cinetime.payload.dto.user.UserRequest;
-import com.Cinetime.payload.dto.user.UserRequestWithPasswordOnly;
-import com.Cinetime.payload.dto.user.UserUpdateRequest;
+import com.Cinetime.payload.dto.request.user.AbstractUserRequest;
+import com.Cinetime.payload.dto.request.user.UserRequest;
+import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
+import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
 import com.Cinetime.payload.mappers.UserMapper;
 import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
-import com.Cinetime.payload.response.ResponseMessage;
+import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
-import com.Cinetime.payload.response.BaseUserResponse;
+import com.Cinetime.payload.dto.response.BaseUserResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -216,8 +216,10 @@ public class UserService {
 
     public Page<BaseUserResponse> getUserWithParam(String q, int page, int size, String sort, String type) {
 
-      Pageable pageable =  pageableHelper.pageableSortWithSearchQuery(q, page, size, sort, type);
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
+        Page<User> users = userRepository.searchUsers(q, pageable);
 
+        return users.map(userMapper::mapUserToBaseUserResponse);
     }
 }

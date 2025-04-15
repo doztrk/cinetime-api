@@ -2,8 +2,8 @@ package com.Cinetime.payload.mappers;
 
 import com.Cinetime.entity.Movie;
 import com.Cinetime.enums.MovieStatus;
-import com.Cinetime.payload.dto.MovieRequest;
-import com.Cinetime.payload.response.MovieResponse;
+import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.response.MovieResponse;
 import org.springframework.stereotype.Component;
 
 @Component
