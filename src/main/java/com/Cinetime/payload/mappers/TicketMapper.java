@@ -6,7 +6,7 @@ import com.Cinetime.entity.Ticket;
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.TicketStatus;
 import com.Cinetime.payload.dto.TicketDto;
-import com.Cinetime.payload.dto.user.TicketRequestDto;
+import com.Cinetime.payload.dto.request.user.TicketRequestDto;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,7 +3,7 @@ package com.Cinetime.controller;
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.TicketDto;
 import com.Cinetime.payload.dto.TicketPurchaseRequest;
-import com.Cinetime.payload.dto.user.TicketRequestDto;
+import com.Cinetime.payload.dto.request.user.TicketRequestDto;
 import com.Cinetime.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
