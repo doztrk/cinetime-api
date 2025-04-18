@@ -5,7 +5,7 @@ import com.Cinetime.entity.PosterImage;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.helpers.MovieHelper;
 import com.Cinetime.helpers.PageableHelper;
-import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.request.user.MovieRequest;
 import com.Cinetime.payload.mappers.MovieMapper;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -37,10 +38,11 @@ public class MovieService {
     private final PosterImageRepository posterImageRepository;
 
 
+
     public ResponseEntity<List<Movie>> getMovieByHall(int page, int size, String sort, String type, String hall) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        List<Movie> movies = movieRepository.findByHalls_NameIgnoreCase(hall, pageable);
+        List<Movie> movies = movieRepository.findByHalls_NameIgnoreCase(hall,pageable);
 
         if (movies.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -124,7 +126,6 @@ public class MovieService {
                 .object(savedMovie)
                 .build();
     }
-
     //M01 - Get Movies By Query
     public ResponseEntity<Page<Movie>> getMoviesByQuery(String q, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
@@ -142,7 +143,6 @@ public class MovieService {
         return ResponseEntity.ok(movies);
     }
 
-
     // M02 - Return Movies Based on Cinema Slug
     public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(String slug) {
         List<Movie> movies = movieRepository.findByCinemaSlug(slug);
@@ -152,6 +152,8 @@ public class MovieService {
         }
         return ResponseEntity.ok(movies);
     }
+
+
 
 
 }

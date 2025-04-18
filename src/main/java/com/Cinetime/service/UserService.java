@@ -15,7 +15,7 @@ import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
-import com.Cinetime.payload.dto.response.BaseUserResponse;
+import com.Cinetime.payload.response.BaseUserResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,7 +47,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseMessage<BaseUserResponse> register(UserRequest userRequest) {
+    public ResponseMessage<BaseUserResponse> register(AbstractUserRequest userRequest) {
 
         if (!uniquePropertyValidator.isRegistrationPropertiesUnique(userRequest.getEmail(), userRequest.getPhoneNumber())) {
             return ResponseMessage.<BaseUserResponse>builder()

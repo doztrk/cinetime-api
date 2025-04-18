@@ -1,4 +1,4 @@
-package com.Cinetime.payload.dto.response;
+package com.Cinetime.payload.response;
 
 import jdk.jshell.Snippet;
 import lombok.AllArgsConstructor;

@@ -30,6 +30,12 @@ public class Hall {
     @NotNull
     private Integer seatCapacity;
 
+    @NotNull
+    private Integer rowCount;
+
+    @NotNull
+    private Integer columnCount;
+
     private Boolean isSpecial = false;
 
     @ManyToOne
@@ -67,29 +73,6 @@ public class Hall {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, seatCapacity, isSpecial);
-    }
-
-
-    //Eğer name bu değerleri içerirse, specialHall true olacak
-    public void setName(String name) {
-        this.name = name;
-        if (name != null && (
-                name.contains("IMAX") ||
-                        name.contains("4DX") ||
-                        name.contains("GOLD CLASS") ||
-                        name.contains("VIP") ||
-                        name.contains("SCREENX") ||
-                        name.contains("STARIUM") ||
-                        name.contains("TEMPUR CINEMA") ||
-                        name.contains("D BOX") ||
-                        name.contains("SKYBOX") ||
-                        name.contains("SKY AUDITORIUM") ||
-                        name.contains("PREMIUM CINEMA") ||
-                        name.contains("MPX")
-
-        )) {
-            this.isSpecial = true;
-        }
     }
 
   /*  @Override

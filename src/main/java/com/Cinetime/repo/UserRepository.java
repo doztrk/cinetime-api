@@ -21,7 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByPhoneNumber(String phoneNumber);
 
     Optional<User> findByResetPasswordCode(String resetCode);
-
     @Query("SELECT u FROM User u WHERE " +
             "(:query IS NULL OR " +
             "LOWER(u.firstname) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

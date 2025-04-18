@@ -24,6 +24,7 @@ public class HallController {
 
     private final HallService hallService;
 
+
     //C05
     @Operation(
             summary = "Get All Special Halls",
@@ -40,4 +41,6 @@ public class HallController {
     public ResponseMessage<List<HallResponse>> getAllSpecialHalls() {
         return hallService.getAllSpecialHalls();
     }
+
+
 }

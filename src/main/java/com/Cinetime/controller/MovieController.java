@@ -2,7 +2,7 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
-import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.request.user.MovieRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
 import com.Cinetime.service.ShowtimeService;

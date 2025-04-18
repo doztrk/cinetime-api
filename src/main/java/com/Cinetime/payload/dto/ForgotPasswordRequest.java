@@ -1,4 +1,4 @@
-package com.Cinetime.payload.dto.request;
+package com.Cinetime.payload.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
