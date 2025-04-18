@@ -5,7 +5,7 @@ import com.Cinetime.entity.PosterImage;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.helpers.MovieHelper;
 import com.Cinetime.helpers.PageableHelper;
-import com.Cinetime.payload.dto.MovieRequest;
+import com.Cinetime.payload.dto.request.user.MovieRequest;
 import com.Cinetime.payload.mappers.MovieMapper;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.response.ResponseMessage;

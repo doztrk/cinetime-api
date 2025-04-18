@@ -2,12 +2,10 @@ package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
-import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.request.user.MovieRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.service.MovieService;
 import com.Cinetime.service.ShowtimeService;
-<<<<<<< HEAD
-=======
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
->>>>>>> origin/main
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
