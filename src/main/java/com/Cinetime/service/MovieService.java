@@ -127,15 +127,22 @@ public class MovieService {
                 .build();
     }
     //M01 - Get Movies By Query
-    public Page<Movie> getMoviesByQuery(String query, int page, int size, String sort, String type) {
+    public ResponseEntity<Page<Movie>> getMoviesByQuery(String q, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        if (query != null && !query.isEmpty()) {
-            return movieRepository.findByTitleContainingIgnoreCase(query, pageable);
+        if (q == null || q.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
 
-        return movieRepository.findAll(pageable);
+        Page<Movie> movies = movieRepository.findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(q, q, pageable);
+
+        if (movies.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(movies);
     }
+
     // M02 - Return Movies Based on Cinema Slug
     public List<Movie> getMoviesByCinemaSlug(String slug) {
         List<Movie> movies = movieRepository.findByCinemaSlug(slug);
