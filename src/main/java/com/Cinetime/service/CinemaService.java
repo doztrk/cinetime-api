@@ -3,7 +3,7 @@ package com.Cinetime.service;
 import com.Cinetime.entity.Cinema;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.mappers.CinemaMapper;
-import com.Cinetime.payload.response.CinemaResponse;
+import com.Cinetime.payload.dto.response.CinemaResponse;
 import com.Cinetime.repo.CinemaRepository;
 import com.Cinetime.repo.UserCinemaFavoriteRepository;
 import com.Cinetime.repo.UserRepository;

@@ -1,8 +1,8 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.entity.Cinema;
-import com.Cinetime.payload.response.CinemaResponse;
-import com.Cinetime.payload.response.HallResponse;
+import com.Cinetime.payload.dto.response.CinemaResponse;
+import com.Cinetime.payload.dto.response.HallResponse;
 import com.Cinetime.service.CinemaService;
 import com.Cinetime.service.HallService;
 import lombok.RequiredArgsConstructor;

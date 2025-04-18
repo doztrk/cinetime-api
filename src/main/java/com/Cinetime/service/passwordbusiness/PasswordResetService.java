@@ -4,7 +4,7 @@ import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.ForgotPasswordRequest;
 import com.Cinetime.payload.dto.ResetCodeRequest;
 import com.Cinetime.payload.dto.ResetPasswordRequest;
-import com.Cinetime.payload.response.ResponseMessage;
+import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.service.EmailService;
 import jakarta.transaction.Transactional;

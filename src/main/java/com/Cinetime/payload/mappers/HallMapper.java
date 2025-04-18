@@ -1,7 +1,7 @@
 package com.Cinetime.payload.mappers;
 
 import com.Cinetime.entity.Hall;
-import com.Cinetime.payload.response.HallResponse;
+import com.Cinetime.payload.dto.response.HallResponse;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

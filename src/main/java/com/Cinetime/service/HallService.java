@@ -3,7 +3,7 @@ package com.Cinetime.service;
 import com.Cinetime.entity.Cinema;
 import com.Cinetime.entity.Hall;
 import com.Cinetime.payload.mappers.HallMapper;
-import com.Cinetime.payload.response.HallResponse;
+import com.Cinetime.payload.dto.response.HallResponse;
 import com.Cinetime.repo.CinemaRepository;
 import com.Cinetime.repo.HallRepository;
 import lombok.RequiredArgsConstructor;

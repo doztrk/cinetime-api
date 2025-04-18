@@ -1,7 +1,7 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.entity.User;
-import com.Cinetime.payload.response.CinemaResponse;
+import com.Cinetime.payload.dto.response.CinemaResponse;
 import com.Cinetime.security.UserDetailsImpl;
 import com.Cinetime.service.UserCinemaFavoriteService;
 import lombok.RequiredArgsConstructor;
