@@ -144,14 +144,13 @@ public class MovieService {
     }
 
     // M02 - Return Movies Based on Cinema Slug
-    public List<Movie> getMoviesByCinemaSlug(String slug) {
+    public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(String slug) {
         List<Movie> movies = movieRepository.findByCinemaSlug(slug);
 
         if (movies == null || movies.isEmpty()) {
-            return Collections.emptyList();
+            return ResponseEntity.noContent().build();
         }
-
-        return movies;
+        return ResponseEntity.ok(movies);
     }
 
 

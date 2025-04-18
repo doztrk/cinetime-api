@@ -1,55 +1,101 @@
 package com.Cinetime.service;
 
 import com.Cinetime.entity.Cinema;
+import com.Cinetime.entity.Hall;
 import com.Cinetime.helpers.PageableHelper;
-import com.Cinetime.payload.mappers.CinemaMapper;
-import com.Cinetime.payload.dto.response.CinemaResponse;
+import com.Cinetime.payload.dto.response.CinemaHallResponse;
+import com.Cinetime.payload.dto.response.HallResponse;
+import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.mappers.CinemaHallMapper;
+import com.Cinetime.payload.mappers.HallMapper;
 import com.Cinetime.repo.CinemaRepository;
-import com.Cinetime.repo.UserCinemaFavoriteRepository;
-import com.Cinetime.repo.UserRepository;
+import com.Cinetime.repo.HallRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CinemaService {
 
     private final CinemaRepository cinemaRepository;
-    private final UserRepository userRepository;
     private final PageableHelper pageableHelper;
-    private final UserCinemaFavoriteRepository userCinemaFavoriteRepository;
-    private final CinemaMapper cinemaMapper;
+    private final HallRepository hallRepository;
+    private final HallMapper hallMapper;
+    private final CinemaHallMapper cinemaHallMapper;
+
 
     //C01
-    public ResponseEntity<Page<Cinema>>  getCinemasByFilters(Long cityId, Boolean specialHall, int page, int size, String sort, String type) {
+    public ResponseMessage<List<Cinema>> getCinemasByFilters(Long cityId, String specialHallName, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        Page<Cinema> cinemas = cinemaRepository.findCinemasByFilters(cityId, specialHall, pageable);
+        Page<Cinema> cinemasPage = cinemaRepository.findCinemasByFilters(cityId, specialHallName, pageable);
+
+        // Eğer hiç sonuç yoksa, boş sayfa döner, kodu 200 veriyoruz yine de cunku sonuc olmasa bile arama basarili, REST prensibine gore
+
+        List<Cinema> cinemas = cinemasPage.getContent();
 
 
-        // Eğer hiç sonuç yoksa, boş sayfa döner
-        if (cinemas.isEmpty()) {
-            return ResponseEntity.ok(
-                    new PageImpl<Cinema>(Collections.emptyList(), pageable, 0)
-            );
-        }
-
-        return ResponseEntity.ok(cinemas);
+        return ResponseMessage.<List<Cinema>>builder()
+                .httpStatus(HttpStatus.OK) // <-- Arama sonucu bos da olsa dolu da olsa 200 donduruyoruz. Ici bos mu dolu mu frontendde bakiliyor.
+                .object(cinemas)
+                .build();
     }
 
 
     //C03 return cinema details by id
-    public CinemaResponse getCinemaById(Long id) {
-        Cinema cinema = cinemaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cinema not found"));
+    public ResponseMessage<Cinema> getCinemaById(Long id) {
 
-        return cinemaMapper.mapCinemaToCinemaResponse(cinema); //Todo: Hall listesini, seansları ya da favorilere eklenip eklenmediği listelenebilir
+        Optional<Cinema> cinema = cinemaRepository.findById(id);
+
+        if (cinema.isEmpty()) {
+            return ResponseMessage.<Cinema>builder()
+                    .message("Cinema not found")
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        return ResponseMessage.<Cinema>builder()
+                .message("Cinema found")
+                .httpStatus(HttpStatus.OK)
+                .object(cinema.get())
+                .build();
+    }
+
+    //C04
+    @Transactional
+    public ResponseMessage<CinemaHallResponse> getHallsByCinemaId(Long cinemaId) {
+
+        Optional<Cinema> cinemaOptional = cinemaRepository.findById(cinemaId);
+
+        if (cinemaOptional.isEmpty()) {
+            return ResponseMessage.<CinemaHallResponse>builder()
+                    .message("Cinema not found")
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+        Cinema cinema = cinemaOptional.get();
+
+        List<Hall> halls = cinema.getHalls() != null ? cinema.getHalls() : Collections.emptyList();
+
+        List<HallResponse> hallResponses = hallMapper.mapHallToHallResponse(halls);
+
+        CinemaHallResponse cinemaHallResponse = cinemaHallMapper.mapToCinemaHallResponse(cinema, hallResponses);
+
+        return ResponseMessage.<CinemaHallResponse>builder()
+                .message("Cinema halls found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(cinemaHallResponse)
+                .build();
     }
 }
 

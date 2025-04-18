@@ -216,8 +216,10 @@ public class UserService {
 
     public Page<BaseUserResponse> getUserWithParam(String q, int page, int size, String sort, String type) {
 
-      Pageable pageable =  pageableHelper.pageableSortWithSearchQuery(q, page, size, sort, type);
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
+        Page<User> users = userRepository.searchUsers(q, pageable);
 
+        return users.map(userMapper::mapUserToBaseUserResponse);
     }
 }

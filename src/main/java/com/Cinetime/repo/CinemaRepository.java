@@ -19,7 +19,6 @@ public interface CinemaRepository extends JpaRepository<Cinema,Long> {
             "AND (:specialHall IS NULL OR h.isSpecial = true) ")
     Page<Cinema> findCinemasByFilters(
             @Param("cityId") Long cityId,
-            @Param("specialHall") Boolean specialHall,
-            Pageable pageable
-    );
+            @Param("specialHall") String specialHall,
+            Pageable pageable);
 }
