@@ -8,7 +8,7 @@ import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.request.user.MovieRequest;
 import com.Cinetime.payload.mappers.MovieMapper;
 import com.Cinetime.payload.messages.SuccessMessages;
-import com.Cinetime.payload.response.ResponseMessage;
+import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.HallRepository;
 import com.Cinetime.repo.MovieRepository;
 import com.Cinetime.repo.PosterImageRepository;
