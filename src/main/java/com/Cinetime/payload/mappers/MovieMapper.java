@@ -46,4 +46,12 @@ public class MovieMapper {
                 .build();
     }
 
+    public Movie mapMovieRequestToUpdateMovie(Long id,MovieRequest movieRequest){
+        return mapMovieRequestToMovie(movieRequest)
+                .toBuilder()//toBuilder ile ayni degisiklikler korundu ve degismek istenen yerler degisti
+                .id(id)
+                .build();
+
+    }
+
 }

@@ -9,4 +9,5 @@ public class ErrorMessages {
 
     public static final String USER_HAS_UNUSED_TICKETS = "User has unused tickets";
     public static final String INVALID_PASSWORD = "Invalid password";
+    public static final String MOVIE_NOT_FOUND_MESSAGE="Error: Movie with id : %s not found";
 }

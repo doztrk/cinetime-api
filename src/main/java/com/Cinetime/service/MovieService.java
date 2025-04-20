@@ -3,16 +3,19 @@ package com.Cinetime.service;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.PosterImage;
 import com.Cinetime.enums.MovieStatus;
+import com.Cinetime.exception.ResourceNotFoundException;
 import com.Cinetime.helpers.MovieHelper;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.mappers.MovieMapper;
+import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.HallRepository;
 import com.Cinetime.repo.MovieRepository;
 import com.Cinetime.repo.PosterImageRepository;
 import com.Cinetime.repo.ShowtimeRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -154,5 +157,35 @@ public class MovieService {
     }
 
 
+
+    public ResponseEntity<Movie> getMovieById(Long id) {
+            return ResponseEntity.ok(isMovieExist(id));
+    }
+
+    private Movie isMovieExist(Long id){
+        return movieRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(ErrorMessages.MOVIE_NOT_FOUND_MESSAGE, id))
+        );
+    }
+
+    public ResponseMessage<Movie> updateMovie(Long id, MovieRequest movieRequest) {
+        isMovieExist(id);
+        Movie movieUpdated= movieRepository.save(movieMapper.mapMovieRequestToUpdateMovie(id,movieRequest));
+
+        return ResponseMessage.<Movie>builder()
+                .message(SuccessMessages.MOVIE_UPDATE)
+                .httpStatus(HttpStatus.OK)
+                .object(movieUpdated)
+                .build();
+    }
+
+    public ResponseMessage deleteMovie(Long id, HttpServletRequest httpServletRequest) {
+        isMovieExist(id);
+        movieRepository.deleteById(id);
+        return ResponseMessage.builder()
+                .message(SuccessMessages.MOVIE_DELETE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
 }
 
