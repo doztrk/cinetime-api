@@ -19,13 +19,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/movie")
+@RequestMapping("/api/movies")
 @Tag(name = "Movie Management", description = "APIs for managing and retrieving movies")
 public class MovieController {
 
@@ -34,7 +35,7 @@ public class MovieController {
 
     //M03
     @Operation(
-            summary = "Get Movies by Hall",
+            summary = "Get Movies by Hall {M03}",
             description = "Returns a list of movies that are showing in a specific hallName type"
     )
     @ApiResponses(value = {
@@ -42,8 +43,9 @@ public class MovieController {
             @ApiResponse(responseCode = "404", description = "Hall not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{hallName}")
-    public ResponseEntity<List<Movie>> getMovieByHall(
+
+    @GetMapping("/hall/{hallName}")
+    public ResponseMessage<List<Movie>> getMovieByHall(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -92,11 +94,12 @@ public class MovieController {
     }
 
     //M11
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Create a new movie",
             description = "Create a new movie with all required attributes including poster image"
     )
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseMessage<Movie> createMovie(
             @Parameter(
                     description = "Movie data",
@@ -108,7 +111,7 @@ public class MovieController {
 
     //M01
     @Operation(
-            summary = "Search Movies",
+            summary = "Search Movies {M01}",
             description = "Returns a paginated list of movies matching the search query"
     )
     @ApiResponses(value = {
@@ -116,7 +119,8 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    public ResponseEntity<Page<Movie>> getMoviesByQuery(
+    @Transactional(readOnly = true)
+    public ResponseMessage<Page<Movie>> getMoviesByQuery(
             @Parameter(description = "Search query term (searches in title and summary)")
             @RequestParam(required = false) String q,
             @Parameter(description = "Page number (zero-based)")
@@ -142,7 +146,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{slug}")
-    public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(
+    public ResponseMessage<List<Movie>> getMoviesByCinemaSlug(
             @Parameter(description = "Cinema slug", required = true) @PathVariable String slug) {
         return movieService.getMoviesByCinemaSlug(slug);
     }

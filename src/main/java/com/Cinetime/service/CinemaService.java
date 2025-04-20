@@ -36,6 +36,8 @@ public class CinemaService {
 
     //C01
     public ResponseMessage<List<Cinema>> getCinemasByFilters(Long cityId, String specialHallName, int page, int size, String sort, String type) {
+
+
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
         Page<Cinema> cinemasPage = cinemaRepository.findCinemasByFilters(cityId, specialHallName, pageable);

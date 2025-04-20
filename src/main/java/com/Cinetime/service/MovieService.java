@@ -14,6 +14,7 @@ import com.Cinetime.repo.MovieRepository;
 import com.Cinetime.repo.PosterImageRepository;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -37,16 +38,16 @@ public class MovieService {
     private final PosterImageRepository posterImageRepository;
 
 
-    public ResponseEntity<List<Movie>> getMovieByHall(int page, int size, String sort, String type, String hall) {
+    public ResponseMessage<List<Movie>> getMovieByHall(int page, int size, String sort, String type, String hall) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
         List<Movie> movies = movieRepository.findByHalls_NameIgnoreCase(hall, pageable);
 
-        if (movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(movies);
-        }
+        return ResponseMessage.<List<Movie>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movies)
+                .build();
     }
 
     public ResponseEntity<List<Movie>> getInTheatersMovies(int page, int size, String sort, String type) {
@@ -126,31 +127,31 @@ public class MovieService {
     }
 
     //M01 - Get Movies By Query
-    public ResponseEntity<Page<Movie>> getMoviesByQuery(String q, int page, int size, String sort, String type) {
+    public ResponseMessage<Page<Movie>> getMoviesByQuery(String q, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        if (q == null || q.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
         Page<Movie> movies = movieRepository.findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(q, q, pageable);
 
-        if (movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
 
-        return ResponseEntity.ok(movies);
+        return ResponseMessage.<Page<Movie>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movies)
+                .build();
     }
 
 
     // M02 - Return Movies Based on Cinema Slug
-    public ResponseEntity<List<Movie>> getMoviesByCinemaSlug(String slug) {
+    public ResponseMessage<List<Movie>> getMoviesByCinemaSlug(String slug) {
         List<Movie> movies = movieRepository.findByCinemaSlug(slug);
 
-        if (movies == null || movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(movies);
+
+        return ResponseMessage.<List<Movie>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movies)
+                .build();
     }
 
 
