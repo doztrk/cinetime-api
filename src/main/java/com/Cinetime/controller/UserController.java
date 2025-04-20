@@ -44,7 +44,7 @@ public class UserController {
 
     //U02
     @Operation(
-            summary = "Register User",
+            summary = "Register User {U02}",
             description = "Register a new user in the system with default MEMBER role"
     )
     @ApiResponses(value = {
@@ -63,7 +63,7 @@ public class UserController {
 
     //U01
     @Operation(
-            summary = "Authenticate User",
+            summary = "Authenticate User {U01}",
             description = "Authenticate a user with phone number and password"
     )
     @ApiResponses(value = {
