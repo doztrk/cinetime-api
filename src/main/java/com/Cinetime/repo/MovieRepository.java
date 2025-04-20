@@ -19,11 +19,10 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     boolean existsBySlug(String slug);
 
-    @Query("SELECT m FROM Movie m JOIN m.halls h JOIN h.cinema c WHERE c.slug = :slug")
-    List<Movie> findByCinemaSlug(@Param("slug") String slug);
+    @Query("SELECT DISTINCT m FROM Movie m JOIN m.halls h JOIN h.cinema c WHERE c.slug = :cinemaSlug")
+    List<Movie> findByCinemaSlug(@Param("cinemaSlug") String cinemaSlug);
 
-    @Query("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :query, '%'))")
-    Page<Movie> findByTitleContainingIgnoreCase(@Param("query") String query, Pageable pageable);
+    Page<Movie> findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(String titleQuery, String summaryQuery, Pageable pageable);
 }
 
 

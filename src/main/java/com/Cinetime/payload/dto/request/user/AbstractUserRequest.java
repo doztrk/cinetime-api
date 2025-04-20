@@ -1,4 +1,4 @@
-package com.Cinetime.payload.dto.user;
+package com.Cinetime.payload.dto.request.user;
 
 
 import com.Cinetime.enums.Gender;

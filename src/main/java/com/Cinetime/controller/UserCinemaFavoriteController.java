@@ -1,37 +1,54 @@
 package com.Cinetime.controller;
 
-import com.Cinetime.entity.User;
-import com.Cinetime.payload.response.CinemaResponse;
-import com.Cinetime.security.UserDetailsImpl;
+import com.Cinetime.entity.Cinema;
+import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.service.UserCinemaFavoriteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/favorites")
 @RequiredArgsConstructor
+@Tag(name = "User Favorites", description = "APIs for managing user favorite cinemas")
 public class UserCinemaFavoriteController {
-    private final UserCinemaFavoriteService favoriteService;
 
-    //C02 return cinemas based on user's favorites
+    private final UserCinemaFavoriteService userCinemaFavoriteService;
+
+    @Operation(
+            summary = "Get User's Favorite Cinemas",
+            description = "Returns a list of cinemas that the authenticated user has marked as favorites. Requires MEMBER role.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved favorite cinemas list",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - Requires MEMBER role"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/auth")
-    public ResponseEntity<Page<CinemaResponse>> getUserFavoriteCinemas(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sort,
-            @RequestParam(defaultValue = "asc") String type,
-            Authentication authentication
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseMessage<List<Cinema>> getFavorites(
+            @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "name") String sort,
+            @Parameter(description = "Sort direction (asc or desc)") @RequestParam(defaultValue = "asc") String type
     ) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User user = userDetails.getUser();
-
-        Page<CinemaResponse> response = favoriteService.getUserFavoriteCinemas(user, page, size, sort, type);
-        return ResponseEntity.ok(response);
+        return userCinemaFavoriteService.getUserFavoriteCinemas(page, size, sort, type);
     }
 }
