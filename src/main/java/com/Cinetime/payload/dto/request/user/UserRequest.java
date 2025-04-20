@@ -23,7 +23,7 @@ public class UserRequest extends AbstractUserRequest {
     }
 
     @Override
-    @NotBlank(message = "Please provide your lastname")
+    @NotBlank(message = "Please provide your surname")
     public String getLastname() {
         return super.getLastname();
     }

@@ -210,7 +210,7 @@ public class UserController {
     @GetMapping("/users/admin")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public Page<BaseUserResponse> getUserWithParam(
-            @Parameter(description = "Search query (searches firstname, lastname, email, phone)")
+            @Parameter(description = "Search query (searches firstname, surname, email, phone)")
             @RequestParam(required = false) String q,
             @Parameter(description = "Page number (zero-based)")
             @RequestParam(defaultValue = "0") int page,
