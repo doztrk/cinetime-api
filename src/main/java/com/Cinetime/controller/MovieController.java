@@ -3,7 +3,9 @@ package com.Cinetime.controller;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.response.MovieResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.dto.response.ShowtimeResponse;
 import com.Cinetime.service.MovieService;
 import com.Cinetime.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -95,7 +97,7 @@ public class MovieController {
 
     //M11
     @Operation(
-            summary = "Create a new movie",
+            summary = "Create a new movie {M11}",
             description = "Create a new movie with all required attributes including poster image"
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -137,7 +139,7 @@ public class MovieController {
 
     // M02
     @Operation(
-            summary = "Get Movies by Cinema Slug",
+            summary = "Get Movies by Cinema Slug {M02}",
             description = "Returns a list of movies showing at a specific cinema identified by its slug"
     )
     @ApiResponses(value = {
@@ -146,14 +148,14 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{slug}")
-    public ResponseMessage<List<Movie>> getMoviesByCinemaSlug(
+    public ResponseMessage<List<MovieResponse>> getMoviesByCinemaSlug(
             @Parameter(description = "Cinema slug", required = true) @PathVariable String slug) {
         return movieService.getMoviesByCinemaSlug(slug);
     }
 
     //M14
     @Operation(
-            summary = "Get Upcoming Showtimes",
+            summary = "Get Upcoming Showtimes {M14}",
             description = "Returns a list of upcoming showtimes for a specific movie"
     )
     @ApiResponses(value = {
@@ -162,7 +164,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{movieId}/show-times")
-    public ResponseEntity<List<Showtime>> getUpcomingShowtimes(
+    public ResponseMessage<List<ShowtimeResponse>> getUpcomingShowtimes(
             @Parameter(description = "ID of the movie to get showtimes for", required = true)
             @PathVariable Long movieId) {
         return showtimeService.getUpcomingShowtimes(movieId);

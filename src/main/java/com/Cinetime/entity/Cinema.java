@@ -1,5 +1,6 @@
 package com.Cinetime.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +39,8 @@ public class Cinema {
     private String email;
 
     @OneToMany(mappedBy = "cinema")
-    private List<Hall> halls;//
+    @JsonIgnore
+    private List<Hall> halls;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

@@ -1,16 +1,20 @@
 package com.Cinetime.payload.mappers;
 
+import com.Cinetime.entity.Hall;
 import com.Cinetime.entity.Movie;
+import com.Cinetime.entity.Showtime;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.dto.response.MovieResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class MovieMapper {
 
 
-    public Movie mapMovieRequestToMovie(MovieRequest movieRequest){
+    public Movie mapMovieRequestToMovie(MovieRequest movieRequest) {
 
         return Movie.builder()
                 .title(movieRequest.getTitle())
@@ -33,6 +37,7 @@ public class MovieMapper {
 
     public MovieResponse mapMovieToMovieResponse(Movie movie) {
         return MovieResponse.builder()
+                .id(movie.getId())
                 .title(movie.getTitle())
                 .slug(movie.getSlug())
                 .summary(movie.getSummary())
@@ -43,7 +48,12 @@ public class MovieMapper {
                 .cast(movie.getCast())
                 .formats(movie.getFormats())
                 .genre(movie.getGenre())
+                .status(movie.getStatus().name())
                 .build();
+    }
+
+    public List<MovieResponse> mapMovieToMovieResponse(List<Movie> movies) {
+        return movies.stream().map(this::mapMovieToMovieResponse).toList();
     }
 
 }
