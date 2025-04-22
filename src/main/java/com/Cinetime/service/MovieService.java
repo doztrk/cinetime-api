@@ -1,20 +1,18 @@
 package com.Cinetime.service;
 
-import com.Cinetime.entity.Movie;
-import com.Cinetime.entity.PosterImage;
+import com.Cinetime.entity.*;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.helpers.MovieHelper;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.response.MovieResponse;
 import com.Cinetime.payload.mappers.MovieMapper;
+import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
-import com.Cinetime.repo.HallRepository;
-import com.Cinetime.repo.MovieRepository;
-import com.Cinetime.repo.PosterImageRepository;
-import com.Cinetime.repo.ShowtimeRepository;
+import com.Cinetime.repo.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,8 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +35,7 @@ public class MovieService {
     private final ShowtimeRepository showtimeRepository;
     private final MovieHelper movieHelper;
     private final PosterImageRepository posterImageRepository;
+    private final CinemaRepository cinemaRepository;
 
 
     public ResponseMessage<List<Movie>> getMovieByHall(int page, int size, String sort, String type, String hall) {
@@ -75,49 +75,65 @@ public class MovieService {
         }
     }
 
-
+    @Transactional
     public ResponseMessage<Movie> createMovie(MovieRequest movieRequest) {
-        // Validate input
+        //Burasi frontendden de kontrol edilecek fakat biz yine de double layer security icin kontrolleri yapalim
         movieHelper.validateMovieRequest(movieRequest);
 
         Movie newMovie = movieMapper.mapMovieRequestToMovie(movieRequest);
 
         // Handle Hall relationship
-/*        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
+        Optional<Hall> hallToBeSetOptional = hallRepository.findById(movieRequest.getHallId());
+
+        if (hallToBeSetOptional.isEmpty()) {
+            return ResponseMessage.<Movie>builder()
+                    .message(ErrorMessages.HALL_NOT_FOUND)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+        Hall hallToBeSet = hallToBeSetOptional.get();
+
+
         newMovie.getHalls().add(hallToBeSet);
-        hallToBeSet.getMovies().add(newMovie); // Update both sides of the relationship
 
-        // Handle Showtime relationship
-        Showtime showtimeToBeSet = showtimeRepository.findById(movieRequest.getShowtimeId())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
+        hallToBeSet.getMovies().add(newMovie);
+
+
+
+    /*    Optional<Showtime> showtimeToBeSetOptional = showtimeRepository.findById(movieRequest.getShowtimeId());
+
+        if (showtimeToBeSetOptional.isEmpty()) {
+            return ResponseMessage.<Movie>builder()
+                    .message(ErrorMessages.SHOWTIME_NOT_FOUND)
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+        Showtime showtimeToBeSet = showtimeToBeSetOptional.get();
+
+
         newMovie.getShowtimes().add(showtimeToBeSet);
-        showtimeToBeSet.setMovie(newMovie); // Update both sides of the relationship*/
+        showtimeToBeSet.setMovie(newMovie);*/
 
-        // Handle poster image
+
         if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
             try {
                 PosterImage posterImage = new PosterImage();
                 posterImage.setName(movieRequest.getPosterImage().getOriginalFilename());
                 posterImage.setType(movieRequest.getPosterImage().getContentType());
                 posterImage.setData(movieRequest.getPosterImage().getBytes());
-                PosterImage posterImageSaved = posterImageRepository.save(posterImage);
 
-                newMovie.setPoster(posterImageSaved);
+                newMovie.setPoster(posterImage);
             } catch (IOException e) {
                 return ResponseMessage.<Movie>builder()
                         .message("Failed to process image: " + e.getMessage())
                         .httpStatus(HttpStatus.BAD_REQUEST)
                         .build();
             }
-
-
         }
 
-        // Save the movie
-        newMovie.setCreatedAt(LocalDate.now());
-        newMovie.setUpdatedAt(LocalDate.now());
         Movie savedMovie = movieRepository.save(newMovie);
+
 
         return ResponseMessage.<Movie>builder()
                 .message(SuccessMessages.MOVIE_CREATE)
@@ -143,17 +159,28 @@ public class MovieService {
 
 
     // M02 - Return Movies Based on Cinema Slug
-    public ResponseMessage<List<Movie>> getMoviesByCinemaSlug(String slug) {
-        List<Movie> movies = movieRepository.findByCinemaSlug(slug);
+    public ResponseMessage<List<MovieResponse>> getMoviesByCinemaSlug(String cinemaSlug) {
 
 
-        return ResponseMessage.<List<Movie>>builder()
+        List<MovieResponse> movieList = movieRepository.findMoviesByCinemaSlug(cinemaSlug);
+
+        if (movieList.isEmpty()) {
+            return ResponseMessage.<List<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+/*
+        List<MovieResponse> movieListResponse = movieMapper.mapMovieToMovieResponse(movieList);
+*/
+
+
+        return ResponseMessage.<List<MovieResponse>>builder()
                 .message("Movies found successfully")
                 .httpStatus(HttpStatus.OK)
-                .object(movies)
+                .object(movieList)
                 .build();
     }
-
-
 }
 

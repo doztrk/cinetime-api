@@ -40,8 +40,8 @@ public class MovieRequest {
     @NotNull(message = "Please provide a hall id")
     private Long hallId;
 
-    @NotNull(message = "Please provide a showtime id")
-    private Long showtimeId;
+/*    @NotNull(message = "Please provide a showtime id")
+    private Long showtimeId;*/
 
     @NotNull(message = "Please provide a poster image")
     private MultipartFile posterImage;
