@@ -43,11 +43,11 @@ public class TicketHelper {
     public boolean canDeleteUser(User user) {
         List<Ticket> allTickets = ticketRepository.findAllTicketsByUser(user);
 
-        // Add debugging
+
         System.out.println("User ID: " + user.getId());
         System.out.println("Total tickets found: " + allTickets.size());
 
-        // If there are no tickets, the user can be deleted
+
         if (allTickets.isEmpty()) {
             return true;
         }

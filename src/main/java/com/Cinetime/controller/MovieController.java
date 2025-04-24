@@ -1,7 +1,6 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
-import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.dto.response.MovieResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
@@ -11,15 +10,12 @@ import com.Cinetime.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +63,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/in-theaters")
-    public ResponseEntity<List<Movie>> getInTheatersMovies(
+    public ResponseMessage<List<MovieResponse>> getInTheatersMovies(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -86,7 +82,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/coming-soon")
-    public ResponseEntity<List<Movie>> getComingSoonMovies(
+    public ResponseMessage<List<MovieResponse>> getComingSoonMovies(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -169,4 +165,6 @@ public class MovieController {
             @PathVariable Long movieId) {
         return showtimeService.getUpcomingShowtimes(movieId);
     }
+
+    //todo: movieye showtime eklemek icin ayri bir endpoint yazilacak.
 }

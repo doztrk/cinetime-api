@@ -122,12 +122,12 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         // For production, replace with specific origins like:
         // configuration.setAllowedOrigins(List.of("https://yourdomain.com", "https://api.yourdomain.com"));
-        configuration.setAllowedOrigins(List.of("*")); // Consider restricting this in production
+        configuration.setAllowedOrigins(List.of("*")); //TODO: -> Bunu http://localhost:3000 ile degistir
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setMaxAge(3600L); // Cache preflight request results for 1 hour
-
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

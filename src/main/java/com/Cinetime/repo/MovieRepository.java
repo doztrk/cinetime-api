@@ -13,7 +13,13 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-    List<Movie> findByStatus(MovieStatus status, Pageable pageable);
+    @Query("SELECT new com.Cinetime.payload.dto.response.MovieResponse(" +
+            "m.id, m.title, m.slug, m.summary, m.releaseDate, m.duration, " +
+            "m.rating, m.director, m.cast, m.formats, m.genre, m.status) " +
+            "FROM Movie m " +
+            "WHERE m.status = :status")
+    List<MovieResponse> findByStatus(@Param("status") MovieStatus status, Pageable pageable);
+
 
     List<Movie> findByHalls_NameIgnoreCase(String hallName, Pageable pageable);
 

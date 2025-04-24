@@ -2,11 +2,7 @@ package com.Cinetime.service;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.RoleName;
-import com.Cinetime.helpers.PageableHelper;
-import com.Cinetime.helpers.TicketHelper;
-import com.Cinetime.helpers.UniquePropertyValidator;
-import com.Cinetime.helpers.UpdateUserHelper;
-import com.Cinetime.payload.dto.request.user.AbstractUserRequest;
+import com.Cinetime.helpers.*;
 import com.Cinetime.payload.dto.request.user.UserRequest;
 import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
 import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
@@ -60,7 +56,7 @@ public class UserService {
 
         //Soru: Role tipi icin her seferinde DB'ye sorgu atmak yerine nasil setleriz ?
         //Cevap ↴
-        user.setRole(roleService.getRole(RoleName.ADMIN));
+        user.setRole(roleService.getRole(RoleName.MEMBER));
 
         //Password encoding
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -82,6 +78,8 @@ public class UserService {
 
     @Transactional
     public ResponseMessage<BaseUserResponse> createUser(UserRequest userCreateDTO) {
+
+
         boolean isUnique =
                 uniquePropertyValidator
                         .isRegistrationPropertiesUnique(userCreateDTO.getEmail(), userCreateDTO.getPhoneNumber());
@@ -96,12 +94,15 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(userCreateDTO.getPassword()));
 
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
 
-        user.setRole(roleService.getRole(RoleName.MEMBER));
-
-        user.setBuiltIn(false);
+        //1.a) Eger admin ise kullanicinin built-in ve rolelerini set edebilmesi lazim.Dolayisiyla authenticatede bakmamiz gerekiyor
+        if (SecurityHelper.hasRole(String.valueOf(RoleName.ADMIN))) {
+            user.setBuiltIn(userCreateDTO.isBuiltIn());
+            user.setRole(roleService.getRole(userCreateDTO.getRole())); //Cache kullanarak requestten gelen rolu setliyoruz.
+        } else {
+            user.setBuiltIn(false);
+            user.setRole(roleService.getRole(RoleName.MEMBER));
+        }
 
         userRepository.save(user);
 
@@ -131,6 +132,8 @@ public class UserService {
                     .build();
         }
 
+        //Kullanici email'ini guncelleyecekse bu mevcuttakiyle ayni emaili olmamali ve DB'de verdigi email ile ayni bir email kayitli olmamali
+        //Hata mesaji donduruyoruz
         if (StringUtils.hasText(userUpdateRequest.getEmail()) &&
                 !userUpdateRequest.getEmail().equals(user.getEmail()) &&
                 userRepository.existsByEmail(userUpdateRequest.getEmail())) {
@@ -141,6 +144,7 @@ public class UserService {
                     .build();
         }
 
+        //Yukarinin aynisi, telefon icin
         if (StringUtils.hasText(userUpdateRequest.getPhoneNumber()) &&
                 !userUpdateRequest.getPhoneNumber().equals(user.getPhoneNumber()) &&
                 userRepository.existsByPhoneNumber(userUpdateRequest.getPhoneNumber())) {
@@ -165,9 +169,8 @@ public class UserService {
 
     @Transactional
     public ResponseMessage<BaseUserResponse> deleteUser(UserRequestWithPasswordOnly request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String phoneNumber = authentication.getName();
+        String phoneNumber = SecurityHelper.getCurrentUserPhoneNumber();
 
 
         Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
@@ -204,7 +207,7 @@ public class UserService {
 
         userRepository.delete(user.get());
 
-        SecurityContextHolder.clearContext();
+        SecurityContextHolder.clearContext(); //Sildikten sonra securitycontexti temizliyoruz
 
         return ResponseMessage.<BaseUserResponse>builder()
                 .message(SuccessMessages.USER_DELETE)
