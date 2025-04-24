@@ -50,29 +50,46 @@ public class MovieService {
                 .build();
     }
 
-    public ResponseEntity<List<Movie>> getInTheatersMovies(int page, int size, String sort, String type) {
+    public ResponseMessage<List<MovieResponse>> getInTheatersMovies(int page, int size, String sort, String type) {
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        List<Movie> movies = movieRepository.findByStatus(MovieStatus.IN_THEATERS, pageable);
+        List<MovieResponse> movies = movieRepository.findByStatus(MovieStatus.IN_THEATERS, pageable);
+
 
         if (movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(movies);
+            return
+                    ResponseMessage.<List<MovieResponse>>builder()
+                            .message(ErrorMessages.MOVIES_NOT_FOUND)
+                            .httpStatus(HttpStatus.NOT_FOUND)
+                            .build();
         }
+        return ResponseMessage.<List<MovieResponse>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movies)
+                .build();
+
     }
 
-    public ResponseEntity<List<Movie>> getComingSoonMovies(int page, int size, String sort, String type) {
+    public ResponseMessage<List<MovieResponse>> getComingSoonMovies(int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        List<Movie> movies = movieRepository.findByStatus(MovieStatus.COMING_SOON, pageable);
+        List<MovieResponse> movies = movieRepository.findByStatus(MovieStatus.COMING_SOON, pageable);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(movies);
+            return ResponseMessage.<List<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIES_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
         }
+
+        return ResponseMessage.<List<MovieResponse>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movies)
+                .build();
+
     }
 
     @Transactional
