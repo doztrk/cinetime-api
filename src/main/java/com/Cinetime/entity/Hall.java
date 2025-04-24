@@ -1,5 +1,6 @@
 package com.Cinetime.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -49,6 +50,7 @@ public class Hall {
 
 
     @ManyToMany(mappedBy = "halls", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
 
@@ -92,7 +94,7 @@ public class Hall {
         }
     }
 
-  /*  @Override
+   @Override
     public String toString() {
         return "Hall{" +
                 "id=" + id +
@@ -103,5 +105,5 @@ public class Hall {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
-    }*/
+    }
 }

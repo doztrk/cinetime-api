@@ -44,15 +44,15 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
 
-    @GetMapping("/hall/{hallName}")
-    public ResponseMessage<List<Movie>> getMovieByHall(
+    @GetMapping("/hall/{hallId}")
+    public ResponseMessage<Page<Movie>> getMovieByHall(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
             @Parameter(description = "Sort direction (asc or desc)") @RequestParam(defaultValue = "asc") String type,
-            @Parameter(description = "Hall type (e.g., 'imax', 'vip')") @PathVariable String hallName) {
+            @Parameter(description = "Hall type (e.g., 'imax', 'vip')") @PathVariable Long hallId) {
 
-        return movieService.getMovieByHall(page, size, sort, type, hallName);
+        return movieService.getMovieByHall(page, size, sort, type, hallId);
     }
 
     //M04
@@ -65,7 +65,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/in-theaters")
-    public ResponseEntity<List<Movie>> getInTheatersMovies(
+    public ResponseEntity<Page<Movie>> getInTheatersMovies(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -84,7 +84,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/coming-soon")
-    public ResponseEntity<List<Movie>> getComingSoonMovies(
+    public ResponseEntity<Page<Movie>> getComingSoonMovies(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -146,9 +146,18 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{slug}")
-    public ResponseMessage<List<Movie>> getMoviesByCinemaSlug(
-            @Parameter(description = "Cinema slug", required = true) @PathVariable String slug) {
-        return movieService.getMoviesByCinemaSlug(slug);
+    public ResponseMessage<Page<Movie>> getMoviesByCinemaSlug(
+            @Parameter(description = "Cinema slug", required = true) @PathVariable String slug,
+     @Parameter(description = "Page number (zero-based)")
+    @RequestParam(value = "page", defaultValue = "0") int page,
+    @Parameter(description = "Number of records per page")
+    @RequestParam(value = "size", defaultValue = "10") int size,
+    @Parameter(description = "Field to sort by")
+    @RequestParam(value = "sort", defaultValue = "title") String sort,
+    @Parameter(description = "Sort direction (asc or desc)")
+    @RequestParam(value = "type", defaultValue = "asc") String type
+   ) {
+        return movieService.getMoviesByCinemaSlug(page, size, sort, type,slug);
     }
 
     //M14
@@ -162,9 +171,17 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{movieId}/show-times")
-    public ResponseEntity<List<Showtime>> getUpcomingShowtimes(
+    public ResponseMessage<Page<Showtime>> getUpcomingShowtimes(
+            @Parameter(description = "Page number (zero-based)")
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Parameter(description = "Number of records per page")
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by")
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
+            @Parameter(description = "Sort direction (asc or desc)")
+            @RequestParam(value = "type", defaultValue = "asc") String type,
             @Parameter(description = "ID of the movie to get showtimes for", required = true)
             @PathVariable Long movieId) {
-        return showtimeService.getUpcomingShowtimes(movieId);
+        return showtimeService.getUpcomingShowtimes( page, size, sort, type,movieId);
     }
 }

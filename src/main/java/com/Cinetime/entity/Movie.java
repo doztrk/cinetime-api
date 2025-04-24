@@ -2,6 +2,8 @@ package com.Cinetime.entity;
 
 import com.Cinetime.converter.MovieStatusConverter;
 import com.Cinetime.enums.MovieStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -28,6 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Table(name = "MOVIE")
+
 public class Movie {
 
     @Id
@@ -68,6 +71,7 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "hall_id")
     )
+    @JsonIgnore
     private Set<Hall> halls = new HashSet<>();
 
     // One-to-many relationship with Showtime
@@ -93,10 +97,8 @@ public class Movie {
     @Column(nullable = false)
     private List<String> genre;
 
-    @NotNull
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "poster_id", nullable = false)
-    private PosterImage poster;
+    @Column(name = "poster_url")
+    private String posterUrl;
 
     @NotNull
     @Convert(converter = MovieStatusConverter.class)

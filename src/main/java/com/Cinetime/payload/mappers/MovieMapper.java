@@ -6,6 +6,8 @@ import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.dto.response.MovieResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class MovieMapper {
 
@@ -19,8 +21,7 @@ public class MovieMapper {
                 .releaseDate(movieRequest.getReleaseDate())
                 .duration(movieRequest.getDuration())
                 .rating(movieRequest.getRating())
-                //Hall service'te setlenecek
-                //posterImageId service'te setlenecek
+                .halls(new HashSet<>())
                 //
                 .director(movieRequest.getDirector())
                 .cast(movieRequest.getCast())

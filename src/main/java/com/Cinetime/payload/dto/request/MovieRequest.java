@@ -58,6 +58,6 @@ public class MovieRequest {
     @NotEmpty(message = "Please provide genre")
     private List<String> genre;
 
-    @NotBlank(message = "Please provide casts")
+    @NotNull(message = "Please provide casts")
     private MovieStatus status;
 }
