@@ -30,7 +30,14 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                                                   Pageable pageable,
                                                   @Param("sort") String sort);
 
+    @Query("SELECT new com.Cinetime.payload.dto.response.MovieResponse(m.id, m.title, m.slug, m.summary, " +
+            "m.releaseDate, m.duration, m.rating, m.director, m.cast, m.formats, m.genre, m.status) " +
+            "FROM Movie m JOIN m.halls h JOIN h.cinema c WHERE c.slug = :cinemaSlug")
+    Page<MovieResponse> findMoviesByCinemaSlug(@Param("cinemaSlug") String cinemaSlug, Pageable pageable);
+
     Page<Movie> findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(String titleQuery, String summaryQuery, Pageable pageable);
+
+
 }
 
 

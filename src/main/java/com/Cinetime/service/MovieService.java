@@ -191,15 +191,22 @@ public class MovieService {
 
 
     // M02 - Return Movies Based on Cinema Slug
-    public ResponseMessage<Page<Movie>> getMoviesByCinemaSlug(int page, int size, String sort, String type,String slug) {
+    public ResponseMessage<Page<MovieResponse>> getMoviesByCinemaSlug(String cinemaSlug, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
-        Page<Movie> movies = movieRepository.findByCinemaSlug(slug,pageable);
 
+        Page<MovieResponse> moviePage = movieRepository.findMoviesByCinemaSlug(cinemaSlug, pageable);
 
-        return ResponseMessage.<List<Movie>>builder()
+        if (moviePage.isEmpty()) {
+            return ResponseMessage.<Page<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        return ResponseMessage.<Page<MovieResponse>>builder()
                 .message("Movies found successfully")
                 .httpStatus(HttpStatus.OK)
-                .object(movies)
+                .object(moviePage)
                 .build();
     }
 

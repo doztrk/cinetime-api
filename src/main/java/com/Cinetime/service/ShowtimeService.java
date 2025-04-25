@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,14 +29,22 @@ public class ShowtimeService {
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
         // Şu anki tarih saatinden sonrasında olan tüm showtime'ları alıyoruz
-        Page<Showtime> showtimes = showtimeRepository.findByMovieIdAndStartTimeAfter(movieId, LocalDateTime.now(), pageable);
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
 
+        Page<Showtime> showtimes = showtimeRepository.findUpcomingShowtimesByMovieId(movieId, today, now, pageable);
+
+        if (showtimes.isEmpty()) {
+            return ResponseMessage.<Page<Showtime>>builder()
+                    .httpStatus(HttpStatus.OK)
+                    .message("Showtimes not found for the given movie")
+                    .build();
+        }
 
         return ResponseMessage.<Page<Showtime>>builder()
-                .message("Movies found successfully")
                 .httpStatus(HttpStatus.OK)
                 .object(showtimes)
+                .message("Showtimes found successfully")
                 .build();
     }
-
 }

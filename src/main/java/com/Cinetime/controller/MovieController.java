@@ -145,9 +145,9 @@ public class MovieController {
             @ApiResponse(responseCode = "404", description = "Cinema not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{slug}")
+    @GetMapping("/{cinemaSlug}")
     public ResponseMessage<Page<Movie>> getMoviesByCinemaSlug(
-            @Parameter(description = "Cinema slug", required = true) @PathVariable String slug,
+            @Parameter(description = "Cinema slug", required = true) @PathVariable String cinemaSlug,
      @Parameter(description = "Page number (zero-based)")
     @RequestParam(value = "page", defaultValue = "0") int page,
     @Parameter(description = "Number of records per page")
@@ -157,12 +157,12 @@ public class MovieController {
     @Parameter(description = "Sort direction (asc or desc)")
     @RequestParam(value = "type", defaultValue = "asc") String type
    ) {
-        return movieService.getMoviesByCinemaSlug(page, size, sort, type,slug);
+        return movieService.getMoviesByCinemaSlug(cinemaSlug,page, size, sort, type);
     }
 
     //M14
     @Operation(
-            summary = "Get Upcoming Showtimes",
+            summary = "Get Upcoming Showtimes {M14}",
             description = "Returns a list of upcoming showtimes for a specific movie"
     )
     @ApiResponses(value = {
