@@ -1,6 +1,7 @@
 package com.Cinetime.payload.dto.request.user;
 
 import com.Cinetime.enums.Gender;
+import com.Cinetime.enums.RoleName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,6 +16,9 @@ import java.time.LocalDate;
 public class UserRequest extends AbstractUserRequest {
 
 
+    private boolean builtIn = false;
+    private RoleName role = RoleName.MEMBER;
+
     //This class will have all the properties of its parent but will include constraint annotations
     @Override
     @NotBlank(message = "Please provide your name")
@@ -23,7 +27,7 @@ public class UserRequest extends AbstractUserRequest {
     }
 
     @Override
-    @NotBlank(message = "Please provide your lastname")
+    @NotBlank(message = "Please provide your surname")
     public String getLastname() {
         return super.getLastname();
     }
@@ -57,4 +61,5 @@ public class UserRequest extends AbstractUserRequest {
     public LocalDate getDateOfBirth() {
         return super.getDateOfBirth();
     }
+
 }

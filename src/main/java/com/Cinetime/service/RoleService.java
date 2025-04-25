@@ -20,6 +20,7 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final Map<RoleName, Role> roleCache = new EnumMap<>(RoleName.class);
 
+    //TODO: Cache mekanizmasi kurduk
     @PostConstruct //Dependency injection yapilip bean devreye girmeden once bu kodu calistiriyor.
     public void init() {
         roleRepository.findAll().forEach(role -> roleCache.put(role.getRoleName(), role));

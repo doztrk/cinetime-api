@@ -8,17 +8,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
-public interface CinemaRepository extends JpaRepository<Cinema,Long> {
+public interface CinemaRepository extends JpaRepository<Cinema, Long> {
 
-    @Query("SELECT c FROM Cinema c " +
-            "JOIN City city ON c.city.id = city.id " +
-            "LEFT JOIN Hall h ON h.cinema.id = c.id " +
-            "WHERE (:cityId IS NULL OR city.id = :cityId) " +  //cityhall ve speial null ise tum sinemalar gelir, optional old icin
-            "AND (:specialHall IS NULL OR h.isSpecial = true) ")
+    @Query(value = "SELECT DISTINCT c.* FROM cinema c " +
+            "WHERE (:cityId IS NULL OR c.city_id = :cityId) " +
+            "AND (:specialHall IS NULL OR EXISTS (SELECT 1 FROM hall h WHERE h.cinema_id = c.id AND h.is_special = true AND LOWER(h.name) LIKE LOWER(:specialHall)))",
+            nativeQuery = true)
     Page<Cinema> findCinemasByFilters(
             @Param("cityId") Long cityId,
             @Param("specialHall") String specialHall,
             Pageable pageable);
+
+
 }

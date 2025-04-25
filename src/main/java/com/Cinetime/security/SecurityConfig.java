@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -46,9 +47,6 @@ public class SecurityConfig {
             "/api/reset-password",
 
             // Public API endpoints
-            "/api/movies",
-            "/api/movies/**",
-            "/api/cinemas/**",
             "/api/special-halls",
             "/api/images/**",
             "/api/debug-auth",
@@ -97,7 +95,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
 
-                        // .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        //Cinemas, Movies GET
+                        .requestMatchers(HttpMethod.GET, "/api/cinemas").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/cinemas/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
+
+
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
@@ -118,12 +122,12 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         // For production, replace with specific origins like:
         // configuration.setAllowedOrigins(List.of("https://yourdomain.com", "https://api.yourdomain.com"));
-        configuration.setAllowedOrigins(List.of("*")); // Consider restricting this in production
+        configuration.setAllowedOrigins(List.of("*")); //TODO: -> Bunu http://localhost:3000 ile degistir
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setMaxAge(3600L); // Cache preflight request results for 1 hour
-
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

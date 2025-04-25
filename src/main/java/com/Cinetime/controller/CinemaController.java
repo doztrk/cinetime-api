@@ -28,8 +28,10 @@ public class CinemaController {
 
     //C01
     @Operation(
-            summary = "Get All Cinemas",
-            description = "Returns cinemas based on optional city and special hall filters with pagination and sorting options"
+            summary = "Get All Cinemas {C01}",
+            description = "Returns cinemas based on optional city and special hall filters with pagination and sorting options. " +
+                    "Endpoint ID = C01"
+
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved cinemas list",
@@ -39,7 +41,7 @@ public class CinemaController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    public ResponseMessage<List<Cinema>> getCinemas(
+     public ResponseMessage<List<Cinema>> getCinemas(
             @Parameter(description = "Filter cinemas by city ID") @RequestParam(required = false) Long cityId,
             @Parameter(description = "Filter cinemas by special hall type (e.g., 'imax')") @RequestParam(required = false) String specialHall,
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
@@ -50,9 +52,10 @@ public class CinemaController {
         return cinemaService.getCinemasByFilters(cityId, specialHall, page, size, sort, type);
     }
 
+
     //C03
     @Operation(
-            summary = "Get Cinema Details",
+            summary = "Get Cinema Details {C03}",
             description = "Returns detailed information about a specific cinema by its ID"
     )
     @ApiResponses(value = {
@@ -71,7 +74,7 @@ public class CinemaController {
 
     //C04
     @Operation(
-            summary = "Get Cinema Halls",
+            summary = "Get Cinema Halls {C04}",
             description = "Returns all halls belonging to a specific cinema"
     )
     @ApiResponses(value = {
@@ -87,4 +90,5 @@ public class CinemaController {
     ) {
         return cinemaService.getHallsByCinemaId(cinemaId);
     }
+
 }
