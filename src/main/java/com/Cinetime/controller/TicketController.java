@@ -3,7 +3,7 @@ package com.Cinetime.controller;
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.TicketDto;
 import com.Cinetime.payload.dto.TicketPurchaseRequest;
-import com.Cinetime.payload.dto.request.user.TicketRequestDto;
+import com.Cinetime.payload.dto.request.TicketRequestDto;
 import com.Cinetime.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,7 +19,7 @@ import java.util.List;
 public class TicketController {
 
     private final TicketService ticketService;
-    private final TicketDto ticketDto;
+
 
     //T01 Return movies that an authenticated user bought and haven't used yet
     @GetMapping("/auth/current-tickets")

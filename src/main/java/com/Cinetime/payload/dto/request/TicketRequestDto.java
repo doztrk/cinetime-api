@@ -1,4 +1,4 @@
-package com.Cinetime.payload.dto.request.user;
+package com.Cinetime.payload.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

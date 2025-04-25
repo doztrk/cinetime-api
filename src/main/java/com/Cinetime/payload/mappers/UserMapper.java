@@ -2,7 +2,7 @@ package com.Cinetime.payload.mappers;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.request.user.AbstractUserRequest;
-import com.Cinetime.payload.response.BaseUserResponse;
+import com.Cinetime.payload.dto.response.BaseUserResponse;
 import org.springframework.stereotype.Component;
 
 @Component

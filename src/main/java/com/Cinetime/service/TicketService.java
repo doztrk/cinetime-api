@@ -10,7 +10,7 @@ import com.Cinetime.exception.ResourceNotFoundException;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.TicketDto;
 import com.Cinetime.payload.dto.TicketPurchaseRequest;
-import com.Cinetime.payload.dto.request.user.TicketRequestDto;
+import com.Cinetime.payload.dto.request.TicketRequestDto;
 import com.Cinetime.payload.mappers.TicketMapper;
 import com.Cinetime.repo.MovieRepository;
 import com.Cinetime.repo.ShowtimeRepository;

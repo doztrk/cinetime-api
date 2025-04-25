@@ -1,9 +1,9 @@
 package com.Cinetime.service.passwordbusiness;
 
 import com.Cinetime.entity.User;
-import com.Cinetime.payload.dto.ForgotPasswordRequest;
-import com.Cinetime.payload.dto.ResetCodeRequest;
-import com.Cinetime.payload.dto.ResetPasswordRequest;
+import com.Cinetime.payload.dto.request.ForgotPasswordRequest;
+import com.Cinetime.payload.dto.request.ResetCodeRequest;
+import com.Cinetime.payload.dto.request.ResetPasswordRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.service.EmailService;
@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 

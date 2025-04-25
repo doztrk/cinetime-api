@@ -1,6 +1,6 @@
 package com.Cinetime.helpers;
 
-import com.Cinetime.payload.dto.request.user.MovieRequest;
+import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.repo.MovieRepository;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.Cinetime.payload.dto.request.user;
+package com.Cinetime.payload.dto.request;
 
 import com.Cinetime.entity.PosterImage;
 import com.Cinetime.enums.MovieStatus;

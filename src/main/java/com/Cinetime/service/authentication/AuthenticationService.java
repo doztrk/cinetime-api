@@ -1,7 +1,7 @@
 package com.Cinetime.service.authentication;
 
 import com.Cinetime.payload.authentication.LoginRequest;
-import com.Cinetime.payload.response.AuthResponse;
+import com.Cinetime.payload.dto.response.AuthResponse;
 import com.Cinetime.security.JwtUtils;
 import com.Cinetime.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
