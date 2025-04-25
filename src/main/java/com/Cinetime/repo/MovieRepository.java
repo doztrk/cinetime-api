@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
@@ -31,5 +32,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<MovieResponse> findMoviesByCinemaSlug(@Param("cinemaSlug") String cinemaSlug);
 
     Page<Movie> findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(String titleQuery, String summaryQuery, Pageable pageable);
+    Optional<Movie> findByTitle(String title);
 
 }

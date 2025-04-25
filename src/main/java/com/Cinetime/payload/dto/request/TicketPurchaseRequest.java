@@ -1,4 +1,4 @@
-package com.Cinetime.payload.dto;
+package com.Cinetime.payload.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class TicketPurchaseRequest {
     private String hall;
     private Long showtimeId;
     private Integer count;
-    private List<String> seatInformation;
+    private List<SeatRequest> seats;
 
 
 }
