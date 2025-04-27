@@ -245,4 +245,45 @@ public class UserController {
         String token = request.getHeader("Authorization");
         return "Token header: " + token;
     }
+
+
+    //U09
+    @Operation(
+            summary = "Get User by ID {U09}",
+            description = "Retrieve a specific user by their ID (Admin, Employee roles can access)",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved user details"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - requires ADMIN or EMPLOYEE role"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/users/{userId}/admin")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'ADMIN')")
+    public ResponseMessage<BaseUserResponse> getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
+    }
+
+    //U10
+    @Operation(
+            summary = "Update User by ID {U10}",
+            description = "Update a specific user by their ID. Admin can update any user, while Employee can only update users with Member role. Built-in users cannot be updated.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully updated user"),
+            @ApiResponse(responseCode = "400", description = "Bad request - validation errors or built-in user update attempt"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - requires ADMIN or EMPLOYEE role or Employee attempting to update non-Member user"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict - email or phone number already in use"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping("/users/{userId}/admin")
+    @PreAuthorize("hasAnyRole('EMPLOYEE','ADMIN')")
+    public ResponseMessage<BaseUserResponse> updateUserById(@PathVariable Long userId, @RequestBody UserUpdateRequest updateUserRequest) {
+        return userService.updateUser(userId, updateUserRequest);
+    }
 }

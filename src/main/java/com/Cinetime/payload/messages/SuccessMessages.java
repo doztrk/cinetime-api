@@ -7,4 +7,5 @@ public class SuccessMessages {
     public static final String USER_DELETE = "User deleted successfully";
     public static final String PASSWORD_CHANGED = "Password changed successfully";
     public static final String MOVIE_CREATE = "Movie has been created successfully";
+    public static final String USER_FOUND = "User with ID found successfully" ;
 }
