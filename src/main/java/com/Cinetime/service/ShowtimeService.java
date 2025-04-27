@@ -1,40 +1,53 @@
 package com.Cinetime.service;
 
-import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
-import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.dto.response.ShowtimeResponse;
+import com.Cinetime.payload.mappers.ShowtimeMapper;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ShowtimeService {
 
     private final ShowtimeRepository showtimeRepository;
-    private final PageableHelper pageableHelper;
+    private final ShowtimeMapper showtimeMapper;
 
-    public ResponseMessage<Page<Showtime>> getUpcomingShowtimes(int page, int size, String sort, String type, Long movieId) {
-
-        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
-        // Şu anki tarih saatinden sonrasında olan tüm showtime'ları alıyoruz
-        Page<Showtime> showtimes = showtimeRepository.findByMovieIdAndStartTimeAfter(movieId, LocalDateTime.now(), pageable);
+    public ResponseMessage<List<ShowtimeResponse>> getUpcomingShowtimes(Long movieId) {
+        List<ShowtimeResponse> allShowtimes = showtimeRepository.findShowtimeDtosByMovieId(movieId);
 
 
-        return ResponseMessage.<Page<Showtime>>builder()
-                .message("Movies found successfully")
-                .httpStatus(HttpStatus.OK)
-                .object(showtimes)
-                .build();
+        if (allShowtimes.isEmpty()) { //Eger bossa noContent dondur
+            return ResponseMessage.<List<ShowtimeResponse>>builder()
+                    .httpStatus(HttpStatus.OK) // Liste bos olsa bile HttpRequest 200 donduruyoruz
+                    .message("Showtimes not found for the given movie")
+                    .build();
+        } else {
+
+            LocalDate today = LocalDate.now();
+            LocalTime now = LocalTime.now();
+
+            List<ShowtimeResponse> showtimes = allShowtimes.stream()
+                    .filter(showtime ->
+                            showtime.getDate().isAfter(today) ||
+                                    (showtime.getDate().isEqual(today) && showtime.getStartTime().isAfter(now))
+                    )
+                    .toList();
+            return ResponseMessage.<List<ShowtimeResponse>>builder()
+                    .httpStatus(HttpStatus.OK)
+                    .object(showtimes)
+                    .message("Showtimes found successfully")
+                    .build();
+
+        }
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Hall {
 
     @Id
@@ -50,6 +51,7 @@ public class Hall {
 
 
     @ManyToMany(mappedBy = "halls", fetch = FetchType.LAZY)
+    @Builder.Default
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
@@ -94,7 +96,7 @@ public class Hall {
         }
     }
 
-   @Override
+  /*  @Override
     public String toString() {
         return "Hall{" +
                 "id=" + id +
@@ -105,5 +107,5 @@ public class Hall {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
-    }
+    }*/
 }

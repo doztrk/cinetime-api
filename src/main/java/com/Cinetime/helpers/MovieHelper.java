@@ -24,7 +24,7 @@ public class MovieHelper {
         }
 
         if (movieRequest.getSlug() == null || movieRequest.getSlug().trim().length() < 5 || movieRequest.getSlug().length() > 20) {
-            validationErrors.add("Slug must be between 5 and 20 characters");
+            validationErrors.add("Slug must be between 3 and 50 characters");
         }
 
         if (movieRequest.getSummary() == null || movieRequest.getSummary().trim().length() < 3 || movieRequest.getSummary().length() > 300) {
@@ -59,9 +59,9 @@ public class MovieHelper {
         }
 
 
-//        if (movieRequest.getHallId() == null) {
-//            validationErrors.add("Hall ID is required");
-//        }
+        if (movieRequest.getHallId() == null) {
+            validationErrors.add("Hall ID is required");
+        }
 
 //        if (movieRequest.getShowtimeId() == null) {
 //            validationErrors.add("Showtime ID is required");

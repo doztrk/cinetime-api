@@ -4,7 +4,6 @@ import com.Cinetime.payload.authentication.LoginRequest;
 import com.Cinetime.payload.dto.request.ForgotPasswordRequest;
 import com.Cinetime.payload.dto.request.ResetCodeRequest;
 import com.Cinetime.payload.dto.request.ResetPasswordRequest;
-import com.Cinetime.payload.dto.request.user.AbstractUserRequest;
 import com.Cinetime.payload.dto.request.user.UserRequest;
 import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
 import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
@@ -82,7 +81,7 @@ public class UserController {
 
     //U03
     @Operation(
-            summary = "Generate Password Reset Code",
+            summary = "Generate Password Reset Code {U03}",
             description = "Generates a password reset code and sends it to the user's email"
     )
     @ApiResponses(value = {
@@ -99,7 +98,7 @@ public class UserController {
 
     //U04
     @Operation(
-            summary = "Reset Password",
+            summary = "Reset Password {U04}",
             description = "Resets user password using the validated reset code"
     )
     @ApiResponses(value = {
@@ -132,7 +131,7 @@ public class UserController {
 
     //U05
     @Operation(
-            summary = "Create User",
+            summary = "Create User {U05}",
             description = "Creates a new user (Admin, Employee, Member roles can access)",
             security = @SecurityRequirement(name = "bearerAuth")
     )
@@ -153,7 +152,7 @@ public class UserController {
 
     //U06
     @Operation(
-            summary = "Update User",
+            summary = "Update User {U06}",
             description = "Updates an existing user (Admin, Employee, Member roles can access their own data)",
             security = @SecurityRequirement(name = "bearerAuth")
     )
@@ -175,7 +174,7 @@ public class UserController {
 
     //U07
     @Operation(
-            summary = "Delete User",
+            summary = "Delete User {U07}",
             description = "Deletes the authenticated user's account (requires MEMBER role)",
             security = @SecurityRequirement(name = "bearerAuth")
     )
@@ -197,7 +196,7 @@ public class UserController {
 
     //U08
     @Operation(
-            summary = "Search Users",
+            summary = "Search Users {U08}",
             description = "Search users with optional query parameter (Admin, Employee roles can access)",
             security = @SecurityRequirement(name = "bearerAuth")
     )
@@ -217,7 +216,7 @@ public class UserController {
             @Parameter(description = "Number of records per page")
             @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by")
-            @RequestParam(defaultValue = "releaseDate") String sort,
+            @RequestParam(defaultValue = "id") String sort,
             @Parameter(description = "Sort direction (asc or desc)")
             @RequestParam(defaultValue = "asc") String type) {
         return userService.getUserWithParam(q, page, size, sort, type);
