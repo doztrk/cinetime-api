@@ -58,39 +58,43 @@ public class User {
     private Boolean builtIn = false;
 
     @NotNull
-    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @NotNull
-    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
     @Column(nullable = true) //default
     private String resetPasswordCode;    //TODO: Password kod resetpassword edildikten sonra DB'ye otomatik kaydedilecek. Musteriye bu kod gonderilecek.Eslesirse sifre degistirilecek
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Payment> payments = new HashSet<>();
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Ticket> tickets = new HashSet<>();
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserCinemaFavorite> cinemaFavorites = new HashSet<>();
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserMovieFavorite> movieFavorites = new HashSet<>();
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> userRoles = new HashSet<>();
 
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = now;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -117,13 +121,4 @@ public class User {
     }
 
 
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (updatedAt == null) {
-            updatedAt = LocalDateTime.now();
-        }
-    }
 }

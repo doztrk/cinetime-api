@@ -3,12 +3,9 @@ package com.Cinetime.entity;
 import com.Cinetime.converter.MovieStatusConverter;
 import com.Cinetime.enums.MovieStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +15,11 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+import org.springframework.cglib.core.Local;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +30,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Table(name = "MOVIE")
-
 public class Movie {
 
     @Id
@@ -43,7 +42,7 @@ public class Movie {
     private String title;
 
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 50)
     @Column(nullable = false)
     private String slug;
 
@@ -71,11 +70,13 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "hall_id")
     )
-    @JsonIgnore
+    @Builder.Default
     private Set<Hall> halls = new HashSet<>();
 
     // One-to-many relationship with Showtime
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @Builder.Default
+    @JsonIgnore
     private Set<Showtime> showtimes = new HashSet<>();
 
     @NotBlank
@@ -97,23 +98,40 @@ public class Movie {
     @Column(nullable = false)
     private List<String> genre;
 
-    @Column(name = "poster_url")
-    private String posterUrl;
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "poster_id", nullable = false)
+    private PosterImage poster;
 
     @NotNull
     @Convert(converter = MovieStatusConverter.class)
     @Column(name = "status", nullable = false)
     private MovieStatus status = MovieStatus.COMING_SOON;
 
+    // With these:
     @NotNull
-    @CreationTimestamp
     @Column(nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
-    @UpdateTimestamp
     @Column(nullable = false)
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = now;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public String getDurationFormatted() {
         return String.format("%02d:%02d", duration / 60, duration % 60);

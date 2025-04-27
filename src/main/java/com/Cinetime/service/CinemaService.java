@@ -29,7 +29,6 @@ public class CinemaService {
 
     private final CinemaRepository cinemaRepository;
     private final PageableHelper pageableHelper;
-    private final HallRepository hallRepository;
     private final HallMapper hallMapper;
     private final CinemaHallMapper cinemaHallMapper;
 
@@ -39,16 +38,22 @@ public class CinemaService {
 
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+        String formattedSpecialHall = (specialHallName != null) ? "%" + specialHallName + "%" : null;
 
-        Page<Cinema> cinemasPage = cinemaRepository.findCinemasByFilters(cityId, specialHallName, pageable);
+        Page<Cinema> cinemasPage = cinemaRepository.findCinemasByFilters(cityId, formattedSpecialHall, pageable);
 
-        // Eğer hiç sonuç yoksa, boş sayfa döner, kodu 200 veriyoruz yine de cunku sonuc olmasa bile arama basarili, REST prensibine gore
 
         List<Cinema> cinemas = cinemasPage.getContent();
 
+        if (cinemas.isEmpty()) {
+            return ResponseMessage.<List<Cinema>>builder()
+                    .message("No cinemas found")
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
 
         return ResponseMessage.<List<Cinema>>builder()
-                .httpStatus(HttpStatus.OK) // <-- Arama sonucu bos da olsa dolu da olsa 200 donduruyoruz. Ici bos mu dolu mu frontendde bakiliyor.
+                .httpStatus(HttpStatus.OK)
                 .object(cinemas)
                 .build();
     }

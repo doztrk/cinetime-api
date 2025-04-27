@@ -17,9 +17,9 @@ public class LoginRequest {
     @Pattern(regexp = "^\\(\\d{3}\\)\\s\\d{3}-\\d{4}$", message = "Phone number must be in (XXX) XXX-XXXX format")
     private String phoneNumber;
 
-    @NotBlank(message = "Password must not be empty")
-    @Size(min = 8, max = 60, message = "Your password should be at least 8 chars or maximum 60 characters")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+    @NotBlank
+    @Size(min = 8, max = 100)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9\\s]).{8,}$",
             message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
     private String password;
 
