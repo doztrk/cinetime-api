@@ -245,4 +245,28 @@ public class UserController {
         String token = request.getHeader("Authorization");
         return "Token header: " + token;
     }
+
+    @Operation(
+            summary = "Get Authenticated User Profile {UXX}",
+            description = "Retrieves the profile information (name, phone, email) of the currently authenticated user.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved user profile",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BaseUserResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated"),
+            @ApiResponse(responseCode = "404", description = "User profile not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<BaseUserResponse> me() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // This is the phone number
+
+        BaseUserResponse userProfile = userService.getUserProfileByUsername(username);
+
+        return ResponseEntity.ok(userProfile);
+    }
 }

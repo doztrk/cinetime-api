@@ -225,4 +225,10 @@ public class UserService {
 
         return users.map(userMapper::mapUserToBaseUserResponse);
     }
+
+    public BaseUserResponse getUserProfileByUsername(String username) {
+        User user = userRepository.findByPhoneNumber(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+        return userMapper.mapUserToBaseUserResponse(user);
+    }
 }
