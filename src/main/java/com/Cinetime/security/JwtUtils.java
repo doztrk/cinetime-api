@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -53,6 +54,14 @@ public class JwtUtils {
             logger.error("Cannot generate token: authentication is null");
             throw new IllegalArgumentException("Authentication cannot be null");
         }
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_ANONYMOUS");
+
+        role = role.startsWith("ROLE_") ? role.substring(5) : role;
+
 
         String phoneNumber = authentication.getName();
         Date currentDate = new Date();
@@ -60,6 +69,7 @@ public class JwtUtils {
 
         return Jwts.builder()
                 .setSubject(phoneNumber)
+                .claim("role", role)
                 .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

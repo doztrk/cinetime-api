@@ -25,9 +25,9 @@ public class ShowtimeService {
         List<ShowtimeResponse> allShowtimes = showtimeRepository.findShowtimeDtosByMovieId(movieId);
 
 
-        if (allShowtimes.isEmpty()) { //Eger bossa noContent dondur
+        if (allShowtimes.isEmpty()) {
             return ResponseMessage.<List<ShowtimeResponse>>builder()
-                    .httpStatus(HttpStatus.OK) // Liste bos olsa bile HttpRequest 200 donduruyoruz
+                    .httpStatus(HttpStatus.NOT_FOUND)
                     .message("Showtimes not found for the given movie")
                     .build();
         } else {

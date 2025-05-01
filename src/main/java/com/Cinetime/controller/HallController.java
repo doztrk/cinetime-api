@@ -40,4 +40,5 @@ public class HallController {
     public ResponseMessage<List<HallResponse>> getAllSpecialHalls() {
         return hallService.getAllSpecialHalls();
     }
+
 }

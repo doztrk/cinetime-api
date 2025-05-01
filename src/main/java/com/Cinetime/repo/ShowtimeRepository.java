@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
@@ -15,4 +16,5 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             "FROM Showtime s JOIN s.movie m JOIN s.hall h " +
             "WHERE m.id = :movieId")
     List<ShowtimeResponse> findShowtimeDtosByMovieId(@Param("movieId") Long movieId);
+
 }

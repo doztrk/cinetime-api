@@ -3,6 +3,7 @@ package com.Cinetime.entity;
 import com.Cinetime.converter.MovieStatusConverter;
 import com.Cinetime.enums.MovieStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -74,6 +76,7 @@ public class Movie {
     private Set<Hall> halls = new HashSet<>();
 
     // One-to-many relationship with Showtime
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @Builder.Default
     @JsonIgnore
@@ -137,6 +140,18 @@ public class Movie {
         return String.format("%02d:%02d", duration / 60, duration % 60);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return Objects.equals(id, movie.id); // Use only ID
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // Use only ID
+    }
     //TODO: Rating sınıfı oluşturup hikaye,görsellik,müzik,oyunculuk eklenebilir.
 
 }

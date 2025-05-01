@@ -17,5 +17,8 @@ public class ErrorMessages {
     public static final String DUPLICATE_EMAIL = "User with this email already exists";
     public static final String DUPLICATE_PHONE_NUMBER = "User with this phone number already exists";
     public static final String AUTHENTICATION_NOT_FOUND = "Authentication not found with the provided Phone Number, this indicates a system error";
-    ;;
+    public static final String PAYMENT_ERROR = "Unexpected error occured during payment" ;
+    public static final String NO_SEAT_SPECIFIED = "No seats specified for the given ticket request";
+
+    public static final String SEATS_ARE_OCCUPIED = "The following seats are already occupied:  ";
 }

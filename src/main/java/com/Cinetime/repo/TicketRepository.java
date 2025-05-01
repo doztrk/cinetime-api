@@ -23,16 +23,32 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     Page<Ticket> findByUserAndStatus(User user, TicketStatus status, Pageable pageable);
 
-    Optional<Ticket> findByShowtimeAndSeatLetterAndSeatNumber(Showtime showtime, String seatLetter, Integer seatNumber);
 
     List<Ticket> findByShowtime(Showtime showtime);
 
     List<Ticket> findByShowtimeAndSeatLetterInAndSeatNumberIn(Showtime showtime, List<String> letters, List<Integer> numbers);
+
     Optional<Ticket> findByShowtimeAndSeatLetterAndSeatNumberAndStatusIn(
             Showtime showtime,
             String seatLetter,
             int seatNumber,
             List<TicketStatus> statusList
     );
+
+    List<Ticket> findByShowtimeAndSeatLetterAndSeatNumberInAndStatusIn(
+            Showtime showtime,
+            String seatLetter,
+            List<Integer> seatNumbers,
+            List<TicketStatus> statuses
+    );
+
+    List<Ticket> findByShowtimeAndStatusIn(
+            Showtime showtime,
+            List<TicketStatus> statuses
+    );
+
+
+    @Query("SELECT CONCAT(t.seatLetter, t.seatNumber) FROM Ticket t WHERE t.showtime.id = :showtimeId AND t.status IN :statuses")
+    List<String> findOccupiedSeatsByShowtimeAndStatus(@Param("showtimeId") Long showtimeId, @Param("statuses") List<TicketStatus> statuses);
 
 }

@@ -53,7 +53,7 @@ public class MovieMapper {
     }
 
     public List<MovieResponse> mapMovieToMovieResponse(List<Movie> movies) {
-        return movies.stream().map(this::mapMovieToMovieResponse).toList();
+        return movies.stream().map(this::mapMovieToMovieResponse).toList(); //TODO: FIND OUT WHY THIS IS NOT USED
     }
 
 }

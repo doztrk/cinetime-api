@@ -12,6 +12,7 @@ import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.payload.dto.response.BaseUserResponse;
+import com.Cinetime.security.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,7 @@ public class UserService {
     private final UpdateUserHelper updateUserHelper;
     private final TicketHelper ticketHelper;
     private final PageableHelper pageableHelper;
+    private final SecurityService securityService;
 
 
     @Transactional
@@ -47,7 +49,7 @@ public class UserService {
         if (!uniquePropertyValidator.uniquePropertyChecker(userRequest.getEmail(), userRequest.getPhoneNumber())) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_USER_PROPERTIES)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
         ///DTO -> Entity
@@ -58,7 +60,8 @@ public class UserService {
         user.setRole(roleService.getRole(RoleName.MEMBER));
 
         //Password encoding
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        //TODO:DEBUG YAP
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         user.setBuiltIn(false);
         User savedUser = userRepository.save(user);
@@ -86,7 +89,7 @@ public class UserService {
         if (!isUnique) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_USER_PROPERTIES)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
         User user = userMapper.mapUserRequestToUser(userCreateDTO);
@@ -146,7 +149,7 @@ public class UserService {
 
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_EMAIL)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
 
@@ -157,7 +160,7 @@ public class UserService {
 
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_PHONE_NUMBER)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
 
@@ -220,7 +223,6 @@ public class UserService {
                 .httpStatus(HttpStatus.OK)
                 .object(userResponse)
                 .build();
-
     }
 
     public Page<BaseUserResponse> getUserWithParam(String q, int page, int size, String sort, String type) {
@@ -303,7 +305,7 @@ public class UserService {
 
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_EMAIL)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
 
@@ -314,7 +316,7 @@ public class UserService {
 
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_PHONE_NUMBER)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
 
@@ -334,4 +336,14 @@ public class UserService {
                 .build();
     }
 
+    public ResponseMessage<BaseUserResponse> getAuthenticatedUserDetails() {
+
+        User user = securityService.getCurrentUser();
+
+        return ResponseMessage.<BaseUserResponse>builder()
+                .message(SuccessMessages.USER_FOUND)
+                .httpStatus(HttpStatus.OK)
+                .object(userMapper.mapUserToBaseUserResponse(user))
+                .build();
+    }
 }

@@ -286,4 +286,24 @@ public class UserController {
     public ResponseMessage<BaseUserResponse> updateUserById(@PathVariable Long userId, @RequestBody UserUpdateRequest updateUserRequest) {
         return userService.updateUser(userId, updateUserRequest);
     }
+
+
+    @Operation(
+            summary = "Get Authenticated User Details",
+            description = "Retrieves details of the currently authenticated user",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved authenticated user details",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - No valid authentication token"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - Insufficient permissions"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/users/auth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
+    public ResponseMessage<BaseUserResponse> getAuthenticatedUserDetails(){
+        return userService.getAuthenticatedUserDetails();
+    }
 }
