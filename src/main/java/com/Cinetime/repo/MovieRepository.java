@@ -3,6 +3,8 @@ package com.Cinetime.repo;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.enums.MovieStatus;
+import com.Cinetime.payload.dto.response.MovieResponse;
+import com.Cinetime.payload.dto.response.MovieResponseCinema;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,14 +32,16 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                                                   Pageable pageable,
                                                   @Param("sort") String sort);
 
-    @Query("SELECT new com.Cinetime.payload.dto.response.MovieResponse(m.id, m.title, m.slug, m.summary, " +
+    @Query("SELECT new com.Cinetime.payload.dto.response.MovieResponseCinema(m.id, m.title, m.slug, m.summary, " +
             "m.releaseDate, m.duration, m.rating, m.director, m.cast, m.formats, m.genre, m.status) " +
             "FROM Movie m JOIN m.halls h JOIN h.cinema c WHERE c.slug = :cinemaSlug")
-    Page<MovieResponse> findMoviesByCinemaSlug(@Param("cinemaSlug") String cinemaSlug, Pageable pageable);
+    List<MovieResponseCinema> findMoviesByCinemaSlug(@Param("cinemaSlug") String cinemaSlug);
 
     Page<Movie> findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(String titleQuery, String summaryQuery, Pageable pageable);
 
-
+    @Query("SELECT m FROM Movie m JOIN m.halls h WHERE LOWER(h.name) LIKE LOWER(CONCAT('%', :hallName, '%'))")
+    Page<Movie> findMoviesByHallName(@Param("hallName") String hallName, Pageable pageable);
+    //Page<Movie> findByHalls_NameIgnoreCase(String hallName, Pageable pageable);
 }
 
 

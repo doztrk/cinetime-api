@@ -3,6 +3,7 @@ package com.Cinetime.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,15 +16,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "POSTER_IMAGE")
+@Builder
 public class PosterImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Column(nullable = false, name = "data")
-    private byte[] data;
+    @Column(nullable = false)
+    private String url; // sadece dosya yolu
 
     @Column(nullable = false)
     private String name;

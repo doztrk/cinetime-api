@@ -2,16 +2,19 @@ package com.Cinetime.payload.mappers;
 
 import com.Cinetime.entity.Hall;
 import com.Cinetime.entity.Movie;
-import com.Cinetime.entity.Showtime;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.response.HallResponse;
 import com.Cinetime.payload.dto.response.MovieResponse;
+import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
+@Data
 public class MovieMapper {
 
 
@@ -24,9 +27,6 @@ public class MovieMapper {
                 .releaseDate(movieRequest.getReleaseDate())
                 .duration(movieRequest.getDuration())
                 .rating(movieRequest.getRating())
-                //Hall service'te setlenecek
-                //posterImageId service'te setlenecek
-                //
                 .director(movieRequest.getDirector())
                 .cast(movieRequest.getCast())
                 .formats(movieRequest.getFormats())
@@ -49,8 +49,25 @@ public class MovieMapper {
                 .cast(movie.getCast())
                 .formats(movie.getFormats())
                 .genre(movie.getGenre())
-                .status(movie.getStatus().name())
+                .status(movie.getStatus())
+                .createdAt(movie.getCreatedAt())
+                .updatedAt(movie.getUpdatedAt())
+                .posterUrl(movie.getPosterUrl())
+                .halls(mapHallsToSimpleDto(movie.getHalls()))
                 .build();
+    }
+
+
+    private static Set<HallResponse> mapHallsToSimpleDto(Set<Hall> halls) {
+        if (halls == null) return Set.of();
+        return halls.stream()
+                .map(hall -> HallResponse.builder()
+                        .id(hall.getId())
+                        .name(hall.getName())
+                        .seatCapacity(hall.getSeatCapacity())
+                        .isSpecial(hall.getIsSpecial())
+                        .build())
+                .collect(Collectors.toSet());
     }
 
     public Page<MovieResponse> mapMoviePageToMovieResponse(Page<Movie> movies) {

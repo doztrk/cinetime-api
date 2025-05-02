@@ -1,4 +1,10 @@
 package com.Cinetime.service;
+import com.Cinetime.entity.Showtime;
+import com.Cinetime.helpers.MovieHelperUpdate;
+import com.Cinetime.payload.dto.request.MovieRequestUpdate;
+import com.Cinetime.payload.dto.response.MovieResponse;
+import com.Cinetime.payload.dto.response.MovieResponseCinema;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -23,22 +29,16 @@ import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -52,55 +52,72 @@ public class MovieService {
     private final ShowtimeRepository showtimeRepository;
     private final MovieHelper movieHelper;
     private final PosterImageRepository posterImageRepository;
+    private final ShowtimeService showtimeService;
+    private final MovieHelperUpdate movieHelperUpdate;
 
 
-    public ResponseMessage<Page<Movie>> getMovieByHall(int page, int size, String sort, String type, Long hallId) {
+    public ResponseMessage<Page<MovieResponse>> getMovieByHall(int page, int size, String sort, String type, String hallName) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        Page<Movie> pageResult = movieRepository.findByHalls_Id(hallId, pageable);
+        Page<Movie> pageResult = movieRepository.findMoviesByHallName(hallName, pageable);
 
-        return ResponseMessage.<Page<Movie>>builder()
+        return ResponseMessage.<Page<MovieResponse>>builder()
                 .message("Movies found successfully")
                 .httpStatus(HttpStatus.OK)
-                .object(pageResult)
+                .object(movieMapper.mapMoviePageToMovieResponse(pageResult))
                 .build();
     }
 
-    public ResponseEntity<Page<Movie>> getInTheatersMovies(int page, int size, String sort, String type) {
+    public ResponseMessage<Page<MovieResponse>> getInTheatersMovies(int page, int size, String sort, String type) {
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
         Page<Movie> movies = movieRepository.findByStatus(MovieStatus.IN_THEATERS, pageable);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(movies);
+            return ResponseMessage.<Page<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
         }
+
+        return ResponseMessage.<Page<MovieResponse>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movieMapper.mapMoviePageToMovieResponse(movies))
+                .build();
     }
 
-    public ResponseEntity<Page<Movie>> getComingSoonMovies(int page, int size, String sort, String type) {
+    public ResponseMessage<Page<MovieResponse>> getComingSoonMovies(int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
         Page<Movie> movies = movieRepository.findByStatus(MovieStatus.COMING_SOON, pageable);
 
         if (movies.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(movies);
+            return ResponseMessage.<Page<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
         }
+
+        return ResponseMessage.<Page<MovieResponse>>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movieMapper.mapMoviePageToMovieResponse(movies))
+                .build();
     }
+
 
     @Autowired
     private Environment env;
-    public ResponseMessage<Movie> createMovie(MovieRequest movieRequest) {
+    public ResponseMessage<MovieResponse> createMovie(MovieRequest movieRequest) {
         // Validate input
         movieHelper.validateMovieRequest(movieRequest);
 
         Movie newMovie = movieMapper.mapMovieRequestToMovie(movieRequest);
 
         // Handle Hall relationship
-       Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
+        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
         newMovie.getHalls().add(hallToBeSet);
         hallToBeSet.getMovies().add(newMovie); // Update both sides of the relationship
@@ -110,26 +127,6 @@ public class MovieService {
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
         newMovie.getShowtimes().add(showtimeToBeSet);
         showtimeToBeSet.setMovie(newMovie); // Update both sides of the relationship
-
-        // Handle poster image
-        if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
-            try {
-                PosterImage posterImage = new PosterImage();
-                posterImage.setName(movieRequest.getPosterImage().getOriginalFilename());
-                posterImage.setType(movieRequest.getPosterImage().getContentType());
-                posterImage.setData(movieRequest.getPosterImage().getBytes());
-                PosterImage posterImageSaved = posterImageRepository.save(posterImage);
-
-                newMovie.setPoster(posterImageSaved);
-            } catch (IOException e) {
-                return ResponseMessage.<Movie>builder()
-                        .message("Failed to process image: " + e.getMessage())
-                        .httpStatus(HttpStatus.BAD_REQUEST)
-                        .build();
-            }
-
-
-        }
         */
 
 
@@ -152,10 +149,10 @@ public class MovieService {
                         .path(fileName)
                         .toUriString();
 
-                newMovie.setPosterUrl(imageUrl); // PosterImage yerine URL string
+                newMovie.setPosterUrl(imageUrl);
 
             } catch (IOException e) {
-                return ResponseMessage.<Movie>builder()
+                return ResponseMessage.<MovieResponse>builder()
                         .message("Failed to upload image: " + e.getMessage())
                         .httpStatus(HttpStatus.BAD_REQUEST)
                         .build();
@@ -163,47 +160,47 @@ public class MovieService {
         }
 
         // Save the movie
-        newMovie.setCreatedAt(LocalDate.now());
-        newMovie.setUpdatedAt(LocalDate.now());
+        newMovie.setCreatedAt(LocalDateTime.now());
+        newMovie.setUpdatedAt(LocalDateTime.now());
         Movie savedMovie = movieRepository.save(newMovie);
 
-        return ResponseMessage.<Movie>builder()
+        return ResponseMessage.<MovieResponse>builder()
                 .message(SuccessMessages.MOVIE_CREATE)
                 .httpStatus(HttpStatus.CREATED)
-                .object(savedMovie)
+                .object(movieMapper.mapMovieToMovieResponse(savedMovie))
                 .build();
     }
 
     //M01 - Get Movies By Query
-    public ResponseMessage<Page<Movie>> getMoviesByQuery(String q, int page, int size, String sort, String type) {
+    public ResponseMessage<Page<MovieResponse>> getMoviesByQuery(String q, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
 
         Page<Movie> movies = movieRepository.findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(q, q, pageable);
 
 
-        return ResponseMessage.<Page<Movie>>builder()
+        return ResponseMessage.<Page<MovieResponse>>builder()
                 .message("Movies found successfully")
                 .httpStatus(HttpStatus.OK)
-                .object(movies)
+                .object(movieMapper.mapMoviePageToMovieResponse(movies))
                 .build();
     }
 
 
     // M02 - Return Movies Based on Cinema Slug
-    public ResponseMessage<Page<MovieResponse>> getMoviesByCinemaSlug(String cinemaSlug, int page, int size, String sort, String type) {
+    public ResponseMessage<List<MovieResponseCinema>> getMoviesByCinemaSlug(String cinemaSlug, int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
 
-        Page<MovieResponse> moviePage = movieRepository.findMoviesByCinemaSlug(cinemaSlug, pageable);
+        List<MovieResponseCinema> moviePage = movieRepository.findMoviesByCinemaSlug(cinemaSlug);
 
         if (moviePage.isEmpty()) {
-            return ResponseMessage.<Page<MovieResponse>>builder()
+            return ResponseMessage.<List<MovieResponseCinema>>builder()
                     .message(ErrorMessages.MOVIE_NOT_FOUND)
                     .httpStatus(HttpStatus.NOT_FOUND)
                     .build();
         }
 
-        return ResponseMessage.<Page<MovieResponse>>builder()
+        return ResponseMessage.<List<MovieResponseCinema>>builder()
                 .message("Movies found successfully")
                 .httpStatus(HttpStatus.OK)
                 .object(moviePage)
@@ -211,5 +208,115 @@ public class MovieService {
     }
 
 
-}
+    public ResponseMessage<MovieResponse> getMoviesById(Long movieId) {
 
+        Movie movie = isMovieExist(movieId);
+
+        return ResponseMessage.<MovieResponse>builder()
+                .message("Movies found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(movieMapper.mapMovieToMovieResponse(movie))
+                .build();
+    }
+
+    private Movie isMovieExist(Long id){
+        return movieRepository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException(String.format(ErrorMessages.MOVIE_NOT_FOUND))
+        );
+    }
+
+    public ResponseMessage<MovieResponse> updateMovie(Long movieId, MovieRequestUpdate movieRequest) throws BadRequestException {
+
+        movieHelperUpdate.validateMovieRequest(movieRequest);
+
+        Movie existingMovie = isMovieExist(movieId);
+
+        existingMovie.setTitle(movieRequest.getTitle());
+        existingMovie.setSlug(movieRequest.getSlug());
+        existingMovie.setSummary(movieRequest.getSummary());
+        existingMovie.setDuration(movieRequest.getDuration());
+        existingMovie.setRating(movieRequest.getRating());
+        existingMovie.setDirector(movieRequest.getDirector());
+        existingMovie.setCast(movieRequest.getCast());
+        existingMovie.setGenre(movieRequest.getGenre());
+        existingMovie.setFormats(movieRequest.getFormats());
+        existingMovie.setReleaseDate(movieRequest.getReleaseDate());
+        existingMovie.setStatus(movieRequest.getStatus());
+
+        // Handle Hall relationship update if provided
+        if (movieRequest.getHallId() != null) {
+            Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
+                    .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
+            //existingMovie.getHalls().clear();
+            existingMovie.getHalls().add(hallToBeSet);
+            hallToBeSet.getMovies().add(existingMovie);
+        }
+
+
+        // Handle Showtime relationship if necessary (optional)
+        if (movieRequest.getShowtimeId() != null) {
+            Showtime showtimeToBeSet = showtimeRepository.findById(movieRequest.getShowtimeId())
+                    .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
+            showtimeService.showtimeUpdateCheck(
+                    showtimeToBeSet.getId(),
+                    showtimeToBeSet.getHall().getId(),
+                    showtimeToBeSet.getDate(),
+                    showtimeToBeSet.getStartTime(),
+                    showtimeToBeSet.getEndTime()
+            );
+
+
+            //existingMovie.getShowtimes().clear();  // Clear previous showtimes and set the new one
+            existingMovie.getShowtimes().add(showtimeToBeSet);
+            //showtimeToBeSet.getMovie(). // Update both sides of the relationship
+        }
+
+        // Handle poster image update (optional)
+        if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
+            try {
+                String uploadDir = env.getProperty("file.upload-dir");
+                String fileName = UUID.randomUUID().toString() + "_" + movieRequest.getPosterImage().getOriginalFilename();
+                Path uploadPath = Paths.get(uploadDir);
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(movieRequest.getPosterImage().getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // Set the URL for the image
+                String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/uploads/image/")
+                        .path(fileName)
+                        .toUriString();
+
+                existingMovie.setPosterUrl(imageUrl);
+
+            } catch (IOException e) {
+                return ResponseMessage.<MovieResponse>builder()
+                        .message("Failed to upload image: " + e.getMessage())
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
+        }
+
+
+        existingMovie.setUpdatedAt(LocalDateTime.now());
+        Movie updatedMovie = movieRepository.save(existingMovie);
+
+        return ResponseMessage.<MovieResponse>builder()
+                .message(SuccessMessages.MOVIE_UPDATE)
+                .httpStatus(HttpStatus.OK)
+                .object(movieMapper.mapMovieToMovieResponse(updatedMovie))
+                .build();
+    }
+
+    public ResponseMessage<?> deleteMovieById(Long movieId) {
+        isMovieExist(movieId);
+        return ResponseMessage.builder()
+                .message(SuccessMessages.MOVIE_DELETE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+}
