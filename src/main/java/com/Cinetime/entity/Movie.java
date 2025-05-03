@@ -28,7 +28,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Table(name = "MOVIE")
 public class Movie {
 
