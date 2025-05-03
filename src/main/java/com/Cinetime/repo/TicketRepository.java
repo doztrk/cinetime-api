@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
@@ -22,25 +21,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
 
     Page<Ticket> findByUserAndStatus(User user, TicketStatus status, Pageable pageable);
-
-
-    List<Ticket> findByShowtime(Showtime showtime);
-
-    List<Ticket> findByShowtimeAndSeatLetterInAndSeatNumberIn(Showtime showtime, List<String> letters, List<Integer> numbers);
-
-    Optional<Ticket> findByShowtimeAndSeatLetterAndSeatNumberAndStatusIn(
-            Showtime showtime,
-            String seatLetter,
-            int seatNumber,
-            List<TicketStatus> statusList
-    );
-
-    List<Ticket> findByShowtimeAndSeatLetterAndSeatNumberInAndStatusIn(
-            Showtime showtime,
-            String seatLetter,
-            List<Integer> seatNumbers,
-            List<TicketStatus> statuses
-    );
 
     List<Ticket> findByShowtimeAndStatusIn(
             Showtime showtime,

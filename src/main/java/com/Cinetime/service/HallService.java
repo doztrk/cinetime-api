@@ -1,8 +1,8 @@
 package com.Cinetime.service;
 
 import com.Cinetime.entity.Hall;
-import com.Cinetime.payload.mappers.HallMapper;
 import com.Cinetime.payload.dto.response.HallResponse;
+import com.Cinetime.payload.mappers.HallMapper;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.CinemaRepository;
 import com.Cinetime.repo.HallRepository;
@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service

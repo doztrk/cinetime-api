@@ -63,7 +63,9 @@ public class SecurityConfig {
             "/images/**",
             "/css/**",
             "/js/**",
-            "/error"
+            "/error",
+
+            "/uploads/image/**"
     };
 
     private final JwtAuthFilter jwtAuthFilter;

@@ -1,8 +1,11 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.entity.Movie;
+import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.dto.request.MovieRequest;
+import com.Cinetime.payload.dto.request.MovieRequestUpdate;
 import com.Cinetime.payload.dto.response.MovieResponse;
+import com.Cinetime.payload.dto.response.MovieResponseCinema;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.dto.response.ShowtimeResponse;
 import com.Cinetime.service.MovieService;
@@ -10,12 +13,16 @@ import com.Cinetime.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +50,7 @@ public class MovieController {
     })
 
     @GetMapping("/hall/{hallName}")
-    public ResponseMessage<List<Movie>> getMovieByHall(
+    public ResponseMessage<Page<MovieResponse>> getMovieByHall(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -63,7 +70,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/in-theaters")
-    public ResponseMessage<List<MovieResponse>> getInTheatersMovies(
+    public ResponseMessage<Page<MovieResponse>> getInTheatersMovies(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -82,7 +89,7 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/coming-soon")
-    public ResponseMessage<List<MovieResponse>> getComingSoonMovies(
+    public ResponseMessage<Page<MovieResponse>> getComingSoonMovies(
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of records per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "releaseDate") String sort,
@@ -93,12 +100,12 @@ public class MovieController {
 
     //M11
     @Operation(
-            summary = "Create a new movie {M11}",
+            summary = "Create a new movie",
             description = "Create a new movie with all required attributes including poster image"
     )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseMessage<Movie> createMovie(
+    public ResponseMessage<MovieResponse> createMovie(
             @Parameter(
                     description = "Movie data",
                     content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -118,7 +125,7 @@ public class MovieController {
     })
     @GetMapping
     @Transactional(readOnly = true)
-    public ResponseMessage<Page<Movie>> getMoviesByQuery(
+    public ResponseMessage<Page<MovieResponse>> getMoviesByQuery(
             @Parameter(description = "Search query term (searches in title and summary)")
             @RequestParam(required = false) String q,
             @Parameter(description = "Page number (zero-based)")
@@ -135,7 +142,7 @@ public class MovieController {
 
     // M02
     @Operation(
-            summary = "Get Movies by Cinema Slug {M02}",
+            summary = "Get Movies by Cinema Slug",
             description = "Returns a list of movies showing at a specific cinema identified by its slug"
     )
     @ApiResponses(value = {
@@ -143,10 +150,19 @@ public class MovieController {
             @ApiResponse(responseCode = "404", description = "Cinema not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{slug}")
-    public ResponseMessage<List<MovieResponse>> getMoviesByCinemaSlug(
-            @Parameter(description = "Cinema slug", required = true) @PathVariable String slug) {
-        return movieService.getMoviesByCinemaSlug(slug);
+    @GetMapping("/slug/{cinemaSlug}")
+    public ResponseMessage<List<MovieResponseCinema>> getMoviesByCinemaSlug(
+            @Parameter(description = "Cinema slug", required = true) @PathVariable String cinemaSlug,
+     @Parameter(description = "Page number (zero-based)")
+    @RequestParam(value = "page", defaultValue = "0") int page,
+    @Parameter(description = "Number of records per page")
+    @RequestParam(value = "size", defaultValue = "10") int size,
+    @Parameter(description = "Field to sort by")
+    @RequestParam(value = "sort", defaultValue = "title") String sort,
+    @Parameter(description = "Sort direction (asc or desc)")
+    @RequestParam(value = "type", defaultValue = "asc") String type
+   ) {
+        return movieService.getMoviesByCinemaSlug(cinemaSlug,page, size, sort, type);
     }
 
     //M14
@@ -160,11 +176,109 @@ public class MovieController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{movieId}/show-times")
-    public ResponseMessage<List<ShowtimeResponse>> getUpcomingShowtimes(
+    public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimes(
+            @Parameter(description = "Page number (zero-based)")
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Parameter(description = "Number of records per page")
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by")
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @Parameter(description = "Sort direction (asc or desc)")
+            @RequestParam(value = "type", defaultValue = "asc") String type,
             @Parameter(description = "ID of the movie to get showtimes for", required = true)
             @PathVariable Long movieId) {
-        return showtimeService.getUpcomingShowtimes(movieId);
+        return showtimeService.getUpcomingShowtimes( page, size, sort, type,movieId);
     }
 
-    //todo: movieye showtime eklemek icin ayri bir endpoint yazilacak.
+    //M08
+    @Operation(
+            summary = "Search Movies {M08}",
+            description = "Returns a paginated list of movies matching the search query"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movies list"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/auth/admin")
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseMessage<Page<MovieResponse>> getMoviesByQueryAdmin(
+            @Parameter(description = "Search query term (searches in title and summary)")
+            @RequestParam(required = false) String q,
+            @Parameter(description = "Page number (zero-based)")
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Parameter(description = "Number of records per page")
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by")
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
+            @Parameter(description = "Sort direction (asc or desc)")
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return movieService.getMoviesByQuery(q, page, size, sort, type);
+    }
+
+    //M09
+    @Operation(
+            summary = "Search Movies {M09}",
+            description = "It will return the details of a movie based on id"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movie"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/{movieId}")
+    @Transactional(readOnly = true)
+    public ResponseMessage<MovieResponse> getMoviesById(
+            @Parameter(description = "Search id movie")
+            @PathVariable(required = false) Long movieId
+    ) {
+        return movieService.getMoviesById(movieId);
+    }
+
+    //M10
+    @Operation(
+            summary = "Search Movies {M10}",
+            description = "It will return the details of a movie based on id(ADMIN)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movie for admin"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/{movieId}/admin")
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseMessage<MovieResponse> getMoviesByIdAdmin(
+            @Parameter(description = "Search id movie")
+            @PathVariable(required = false) Long movieId
+    ) {
+        return movieService.getMoviesById(movieId);
+    }
+
+    //M12
+    @Operation(
+            summary = "Update an existing movie",
+            description = "Update an existing movie with the provided id"
+    )
+    @PutMapping("/{movieId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseMessage<MovieResponse> updateMovie(
+            @Parameter(description = "ID of the movie to update", required = true)
+            @PathVariable Long movieId,
+            @Parameter(description = "Movie data")
+            @ModelAttribute MovieRequestUpdate movieRequestUpdate) throws BadRequestException {
+        return movieService.updateMovie(movieId, movieRequestUpdate);
+    }
+
+    //M13
+    @Operation(
+            summary = "Delete an existing movie",
+            description = "Delete an existing movie with the provided id"
+    )
+    @DeleteMapping("/{movieId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseMessage<?> deleteMovieById(
+            @Parameter(description = "ID of the movie to Delete", required = true)
+            @PathVariable Long movieId){
+        return movieService.deleteMovieById(movieId);
+    }
 }
