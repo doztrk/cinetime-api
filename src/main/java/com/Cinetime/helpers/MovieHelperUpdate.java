@@ -1,7 +1,6 @@
 package com.Cinetime.helpers;
 
 import com.Cinetime.helpers.abstracts.AbstractMovieValidatorHelper;
-import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.dto.request.MovieRequestUpdate;
 import com.Cinetime.repo.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MovieHelper extends AbstractMovieValidatorHelper<MovieRequest> {
+public class MovieHelperUpdate extends AbstractMovieValidatorHelper<MovieRequestUpdate> {
 
-    public void validateMovieRequest(MovieRequest request) {
+    public void validateMovieRequest(MovieRequestUpdate request) {
         validateCommonFields(
                 request,
                 request.getTitle(),
@@ -24,7 +23,7 @@ public class MovieHelper extends AbstractMovieValidatorHelper<MovieRequest> {
                 request.getGenre(),
                 request.getHallId(),
                 request.getPosterImage(),
-                null // showtimeId bu request'te yok
+                request.getShowtimeId()
         );
     }
 }

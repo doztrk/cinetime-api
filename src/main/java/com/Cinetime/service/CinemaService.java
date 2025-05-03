@@ -9,19 +9,16 @@ import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.mappers.CinemaHallMapper;
 import com.Cinetime.payload.mappers.HallMapper;
 import com.Cinetime.repo.CinemaRepository;
-import com.Cinetime.repo.HallRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

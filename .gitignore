@@ -40,3 +40,6 @@ src/main/resources/application.properties
 *.log.*
 *.gz
 log/
+
+## İmage Files
+uploads/

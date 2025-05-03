@@ -28,7 +28,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Table(name = "MOVIE")
 public class Movie {
 
@@ -98,10 +98,8 @@ public class Movie {
     @Column(nullable = false)
     private List<String> genre;
 
-    @NotNull
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "poster_id", nullable = false)
-    private PosterImage poster;
+    @Column(name = "poster_url")
+    private String posterUrl;
 
     @NotNull
     @Convert(converter = MovieStatusConverter.class)
