@@ -1,14 +1,15 @@
 package com.Cinetime.helpers;
 
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public class SecurityHelper {
+
 
     /**
      * Get the phone number of the currently authenticated user
@@ -65,4 +66,6 @@ public class SecurityHelper {
         return authentication != null && authentication.isAuthenticated() &&
                 !"anonymousUser".equals(authentication.getPrincipal());
     }
+
+
 }

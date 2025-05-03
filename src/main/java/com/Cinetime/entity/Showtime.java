@@ -1,5 +1,6 @@
 package com.Cinetime.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

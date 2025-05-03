@@ -11,8 +11,17 @@ public class UniquePropertyValidator {
     private final UserRepository userRepository;
 
 
-    public boolean isRegistrationPropertiesUnique(String email, String phoneNumber) {
+    //Property checker to be used for creating user only.
+    public boolean uniquePropertyChecker(String email, String phoneNumber) {
         return !userRepository.existsByEmail(email) && !userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    public boolean isEmailUniqueForUpdate(String email, Long userId) {
+        return !userRepository.existsByEmailAndIdNot(email, userId);
+    }
+
+    public boolean isPhoneNumberUniqueForUpdate(String phoneNumber, Long userId) {
+        return !userRepository.existsByPhoneNumberAndIdNot(phoneNumber, userId);
     }
 }
 

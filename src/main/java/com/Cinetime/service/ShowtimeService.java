@@ -34,10 +34,12 @@ public class ShowtimeService {
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
 
+
         Page<Showtime> showtimes = showtimeRepository.findUpcomingShowtimesByMovieId(movieId, today, now, pageable);
 
         if (showtimes.isEmpty()) {
             return ResponseMessage.<Page<ShowtimeResponse>>builder()
+
                     .httpStatus(HttpStatus.OK)
                     .message("Showtimes not found for the given movie")
                     .build();

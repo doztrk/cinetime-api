@@ -28,8 +28,9 @@ public class UserCinemaFavoriteController {
 
     private final UserCinemaFavoriteService userCinemaFavoriteService;
 
+    //C02
     @Operation(
-            summary = "Get User's Favorite Cinemas",
+            summary = "Get User's Favorite Cinemas {C02}",
             description = "Returns a list of cinemas that the authenticated user has marked as favorites. Requires MEMBER role.",
             security = @SecurityRequirement(name = "bearerAuth")
     )

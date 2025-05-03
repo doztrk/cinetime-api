@@ -39,9 +39,14 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Page<Movie> findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(String titleQuery, String summaryQuery, Pageable pageable);
 
+
+    @Query("SELECT m FROM Movie m WHERE m.title = :title")
+    Optional<Movie> findByTitle(@Param("title") String title);
+
     @Query("SELECT m FROM Movie m JOIN m.halls h WHERE LOWER(h.name) LIKE LOWER(CONCAT('%', :hallName, '%'))")
     Page<Movie> findMoviesByHallName(@Param("hallName") String hallName, Pageable pageable);
     //Page<Movie> findByHalls_NameIgnoreCase(String hallName, Pageable pageable);
+
 }
 
 

@@ -19,10 +19,9 @@ public class UserDetailsImpl implements UserDetails {
 
     public UserDetailsImpl(User user) {
         this.user = user;
-        // Create authority from role
         String roleName = user.getRole() != null && user.getRole().getRoleName() != null
                 ? "ROLE_" + user.getRole().getRoleName().name()
-                : "ROLE_USER";
+                : "ROLE_ANONYMOUS";
         this.authorities = Collections.singleton(new SimpleGrantedAuthority(roleName));
     }
 

@@ -26,7 +26,7 @@ public class HallController {
 
     //C05
     @Operation(
-            summary = "Get All Special Halls",
+            summary = "Get All Special Halls {C05}",
             description = "Returns a list of all special halls across all cinemas"
     )
     @ApiResponses(value = {
@@ -40,4 +40,5 @@ public class HallController {
     public ResponseMessage<List<HallResponse>> getAllSpecialHalls() {
         return hallService.getAllSpecialHalls();
     }
+
 }

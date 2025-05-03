@@ -58,6 +58,7 @@ public class MovieMapper {
     }
 
 
+
     private static Set<HallResponse> mapHallsToSimpleDto(Set<Hall> halls) {
         if (halls == null) return Set.of();
         return halls.stream()
@@ -72,6 +73,7 @@ public class MovieMapper {
 
     public Page<MovieResponse> mapMoviePageToMovieResponse(Page<Movie> movies) {
         return movies.map(this::mapMovieToMovieResponse);
+
     }
 
 }

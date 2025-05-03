@@ -15,6 +15,8 @@ import java.time.LocalDate;
 @SuperBuilder(toBuilder = true)
 public class UserRequest extends AbstractUserRequest {
 
+    //Seperated it from AbstractUserRequest
+
 
     private boolean builtIn = false;
     private RoleName role = RoleName.MEMBER;
