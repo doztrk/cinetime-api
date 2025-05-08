@@ -1,16 +1,24 @@
 package com.Cinetime.payload.mappers;
 
+import com.Cinetime.entity.Hall;
+import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
+import com.Cinetime.payload.dto.request.ShowtimeRequest;
+import com.Cinetime.payload.dto.response.CinemaResponse;
 import com.Cinetime.payload.dto.response.HallResponse;
 import com.Cinetime.payload.dto.response.MovieResponse;
 import com.Cinetime.payload.dto.response.ShowtimeResponse;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
 @Data
+@RequiredArgsConstructor
 public class ShowtimeMapper {
+
+    private final HallMapper hallMapper;
 
 
     public ShowtimeResponse mapShowtimeToShowtimeResponse(Showtime showtime) {
@@ -35,6 +43,7 @@ public class ShowtimeMapper {
                         .createdAt(showtime.getMovie().getCreatedAt())
                         .updatedAt(showtime.getMovie().getUpdatedAt())
                         .posterUrl(showtime.getMovie().getPosterUrl())
+                        .halls(hallMapper.mapHallToHallResponse(showtime.getMovie().getHalls()))
                         .build())
                 .hall(HallResponse.builder()
                         .id(showtime.getHall().getId())
@@ -42,6 +51,16 @@ public class ShowtimeMapper {
                         .seatCapacity(showtime.getHall().getSeatCapacity())
                         .isSpecial(showtime.getHall().getIsSpecial())
                         .build())
+                .cinema(CinemaResponse.builder() // Add cinema information
+                        .id(showtime.getHall().getCinema().getId())
+                        .name(showtime.getHall().getCinema().getName())
+                        .address(showtime.getHall().getCinema().getAddress())
+                        .city(showtime.getHall().getCinema().getCity() != null ?
+                                showtime.getHall().getCinema().getCity().getName() : null)
+                        .district(showtime.getHall().getCinema().getDistrict() != null ?
+                                showtime.getHall().getCinema().getDistrict().getName() : null)
+                        .build())
+                .price(showtime.getPrice())
                 .createdAt(showtime.getCreatedAt())
                 .updatedAt(showtime.getUpdatedAt())
                 .build();
@@ -50,4 +69,15 @@ public class ShowtimeMapper {
     public Page<ShowtimeResponse> mapShowtimePageToShowtimeResponse(Page<Showtime> showtimes) {
         return showtimes.map(this::mapShowtimeToShowtimeResponse);
     }
+    public Showtime mapShowtimeRequestToShowtime(ShowtimeRequest showtimeRequest, Movie movie, Hall hall,Double price){
+        return Showtime.builder()
+                .date(showtimeRequest.getDate())
+                .startTime(showtimeRequest.getStartTime())
+                .endTime(showtimeRequest.getEndTime())
+                .movie(movie)
+                .hall(hall)
+                .price(price)
+                .build();
+    }
+
 }

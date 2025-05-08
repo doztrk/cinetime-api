@@ -4,6 +4,7 @@ import com.Cinetime.entity.Showtime;
 import com.Cinetime.entity.Ticket;
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.TicketStatus;
+import com.Cinetime.payload.business.SeatInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,4 +32,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT CONCAT(t.seatLetter, t.seatNumber) FROM Ticket t WHERE t.showtime.id = :showtimeId AND t.status IN :statuses")
     List<String> findOccupiedSeatsByShowtimeAndStatus(@Param("showtimeId") Long showtimeId, @Param("statuses") List<TicketStatus> statuses);
 
+    @Query("SELECT new com.Cinetime.payload.business.SeatInfo(t.seatLetter, t.seatNumber, t.price) FROM Ticket t WHERE t.showtime.id = :showtimeId AND t.status IN :statuses")
+    List<SeatInfo> findOccupiedSeatInfoByShowtimeAndStatus(@Param("showtimeId") Long showtimeId, @Param("statuses") List<TicketStatus> statuses);
 }

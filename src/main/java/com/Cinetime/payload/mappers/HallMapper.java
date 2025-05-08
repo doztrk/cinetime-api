@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,4 +36,15 @@ public class HallMapper {
                 .isSpecial(hall.getIsSpecial() != null ? hall.getIsSpecial() : false)
                 .build();
     }
+
+    public Set<HallResponse> mapHallToHallResponse(Set<Hall> halls) {
+        if (halls == null || halls.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        return halls.stream()
+                .map(this::mapToHallResponse)
+                .collect(Collectors.toSet());
+    }
+
 }

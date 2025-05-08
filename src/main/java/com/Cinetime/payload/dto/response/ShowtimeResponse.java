@@ -16,6 +16,10 @@ public class ShowtimeResponse {
     private LocalTime endTime;
     private MovieResponse movie;
     private HallResponse hall;
+    private CinemaResponse cinema;
+    private Double price;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+
 }

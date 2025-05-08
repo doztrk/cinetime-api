@@ -46,11 +46,16 @@ public class SecurityConfig {
             "/api/validate-reset-password-code",
             "/api/reset-password",
 
+
             // Public API endpoints
             "/api/special-halls",
             "/api/images/**",
             "/api/debug-auth",
             "/api/debug-token",
+            "/api/cinemas/movie/**",
+            "/api/showtime/**",
+            "/api/seat/**",
+
 
             // Swagger/OpenAPI
             "/v3/api-docs/**",
@@ -124,7 +129,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         // For production, replace with specific origins like:
         // configuration.setAllowedOrigins(List.of("https://yourdomain.com", "https://api.yourdomain.com"));
-        configuration.setAllowedOrigins(List.of("*")); //TODO: -> Bunu http://localhost:3000 ile degistir
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); //TODO: -> Bunu http://localhost:3000 ile degistir
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));

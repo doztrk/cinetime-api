@@ -1,7 +1,9 @@
 package com.Cinetime.service;
+
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.helpers.MovieHelperUpdate;
 import com.Cinetime.payload.dto.request.MovieRequestUpdate;
+import com.Cinetime.payload.dto.response.CinemaResponse;
 import com.Cinetime.payload.dto.response.MovieResponse;
 import com.Cinetime.payload.dto.response.MovieResponseCinema;
 import org.apache.coyote.BadRequestException;
@@ -24,7 +26,6 @@ import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.HallRepository;
 import com.Cinetime.repo.MovieRepository;
-import com.Cinetime.repo.PosterImageRepository;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,10 +52,10 @@ public class MovieService {
     private final HallRepository hallRepository;
     private final ShowtimeRepository showtimeRepository;
     private final MovieHelper movieHelper;
-    private final PosterImageRepository posterImageRepository;
     private final ShowtimeService showtimeService;
     private final MovieHelperUpdate movieHelperUpdate;
-
+    @Autowired
+    private Environment env;
 
     public ResponseMessage<Page<MovieResponse>> getMovieByHall(int page, int size, String sort, String type, String hallName) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
@@ -107,9 +108,6 @@ public class MovieService {
                 .build();
     }
 
-
-    @Autowired
-    private Environment env;
     public ResponseMessage<MovieResponse> createMovie(MovieRequest movieRequest) {
         // Validate input
         movieHelper.validateMovieRequest(movieRequest);
@@ -133,7 +131,7 @@ public class MovieService {
         if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
             try {
                 String uploadDir = env.getProperty("file.upload-dir");
-                String fileName = UUID.randomUUID().toString() + "_" + movieRequest.getPosterImage().getOriginalFilename();
+                String fileName = UUID.randomUUID() + "_" + movieRequest.getPosterImage().getOriginalFilename();
                 Path uploadPath = Paths.get(uploadDir);
 
                 if (!Files.exists(uploadPath)) {
@@ -219,9 +217,9 @@ public class MovieService {
                 .build();
     }
 
-    private Movie isMovieExist(Long id){
+    private Movie isMovieExist(Long id) {
         return movieRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException(String.format(ErrorMessages.MOVIE_NOT_FOUND))
+                () -> new ResourceNotFoundException(String.format(ErrorMessages.MOVIE_NOT_FOUND))
         );
     }
 
@@ -319,4 +317,27 @@ public class MovieService {
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
+
+    public ResponseMessage<Page<MovieResponse>> getAllMovies(int page, int size, String sort, String type) {
+
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        Page<Movie> moviePage = movieRepository.findAll(pageable);
+
+        if (moviePage.isEmpty()) {
+            return ResponseMessage.<Page<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIES_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        return ResponseMessage.<Page<MovieResponse>>builder()
+                .message("Movies found successfully")
+                .object(moviePage.map(movieMapper::mapMovieToMovieResponse))
+                .httpStatus(HttpStatus.OK)
+                .build();
+
+    }
+
+
 }
