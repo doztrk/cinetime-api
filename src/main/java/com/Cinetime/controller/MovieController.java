@@ -4,10 +4,7 @@ import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.dto.request.MovieRequestUpdate;
-import com.Cinetime.payload.dto.response.MovieResponse;
-import com.Cinetime.payload.dto.response.MovieResponseCinema;
-import com.Cinetime.payload.dto.response.ResponseMessage;
-import com.Cinetime.payload.dto.response.ShowtimeResponse;
+import com.Cinetime.payload.dto.response.*;
 import com.Cinetime.service.MovieService;
 import com.Cinetime.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -153,42 +150,19 @@ public class MovieController {
     @GetMapping("/slug/{cinemaSlug}")
     public ResponseMessage<List<MovieResponseCinema>> getMoviesByCinemaSlug(
             @Parameter(description = "Cinema slug", required = true) @PathVariable String cinemaSlug,
-     @Parameter(description = "Page number (zero-based)")
-    @RequestParam(value = "page", defaultValue = "0") int page,
-    @Parameter(description = "Number of records per page")
-    @RequestParam(value = "size", defaultValue = "10") int size,
-    @Parameter(description = "Field to sort by")
-    @RequestParam(value = "sort", defaultValue = "title") String sort,
-    @Parameter(description = "Sort direction (asc or desc)")
-    @RequestParam(value = "type", defaultValue = "asc") String type
-   ) {
-        return movieService.getMoviesByCinemaSlug(cinemaSlug,page, size, sort, type);
-    }
-
-    //M14
-    @Operation(
-            summary = "Get Upcoming Showtimes {M14}",
-            description = "Returns a list of upcoming showtimes for a specific movie"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved showtimes list"),
-            @ApiResponse(responseCode = "404", description = "Movie not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @GetMapping("/{movieId}/show-times")
-    public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimes(
             @Parameter(description = "Page number (zero-based)")
             @RequestParam(value = "page", defaultValue = "0") int page,
             @Parameter(description = "Number of records per page")
             @RequestParam(value = "size", defaultValue = "10") int size,
             @Parameter(description = "Field to sort by")
-            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
             @Parameter(description = "Sort direction (asc or desc)")
-            @RequestParam(value = "type", defaultValue = "asc") String type,
-            @Parameter(description = "ID of the movie to get showtimes for", required = true)
-            @PathVariable Long movieId) {
-        return showtimeService.getUpcomingShowtimes( page, size, sort, type,movieId);
+            @RequestParam(value = "type", defaultValue = "asc") String type
+    ) {
+        return movieService.getMoviesByCinemaSlug(cinemaSlug, page, size, sort, type);
     }
+
+  //TODO: Create Showtime Controller and put this there
 
     //M08
     @Operation(
@@ -219,7 +193,7 @@ public class MovieController {
 
     //M09
     @Operation(
-            summary = "Search Movies {M09}",
+            summary = "Search Movies By ID{M09}",
             description = "It will return the details of a movie based on id"
     )
     @ApiResponses(value = {
@@ -278,7 +252,33 @@ public class MovieController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseMessage<?> deleteMovieById(
             @Parameter(description = "ID of the movie to Delete", required = true)
-            @PathVariable Long movieId){
+            @PathVariable Long movieId) {
         return movieService.deleteMovieById(movieId);
     }
+
+    //GET ALL MOVIES
+    @Operation(
+            summary = "Get all movies by page",
+            description = "Returns a list of all movies with pagination"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movies list"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/getAllMoviesByPage")
+    @Transactional(readOnly = true)
+    public ResponseMessage<Page<MovieResponse>> getAllMoviesByPage(
+            @Parameter(description = "Page number (zero-based)")
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Parameter(description = "Number of records per page")
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by")
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
+            @Parameter(description = "Sort direction (asc or desc)")
+            @RequestParam(value = "type", defaultValue = "asc") String type) {
+
+        return movieService.getAllMovies(page, size, sort, type);
+    }
+
+
 }

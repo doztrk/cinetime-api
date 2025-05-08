@@ -4,11 +4,16 @@ import com.Cinetime.entity.Cinema;
 import com.Cinetime.entity.Hall;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.dto.response.CinemaHallResponse;
+import com.Cinetime.payload.dto.response.CinemaResponse;
 import com.Cinetime.payload.dto.response.HallResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.mappers.CinemaHallMapper;
+import com.Cinetime.payload.mappers.CinemaMapper;
 import com.Cinetime.payload.mappers.HallMapper;
+import com.Cinetime.payload.messages.ErrorMessages;
+import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.repo.CinemaRepository;
+import com.Cinetime.repo.MovieRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +33,8 @@ public class CinemaService {
     private final PageableHelper pageableHelper;
     private final HallMapper hallMapper;
     private final CinemaHallMapper cinemaHallMapper;
+    private final MovieRepository movieRepository;
+    private final CinemaMapper cinemaMapper;
 
 
     //C01
@@ -54,7 +61,6 @@ public class CinemaService {
                 .object(cinemas)
                 .build();
     }
-
 
     //C03 return cinema details by id
     public ResponseMessage<Cinema> getCinemaById(Long id) {
@@ -99,6 +105,34 @@ public class CinemaService {
                 .message("Cinema halls found successfully")
                 .httpStatus(HttpStatus.OK)
                 .object(cinemaHallResponse)
+                .build();
+    }
+
+
+    public ResponseMessage<Page<CinemaResponse>> getCinemasByMovieId(
+            Long movieId,
+            int page,
+            int size,
+            String sort,
+            String type) {
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+
+        Page<Cinema> cinemasPage = cinemaRepository.findCinemasByMovieId(movieId, pageable);
+
+        if (cinemasPage.isEmpty()) {
+            return ResponseMessage.<Page<CinemaResponse>>builder()
+                    .message(ErrorMessages.CINEMA_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Page<CinemaResponse> cinemaResponses = cinemasPage.map(cinemaMapper::mapCinemaToCinemaResponse);
+
+        return ResponseMessage.<Page<CinemaResponse>>builder()
+                .message(SuccessMessages.CINEMA_FOUND)
+                .httpStatus(HttpStatus.OK)
+                .object(cinemaResponses)
                 .build();
     }
 }

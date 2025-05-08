@@ -143,7 +143,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/users/auth")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseMessage<BaseUserResponse> createUser(
             @Parameter(description = "User details", required = true)
             @RequestBody @Valid UserRequest userCreateDTO) {

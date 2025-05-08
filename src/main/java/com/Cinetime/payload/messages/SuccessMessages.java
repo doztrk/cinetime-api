@@ -17,4 +17,7 @@ public class SuccessMessages {
     public static final String MOVIE_DELETE = "Movie has been deleted successfully";
 
 
+    public static final String CINEMA_FOUND = "Cinemas has been found successfully";
+    public static final String SHOWTIME_FOUND = "Showtime has been found successfully";
+    public static final String SHOWTIME_CREATED_SUCCESSFULLY = "Showtime has been created successfully";
 }

@@ -1,10 +1,18 @@
 package com.Cinetime.service;
 
+import com.Cinetime.entity.Hall;
+import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.helpers.PageableHelper;
+import com.Cinetime.helpers.TicketPriceHelper;
+import com.Cinetime.payload.dto.request.ShowtimeRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.dto.response.ShowtimeResponse;
 import com.Cinetime.payload.mappers.ShowtimeMapper;
+import com.Cinetime.payload.messages.ErrorMessages;
+import com.Cinetime.payload.messages.SuccessMessages;
+import com.Cinetime.repo.HallRepository;
+import com.Cinetime.repo.MovieRepository;
 import com.Cinetime.repo.ShowtimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -26,6 +34,9 @@ public class ShowtimeService {
     private final ShowtimeRepository showtimeRepository;
     private final PageableHelper pageableHelper;
     private final ShowtimeMapper showtimeMapper;
+    private final MovieRepository movieRepository;
+    private final HallRepository hallRepository;
+    private final TicketPriceHelper ticketPriceHelper;
 
     public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimes(int page, int size, String sort, String type, Long movieId) {
 
@@ -52,7 +63,7 @@ public class ShowtimeService {
                 .build();
     }
 
-    public void showtimeCheck(Long hallId,LocalDate date,LocalTime startTime,LocalTime endTime) throws BadRequestException {
+    public void showtimeCheck(Long hallId, LocalDate date, LocalTime startTime, LocalTime endTime) throws BadRequestException {
 
         boolean hasConflict = showtimeRepository.existsByHallIdAndDateAndTimeOverlap(
                 hallId,
@@ -65,7 +76,7 @@ public class ShowtimeService {
         }
     }
 
-    public void showtimeUpdateCheck(Long showtimeId, Long hallId,LocalDate date,LocalTime startTime,LocalTime endTime) throws BadRequestException {
+    public void showtimeUpdateCheck(Long showtimeId, Long hallId, LocalDate date, LocalTime startTime, LocalTime endTime) throws BadRequestException {
         boolean hasConflict = showtimeRepository.existsConflictForUpdate(
                 showtimeId,
                 hallId,
@@ -77,5 +88,65 @@ public class ShowtimeService {
         if (hasConflict) {
             throw new BadRequestException("Bu saat aralığında bu salonda başka bir gösterim mevcut.");
         }
+    }
+
+    public ResponseMessage<ShowtimeResponse> getShowtimeById(Long showtimeId) {
+        Optional<Showtime> showtimeOptional = showtimeRepository.findById(showtimeId);
+
+        if (showtimeOptional.isEmpty()) {
+            return ResponseMessage.<ShowtimeResponse>builder()
+                    .message(ErrorMessages.SHOWTIME_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Showtime showtime = showtimeOptional.get();
+        return ResponseMessage.<ShowtimeResponse>builder()
+                .message(SuccessMessages.SHOWTIME_FOUND)
+                .httpStatus(HttpStatus.OK)
+                .object(showtimeMapper.mapShowtimeToShowtimeResponse(showtime))
+                .build();
+
+    }
+
+    public ResponseMessage<ShowtimeResponse> createShowtimeForMovie(ShowtimeRequest showtimeRequest) {
+
+        Optional<Movie> movieOptional = movieRepository.findById(showtimeRequest.getMovieId());
+        if (movieOptional.isEmpty()) {
+            return ResponseMessage.<ShowtimeResponse>builder()
+                    .message(ErrorMessages.MOVIE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Movie movie = movieOptional.get();
+
+        Optional<Hall> hallOptional = hallRepository.findById(showtimeRequest.getHallId());
+        if (hallOptional.isEmpty()) {
+            return ResponseMessage.<ShowtimeResponse>builder()
+                    .message(ErrorMessages.HALL_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Hall hall = hallOptional.get();
+        LocalDate date = showtimeRequest.getDate();
+        LocalTime startTime = showtimeRequest.getStartTime();
+        LocalTime endTime = showtimeRequest.getEndTime();
+
+
+        Double showtimePrice = ticketPriceHelper.calculateTicketPrice(hall, movie, startTime, endTime, date);
+
+        Showtime showtime = showtimeMapper.mapShowtimeRequestToShowtime(showtimeRequest, movie, hall, showtimePrice);
+
+
+        showtimeRepository.save(showtime);
+
+        return ResponseMessage.<ShowtimeResponse>builder()
+                .message(SuccessMessages.SHOWTIME_CREATED_SUCCESSFULLY)
+                .httpStatus(HttpStatus.OK)
+                .object(showtimeMapper.mapShowtimeToShowtimeResponse(showtime))
+                .build();
+
     }
 }

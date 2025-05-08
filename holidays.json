@@ -1,0 +1,197 @@
+[
+  {
+    "title": "Yılbaşı",
+    "date": 1735678800000,
+    "localeDateString": "01.01.2025"
+  },
+  {
+    "title": "Ramazan Bayramı Arifesi (yarım gün)",
+    "date": 1743195600000,
+    "localeDateString": "29.03.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743282000000,
+    "localeDateString": "30.03.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743368400000,
+    "localeDateString": "31.03.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743454800000,
+    "localeDateString": "01.04.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743541200000,
+    "localeDateString": "02.04.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743627600000,
+    "localeDateString": "03.04.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743714000000,
+    "localeDateString": "04.04.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743800400000,
+    "localeDateString": "05.04.2025"
+  },
+  {
+    "title": "Ramazan Bayramı",
+    "date": 1743886800000,
+    "localeDateString": "06.04.2025"
+  },
+  {
+    "title": "Ulusal Egemenlik ve Çocuk Bayramı",
+    "date": 1745355600000,
+    "localeDateString": "23.04.2025"
+  },
+  {
+    "title": "Emek ve Dayanışma Günü",
+    "date": 1746046800000,
+    "localeDateString": "01.05.2025"
+  },
+  {
+    "title": "Atatürk’ü Anma, Gençlik ve Spor Bayramı",
+    "date": 1747602000000,
+    "localeDateString": "19.05.2025"
+  },
+  {
+    "title": "Kurban Bayramı Arifesi (yarım gün) (kesin değil)",
+    "date": 1749070800000,
+    "localeDateString": "05.06.2025"
+  },
+  {
+    "title": "Kurban Bayramı (kesin değil)",
+    "date": 1749157200000,
+    "localeDateString": "06.06.2025"
+  },
+  {
+    "title": "Kurban Bayramı Gün 2 (kesin değil)",
+    "date": 1749243600000,
+    "localeDateString": "07.06.2025"
+  },
+  {
+    "title": "Kurban Bayramı Gün 3 (kesin değil)",
+    "date": 1749330000000,
+    "localeDateString": "08.06.2025"
+  },
+  {
+    "title": "Kurban Bayramı Gün 4 (kesin değil)",
+    "date": 1749416400000,
+    "localeDateString": "09.06.2025"
+  },
+  {
+    "title": "Demokrasi ve Millî Birlik Günü",
+    "date": 1752526800000,
+    "localeDateString": "15.07.2025"
+  },
+  {
+    "title": "Zafer Bayramı",
+    "date": 1756501200000,
+    "localeDateString": "30.08.2025"
+  },
+  {
+    "title": "Cumhuriyet Bayramı Arifesi (yarım gün)",
+    "date": 1761598800000,
+    "localeDateString": "28.10.2025"
+  },
+  {
+    "title": "Cumhuriyet Bayramı",
+    "date": 1761685200000,
+    "localeDateString": "29.10.2025"
+  },
+  {
+    "title": "Yılbaşı",
+    "date": 1767214800000,
+    "localeDateString": "01.01.2026"
+  },
+  {
+    "title": "Ramazan Bayramı Arifesi (yarım gün) (kesin değil)",
+    "date": 1773867600000,
+    "localeDateString": "19.03.2026"
+  },
+  {
+    "title": "Ramazan Bayramı (kesin değil)",
+    "date": 1773954000000,
+    "localeDateString": "20.03.2026"
+  },
+  {
+    "title": "Ramazan Bayramı (kesin değil)",
+    "date": 1774040400000,
+    "localeDateString": "21.03.2026"
+  },
+  {
+    "title": "Ramazan Bayramı (kesin değil)",
+    "date": 1774126800000,
+    "localeDateString": "22.03.2026"
+  },
+  {
+    "title": "Ulusal Egemenlik ve Çocuk Bayramı",
+    "date": 1776891600000,
+    "localeDateString": "23.04.2026"
+  },
+  {
+    "title": "Emek ve Dayanışma Günü",
+    "date": 1777582800000,
+    "localeDateString": "01.05.2026"
+  },
+  {
+    "title": "Atatürk’ü Anma, Gençlik ve Spor Bayramı",
+    "date": 1779138000000,
+    "localeDateString": "19.05.2026"
+  },
+  {
+    "title": "Kurban Bayramı Arifesi (yarım gün) (kesin değil)",
+    "date": 1779742800000,
+    "localeDateString": "26.05.2026"
+  },
+  {
+    "title": "Kurban Bayramı (kesin değil)",
+    "date": 1779829200000,
+    "localeDateString": "27.05.2026"
+  },
+  {
+    "title": "Kurban Bayramı Gün 2 (kesin değil)",
+    "date": 1779915600000,
+    "localeDateString": "28.05.2026"
+  },
+  {
+    "title": "Kurban Bayramı Gün 3 (kesin değil)",
+    "date": 1780002000000,
+    "localeDateString": "29.05.2026"
+  },
+  {
+    "title": "Kurban Bayramı Gün 4 (kesin değil)",
+    "date": 1780088400000,
+    "localeDateString": "30.05.2026"
+  },
+  {
+    "title": "Demokrasi ve Millî Birlik Günü",
+    "date": 1784062800000,
+    "localeDateString": "15.07.2026"
+  },
+  {
+    "title": "Zafer Bayramı",
+    "date": 1788037200000,
+    "localeDateString": "30.08.2026"
+  },
+  {
+    "title": "Cumhuriyet Bayramı Arifesi (yarım gün)",
+    "date": 1793134800000,
+    "localeDateString": "28.10.2026"
+  },
+  {
+    "title": "Cumhuriyet Bayramı",
+    "date": 1793221200000,
+    "localeDateString": "29.10.2026"
+  }
+]

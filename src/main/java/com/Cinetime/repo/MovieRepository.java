@@ -47,6 +47,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Page<Movie> findMoviesByHallName(@Param("hallName") String hallName, Pageable pageable);
     //Page<Movie> findByHalls_NameIgnoreCase(String hallName, Pageable pageable);
 
+
 }
 
 
