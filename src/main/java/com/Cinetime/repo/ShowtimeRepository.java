@@ -16,14 +16,13 @@ import java.util.Optional;
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
 
-
     @Query("""
-    SELECT s FROM Showtime s
-    WHERE s.movie.id = :movieId 
-    AND (s.date > :today OR 
-         (s.date = :today AND s.startTime > :now))
-    ORDER BY s.date, s.startTime
-""")
+                SELECT s FROM Showtime s
+                WHERE s.movie.id = :movieId 
+                AND (s.date > :today OR 
+                     (s.date = :today AND s.startTime > :now))
+                ORDER BY s.date, s.startTime
+            """)
     Page<Showtime> findUpcomingShowtimesByMovieId(
             @Param("movieId") Long movieId,
             @Param("today") LocalDate today,
@@ -32,14 +31,14 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     );
 
     @Query("""
-    SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
-    FROM Showtime s
-    WHERE s.hall.id = :hallId
-      AND s.date = :date
-      AND (
-            (:startTime < s.endTime AND :endTime > s.startTime)
-          )
-""")
+                SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
+                FROM Showtime s
+                WHERE s.hall.id = :hallId
+                  AND s.date = :date
+                  AND (
+                        (:startTime < s.endTime AND :endTime > s.startTime)
+                      )
+            """)
     boolean existsByHallIdAndDateAndTimeOverlap(
             @Param("hallId") Long hallId,
             @Param("date") LocalDate date,
@@ -48,15 +47,15 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     );
 
     @Query("""
-    SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
-    FROM Showtime s
-    WHERE s.hall.id = :hallId
-      AND s.date = :date
-      AND (
-          (:startTime < s.endTime AND :endTime > s.startTime)
-      )
-      AND s.id <> :showtimeId
-""")
+                SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END
+                FROM Showtime s
+                WHERE s.hall.id = :hallId
+                  AND s.date = :date
+                  AND (
+                      (:startTime < s.endTime AND :endTime > s.startTime)
+                  )
+                  AND s.id <> :showtimeId
+            """)
     boolean existsConflictForUpdate(
             @Param("showtimeId") Long showtimeId,
             @Param("hallId") Long hallId,
@@ -64,4 +63,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             @Param("startTime") LocalTime startTime,
             @Param("endTime") LocalTime endTime
     );
+
+    @Query("SELECT s.price FROM Showtime s WHERE s.id = :showtimeId")
+    Double findShowtimePriceByshowtimeId(Long showtimeId);
 }

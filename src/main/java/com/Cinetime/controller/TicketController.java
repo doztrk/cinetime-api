@@ -3,6 +3,7 @@ package com.Cinetime.controller;
 import com.Cinetime.payload.dto.request.TicketPurchaseRequest;
 import com.Cinetime.payload.dto.request.TicketReserveRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.dto.response.TicketPriceResponse;
 import com.Cinetime.payload.dto.response.TicketResponse;
 import com.Cinetime.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -85,6 +86,11 @@ public class TicketController {
     public ResponseMessage<List<TicketResponse>> buyTickets(@Valid
                                                             @RequestBody TicketPurchaseRequest request) {
         return ticketService.buyTickets(request);
+    }
+
+    @GetMapping("/ticketPrice/{showtimeId}")
+    public ResponseMessage<Double> getTicketPrice(@PathVariable Long showtimeId){
+        return ticketService.getTicketPrice(showtimeId);
     }
 
 
