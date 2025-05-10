@@ -80,12 +80,12 @@ public class ShowtimeController {
 
     @Operation(
             summary = "Create a new showtime for a movie",
-            description = "Creates a new showtime scheduling for a specific movie and hall. Requires ADMIN or EMPLOYEE role.",
+            description = "Creates a new showtime scheduling for a specific movie and hall. Validates hall availability and calculates ticket price based on various factors. Requires ADMIN or EMPLOYEE role.",
             tags = {"Showtimes"}
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "201",
+                    responseCode = "200",
                     description = "Showtime successfully created",
                     content = @Content(
                             mediaType = "application/json",
@@ -94,7 +94,7 @@ public class ShowtimeController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid input or validation error"
+                    description = "Invalid input or validation error (e.g., end time before start time)"
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -103,6 +103,10 @@ public class ShowtimeController {
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden - Requires ADMIN or EMPLOYEE role"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Movie or Hall not found with the provided IDs"
             ),
             @ApiResponse(
                     responseCode = "409",

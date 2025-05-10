@@ -55,7 +55,7 @@ public class Ticket {
 
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false) //TODO:Nullable true, hardcoded user anonym
     private User user;
 
 
