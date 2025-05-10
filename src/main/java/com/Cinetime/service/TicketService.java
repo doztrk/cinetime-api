@@ -6,6 +6,7 @@ import com.Cinetime.enums.TicketStatus;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.business.SeatInfo;
 import com.Cinetime.payload.dto.request.TicketPurchaseRequest;
+import com.Cinetime.payload.dto.response.TicketPriceResponse;
 import com.Cinetime.payload.dto.response.TicketResponse;
 import com.Cinetime.payload.dto.request.TicketReserveRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
@@ -291,5 +292,14 @@ public class TicketService {
     }
 
 
+    public ResponseMessage<Double> getTicketPrice(Long showtimeId) {
+        Double showtimePrice = showtimeRepository.findShowtimePriceByshowtimeId(showtimeId);
+
+        return ResponseMessage.<Double>builder()
+                .message(SuccessMessages.TICKET_PRICE_FOUND_SUCCESSFULLY)
+                .httpStatus(HttpStatus.OK)
+                .object(showtimePrice)
+                .build();
+    }
 }
 
