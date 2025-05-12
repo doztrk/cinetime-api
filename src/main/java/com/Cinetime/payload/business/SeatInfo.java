@@ -20,9 +20,7 @@ public class SeatInfo {
     @Min(value = 1, message = "Seat number must be at least 1")
     private Integer seatNumber;
 
-    @NotNull(message = "Price cannot be null")
-    @Min(value = 0, message = "Price must be a positive number")
-    private Double price;
+
 
 
     public String getFullSeatName() {

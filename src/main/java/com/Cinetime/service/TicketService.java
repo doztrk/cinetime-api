@@ -5,6 +5,7 @@ import com.Cinetime.enums.PaymentStatus;
 import com.Cinetime.enums.TicketStatus;
 import com.Cinetime.helpers.PageableHelper;
 import com.Cinetime.payload.business.SeatInfo;
+import com.Cinetime.payload.dto.request.TicketPriceCalculationRequest;
 import com.Cinetime.payload.dto.request.TicketPurchaseRequest;
 import com.Cinetime.payload.dto.response.TicketPriceResponse;
 import com.Cinetime.payload.dto.response.TicketResponse;
@@ -71,7 +72,7 @@ public class TicketService {
     }
 
     //T03 reserve movie ticket
-    @Transactional
+ /*   @Transactional
     public ResponseMessage<List<TicketResponse>> reserveTicket(TicketReserveRequest request, Long movieId) {
 
 
@@ -185,7 +186,7 @@ public class TicketService {
                     .build();
         }
 
-    }
+    }*/
 
 
     @Transactional
@@ -213,11 +214,8 @@ public class TicketService {
 
         Showtime showtime = showTimeOptional.get();
 
-
-        /*Hall hall = showtime.getHall();*/
-
         Hall hall = hallRepository.getReferenceById(showtime.getHall().getId());
-
+        /*Hall hall = showtime.getHall();*/
 
         List<SeatInfo> requestedSeats = request.getSeatInfos();
 
@@ -229,7 +227,6 @@ public class TicketService {
         }
         List<String> takenSeats = ticketRepository
                 .findOccupiedSeatsByShowtimeAndStatus(showtime.getId(), List.of(TicketStatus.PAID, TicketStatus.RESERVED));
-
 
         List<String> alreadyReservedSeats = requestedSeats
                 .stream()
@@ -246,17 +243,19 @@ public class TicketService {
 
         User user = securityService.getCurrentUser();
 
-        double totalAmount = requestedSeats.stream().mapToDouble(SeatInfo::getPrice).sum();
 
         Payment payment = new Payment();
 
         payment.setUser(user);
-        payment.setAmount(totalAmount);
+        payment.setAmount(request.getTicketPrice());
+
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
 
         Set<Ticket> ticketSet = new HashSet<>();
 
         payment.setTickets(ticketSet);
+
+        double pricePerTicket = request.getTicketPrice() / requestedSeats.size();
 
         for (SeatInfo seatInfo : requestedSeats) {
             Ticket ticket = Ticket.builder()
@@ -266,7 +265,7 @@ public class TicketService {
                     .hall(hall)
                     .seatLetter(seatInfo.getSeatLetter())
                     .seatNumber(seatInfo.getSeatNumber())
-                    .price(seatInfo.getPrice())
+                    .price(pricePerTicket)
                     .status(TicketStatus.PAID)
                     .payment(payment)
                     .build();
@@ -299,6 +298,27 @@ public class TicketService {
                 .message(SuccessMessages.TICKET_PRICE_FOUND_SUCCESSFULLY)
                 .httpStatus(HttpStatus.OK)
                 .object(showtimePrice)
+                .build();
+    }
+
+    public ResponseMessage<Double> calculateTicketPrice(TicketPriceCalculationRequest request) {
+
+
+        boolean showtimeExists = showtimeRepository.existsById(request.getShowtimeId());
+        if (!showtimeExists) {
+            return ResponseMessage.<Double>builder()
+                    .message(ErrorMessages.SHOWTIME_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+        Double price = showtimeRepository.findShowtimePriceByshowtimeId(request.getShowtimeId());
+
+        Double totalPrice = price * request.getSeats().size();
+
+        return ResponseMessage.<Double>builder()
+                .message(SuccessMessages.TICKET_PRICE_CALCULATED_SUCCESSFULLY)
+                .httpStatus(HttpStatus.OK)
+                .object(totalPrice)
                 .build();
     }
 }

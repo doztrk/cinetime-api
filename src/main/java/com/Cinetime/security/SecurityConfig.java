@@ -55,6 +55,7 @@ public class SecurityConfig {
             "/api/cinemas/movie/**",
             "/api/showtime/**",
             "/api/seat/**",
+            "/api/tickets/**",
 
 
             // Swagger/OpenAPI
