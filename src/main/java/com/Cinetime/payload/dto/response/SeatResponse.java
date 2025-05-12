@@ -13,7 +13,6 @@ public class SeatResponse {
 
     private String seatLetter;
     private Integer seatNumber;
-    private Double price;
 
 
     private String fullSeatName;

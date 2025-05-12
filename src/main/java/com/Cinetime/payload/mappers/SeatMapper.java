@@ -16,7 +16,6 @@ public class SeatMapper {
         return SeatResponse.builder()
                 .seatLetter(seatInfo.getSeatLetter())
                 .seatNumber(seatInfo.getSeatNumber())
-                .price(seatInfo.getPrice())
                 .fullSeatName(seatInfo.getFullSeatName())
                 .build();
     }

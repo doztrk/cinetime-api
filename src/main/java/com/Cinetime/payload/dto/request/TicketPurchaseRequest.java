@@ -18,6 +18,7 @@ public class TicketPurchaseRequest {
     //private Long cinemaId; //Showtime'in icindeki hallda zaten cinema bilgisi var.
     //private Long hall // showTime icindeki hallda zaten hall bilgisi var.
     private List<SeatInfo> seatInfos;
+    private Double ticketPrice;
 
 
 }

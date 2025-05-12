@@ -1,9 +1,9 @@
 package com.Cinetime.controller;
 
+import com.Cinetime.payload.dto.request.TicketPriceCalculationRequest;
 import com.Cinetime.payload.dto.request.TicketPurchaseRequest;
 import com.Cinetime.payload.dto.request.TicketReserveRequest;
 import com.Cinetime.payload.dto.response.ResponseMessage;
-import com.Cinetime.payload.dto.response.TicketPriceResponse;
 import com.Cinetime.payload.dto.response.TicketResponse;
 import com.Cinetime.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,13 +54,13 @@ public class TicketController {
     }
 
     //T03 reserve movie ticket
-    @PostMapping("/reserve/{movieId}")
+   /* @PostMapping("/reserve/{movieId}")
     @PreAuthorize("hasAnyRole('MEMBER')")
     public ResponseMessage<List<TicketResponse>> reserveTicket(@Valid
                                                                @RequestBody TicketReserveRequest request, Long movieId) {
 
         return ticketService.reserveTicket(request, movieId);
-    }
+    }*/
 
     //T04 Buy Ticket
     // Allowing anonymous users to purchase tickets means there's no way to associate the ticket with a specific user account,
@@ -88,9 +88,25 @@ public class TicketController {
         return ticketService.buyTickets(request);
     }
 
+    @Operation(
+            summary = "Get Ticket Price",
+            description = "Retrieves the ticket price for a specific showtime"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved ticket price",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "404", description = "Showtime not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/ticketPrice/{showtimeId}")
-    public ResponseMessage<Double> getTicketPrice(@PathVariable Long showtimeId){
+    public ResponseMessage<Double> getTicketPrice(@PathVariable Long showtimeId) {
         return ticketService.getTicketPrice(showtimeId);
+    }
+
+    @GetMapping("/calculate-price")
+    public ResponseMessage<Double> calculateTicketPrice(@Valid @RequestBody TicketPriceCalculationRequest request){
+        return ticketService.calculateTicketPrice(request);
     }
 
 
