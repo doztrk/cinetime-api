@@ -43,7 +43,7 @@ public class ShowtimeMapper {
                         .createdAt(showtime.getMovie().getCreatedAt())
                         .updatedAt(showtime.getMovie().getUpdatedAt())
                         .posterUrl(showtime.getMovie().getPosterUrl())
-                        .halls(hallMapper.mapHallToHallResponse(showtime.getMovie().getHalls()))
+
                         .build())
                 .hall(HallResponse.builder()
                         .id(showtime.getHall().getId())

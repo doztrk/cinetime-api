@@ -18,6 +18,18 @@ import java.util.stream.Collectors;
 public class MovieMapper {
 
 
+    private static Set<HallResponse> mapHallsToSimpleDto(Set<Hall> halls) {
+        if (halls == null) return Set.of();
+        return halls.stream()
+                .map(hall -> HallResponse.builder()
+                        .id(hall.getId())
+                        .name(hall.getName())
+                        .seatCapacity(hall.getSeatCapacity())
+                        .isSpecial(hall.getIsSpecial())
+                        .build())
+                .collect(Collectors.toSet());
+    }
+
     public Movie mapMovieRequestToMovie(MovieRequest movieRequest) {
 
         return Movie.builder()
@@ -53,22 +65,7 @@ public class MovieMapper {
                 .createdAt(movie.getCreatedAt())
                 .updatedAt(movie.getUpdatedAt())
                 .posterUrl(movie.getPosterUrl())
-                .halls(mapHallsToSimpleDto(movie.getHalls()))
                 .build();
-    }
-
-
-
-    private static Set<HallResponse> mapHallsToSimpleDto(Set<Hall> halls) {
-        if (halls == null) return Set.of();
-        return halls.stream()
-                .map(hall -> HallResponse.builder()
-                        .id(hall.getId())
-                        .name(hall.getName())
-                        .seatCapacity(hall.getSeatCapacity())
-                        .isSpecial(hall.getIsSpecial())
-                        .build())
-                .collect(Collectors.toSet());
     }
 
     public Page<MovieResponse> mapMoviePageToMovieResponse(Page<Movie> movies) {

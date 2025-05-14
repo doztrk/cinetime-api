@@ -38,6 +38,9 @@ public class Hall {
     @JoinColumn(name = "cinema_id", nullable = false)
     private Cinema cinema;
 
+    @OneToMany(mappedBy = "hall", fetch = FetchType.LAZY)
+    private Set<Showtime> showtimes = new HashSet<>();
+
 
     @NotNull
     @CreationTimestamp
@@ -50,10 +53,10 @@ public class Hall {
     private LocalDateTime updatedAt;
 
 
-    @ManyToMany(mappedBy = "halls", fetch = FetchType.LAZY)
+/*    @ManyToMany(mappedBy = "halls", fetch = FetchType.LAZY)
     @Builder.Default
     @JsonIgnore
-    private Set<Movie> movies = new HashSet<>();
+    private Set<Movie> movies = new HashSet<>();*/
 
 
     //To prevent circular reference
