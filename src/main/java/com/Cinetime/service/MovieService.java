@@ -115,10 +115,10 @@ public class MovieService {
         Movie newMovie = movieMapper.mapMovieRequestToMovie(movieRequest);
 
         // Handle Hall relationship
-        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
+/*        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
         newMovie.getHalls().add(hallToBeSet);
-        hallToBeSet.getMovies().add(newMovie); // Update both sides of the relationship
+        hallToBeSet.getMovies().add(newMovie); // Update both sides of the relationship*/
 /*
         // Handle Showtime relationship
         Showtime showtimeToBeSet = showtimeRepository.findById(movieRequest.getShowtimeId())
@@ -242,13 +242,13 @@ public class MovieService {
         existingMovie.setStatus(movieRequest.getStatus());
 
         // Handle Hall relationship update if provided
-        if (movieRequest.getHallId() != null) {
+       /* if (movieRequest.getHallId() != null) {
             Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
                     .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
             //existingMovie.getHalls().clear();
             existingMovie.getHalls().add(hallToBeSet);
             hallToBeSet.getMovies().add(existingMovie);
-        }
+        }*/
 
 
         // Handle Showtime relationship if necessary (optional)

@@ -11,17 +11,16 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketReserveRequest {
+public class TicketPurchaseGuestRequest {
 
     @NotNull(message = "Movie name cannot be null")
     private String movieName;
     @NotNull(message = "Showtime ID cannot be null")
     private Long showtimeId;
-
     @NotNull(message = "Ticket price cannot be null")
     private Double ticketPrice;
     @NotNull(message = "Seats cannot be null")
     private List<SeatInfo> seatInfos;
-
-
+    @NotNull
+    private GuestInfoRequest anonymousUser;
 }

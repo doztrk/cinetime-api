@@ -13,4 +13,6 @@ public interface HallRepository extends JpaRepository<Hall, Long> {
     List<Hall> findByIsSpecialTrue();
 
     Optional<Hall> findByNameAndCinemaId(String name, Long id);
+
+
 }

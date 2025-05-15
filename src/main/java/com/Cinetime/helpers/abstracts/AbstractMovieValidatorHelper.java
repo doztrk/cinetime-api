@@ -31,7 +31,7 @@ public abstract class AbstractMovieValidatorHelper<T> {
                                         List<String> cast,
                                         List<String> formats,
                                         List<String> genre,
-                                        Long hallId,
+
                                         MultipartFile posterImage,
                                         Long showtimeId) {
 
@@ -71,9 +71,6 @@ public abstract class AbstractMovieValidatorHelper<T> {
             validationErrors.add("Genre list cannot be empty");
         }
 
-        if (hallId == null) {
-            validationErrors.add("Hall ID is required");
-        }
 
         if (showtimeId != null && showtimeId < 0) {
             validationErrors.add("Invalid showtime ID");

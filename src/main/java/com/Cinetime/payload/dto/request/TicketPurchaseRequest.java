@@ -14,11 +14,12 @@ public class TicketPurchaseRequest {
 
 
     private String movieName;
-    private Long showTimeId;
+    private Long showtimeId;
     //private Long cinemaId; //Showtime'in icindeki hallda zaten cinema bilgisi var.
     //private Long hall // showTime icindeki hallda zaten hall bilgisi var.
     private List<SeatInfo> seatInfos;
     private Double ticketPrice;
+    private GuestInfoRequest anonymousUser;
 
 
 }

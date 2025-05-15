@@ -19,7 +19,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Page<Movie> findByStatus(MovieStatus status, Pageable pageable);
 
-    Page<Movie> findByHalls_Id(Long hallId, Pageable pageable);
 
     boolean existsBySlug(String slug);
 
@@ -34,7 +33,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @Query("SELECT new com.Cinetime.payload.dto.response.MovieResponseCinema(m.id, m.title, m.slug, m.summary, " +
             "m.releaseDate, m.duration, m.rating, m.director, m.cast, m.formats, m.genre, m.status) " +
-            "FROM Movie m JOIN m.halls h JOIN h.cinema c WHERE c.slug = :cinemaSlug")
+            "FROM Movie m JOIN m.showtimes s JOIN s.hall h JOIN h.cinema c WHERE c.slug = :cinemaSlug")
     List<MovieResponseCinema> findMoviesByCinemaSlug(@Param("cinemaSlug") String cinemaSlug);
 
     Page<Movie> findByTitleContainingIgnoreCaseOrSummaryContainingIgnoreCase(String titleQuery, String summaryQuery, Pageable pageable);
@@ -43,7 +42,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m WHERE m.title = :title")
     Optional<Movie> findByTitle(@Param("title") String title);
 
-    @Query("SELECT m FROM Movie m JOIN m.halls h WHERE LOWER(h.name) LIKE LOWER(CONCAT('%', :hallName, '%'))")
+    @Query("SELECT DISTINCT m FROM Movie m JOIN m.showtimes s JOIN s.hall h WHERE LOWER(h.name) LIKE LOWER(CONCAT('%', :hallName, '%'))")
     Page<Movie> findMoviesByHallName(@Param("hallName") String hallName, Pageable pageable);
     //Page<Movie> findByHalls_NameIgnoreCase(String hallName, Pageable pageable);
 

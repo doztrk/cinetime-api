@@ -1,15 +1,8 @@
 package com.Cinetime.init;
 
-import com.Cinetime.entity.City;
-import com.Cinetime.entity.Cinema;
-import com.Cinetime.entity.Hall;
-import com.Cinetime.entity.Country;
-import com.Cinetime.entity.District;
-import com.Cinetime.repo.CinemaRepository;
-import com.Cinetime.repo.CityRepository;
-import com.Cinetime.repo.CountryRepository;
-import com.Cinetime.repo.DistrictRepository;
-import com.Cinetime.repo.HallRepository;
+import com.Cinetime.entity.*;
+import com.Cinetime.enums.MovieStatus;
+import com.Cinetime.repo.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +10,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -32,6 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private final DistrictRepository districtRepository;
     private final CinemaRepository cinemaRepository;
     private final HallRepository hallRepository;
+    private final MovieRepository movieRepository;
 
     @Override
     @Transactional
@@ -44,6 +38,13 @@ public class DataInitializer implements CommandLineRunner {
         } else {
             logger.info("Database already contains data. Skipping initialization.");
         }
+
+        // Initialize movies if they don't exist
+     /*   if (movieRepository.count() == 0) {
+            initializeMovies();
+        } else {
+            logger.info("Movies already exist in database. Skipping movie initialization.");
+        }*/
     }
 
     private void initializeData() {
@@ -119,6 +120,133 @@ public class DataInitializer implements CommandLineRunner {
         logger.info("Data initialization completed successfully.");
     }
 
+/*    private void initializeMovies() {
+        logger.info("Initializing movies...");
+
+        // Get all halls for movie-hall relationships
+        List<Hall> allHalls = hallRepository.findAll();
+        if (allHalls.isEmpty()) {
+            logger.error("No halls found. Cannot create movies without halls.");
+            return;
+        }
+
+        // Create multiple movies
+        createMovieIfNotExists(
+                "Dune: Part Two",
+                "dune-part-two",
+                "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
+                LocalDate.of(2024, 3, 1),
+                165,
+                8.5,
+                "Denis Villeneuve",
+                Arrays.asList("Timothée Chalamet", "Zendaya", "Rebecca Ferguson", "Oscar Isaac"),
+                Arrays.asList("IMAX", "4DX", "Standard"),
+                Arrays.asList("Sci-Fi", "Adventure", "Drama"),
+                MovieStatus.IN_THEATERS,
+                "/uploads/posters/dune-part-two.jpg",
+                allHalls.subList(0, Math.min(3, allHalls.size()))
+        );
+
+        createMovieIfNotExists(
+                "Oppenheimer",
+                "oppenheimer",
+                "The story of J. Robert Oppenheimer and his role in the development of the atomic bomb.",
+                LocalDate.of(2023, 7, 21),
+                180,
+                8.3,
+                "Christopher Nolan",
+                Arrays.asList("Cillian Murphy", "Emily Blunt", "Matt Damon", "Robert Downey Jr."),
+                Arrays.asList("IMAX", "70mm", "Standard"),
+                Arrays.asList("Biography", "Drama", "History"),
+                MovieStatus.IN_THEATERS,
+                "/uploads/posters/oppenheimer.jpg",
+                allHalls.subList(0, Math.min(4, allHalls.size()))
+        );
+
+        createMovieIfNotExists(
+                "Spider-Man: Across the Spider-Verse",
+                "spider-man-across-spider-verse",
+                "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People.",
+                LocalDate.of(2023, 6, 2),
+                140,
+                8.7,
+                "Joaquim Dos Santos",
+                Arrays.asList("Shameik Moore", "Hailee Steinfeld", "Brian Tyree Henry", "Luna Lauren Vélez"),
+                Arrays.asList("IMAX", "4DX", "Standard"),
+                Arrays.asList("Animation", "Action", "Adventure"),
+                MovieStatus.IN_THEATERS,
+                "/uploads/posters/spider-verse.jpg",
+                allHalls.subList(1, Math.min(5, allHalls.size()))
+        );
+
+        createMovieIfNotExists(
+                "The Batman 2",
+                "the-batman-2",
+                "The Dark Knight returns to face a new threat in Gotham City.",
+                LocalDate.of(2025, 10, 3),
+                150,
+                null, // Rating not available yet
+                "Matt Reeves",
+                Arrays.asList("Robert Pattinson", "Zoë Kravitz", "Paul Dano", "Jeffrey Wright"),
+                Arrays.asList("IMAX", "Standard"),
+                Arrays.asList("Action", "Crime", "Drama"),
+                MovieStatus.COMING_SOON,
+                "/uploads/posters/the-batman-2.jpg",
+                allHalls.subList(0, Math.min(2, allHalls.size()))
+        );
+
+        createMovieIfNotExists(
+                "Avatar 3",
+                "avatar-3",
+                "The saga continues as Jake Sully and Neytiri face new challenges in Pandora.",
+                LocalDate.of(2025, 12, 20),
+                170,
+                null,
+                "James Cameron",
+                Arrays.asList("Sam Worthington", "Zoe Saldana", "Sigourney Weaver", "Stephen Lang"),
+                Arrays.asList("IMAX", "3D", "4DX", "Standard"),
+                Arrays.asList("Sci-Fi", "Action", "Adventure"),
+                MovieStatus.COMING_SOON,
+                "/uploads/posters/avatar-3.jpg",
+                allHalls.subList(0, Math.min(6, allHalls.size()))
+        );
+
+        createMovieIfNotExists(
+                "John Wick: Chapter 5",
+                "john-wick-5",
+                "John Wick faces his most dangerous mission yet.",
+                LocalDate.of(2025, 5, 21),
+                130,
+                null,
+                "Chad Stahelski",
+                Arrays.asList("Keanu Reeves", "Ian McShane", "Laurence Fishburne", "Lance Reddick"),
+                Arrays.asList("IMAX", "Standard"),
+                Arrays.asList("Action", "Crime", "Thriller"),
+                MovieStatus.COMING_SOON,
+                "/uploads/posters/john-wick-5.jpg",
+                allHalls.subList(2, Math.min(7, allHalls.size()))
+        );
+
+        createMovieIfNotExists(
+                "Killers of the Flower Moon",
+                "killers-flower-moon",
+                "Based on the true story of the Osage murders and the birth of the FBI.",
+                LocalDate.of(2023, 10, 20),
+                206,
+                7.8,
+                "Martin Scorsese",
+                Arrays.asList("Leonardo DiCaprio", "Robert De Niro", "Lily Gladstone", "Jesse Plemons"),
+                Arrays.asList("Standard", "IMAX"),
+                Arrays.asList("Crime", "Drama", "History"),
+                MovieStatus.ENDED,
+                "/uploads/posters/killers-flower-moon.jpg",
+                allHalls.subList(0, Math.min(3, allHalls.size()))
+        );
+
+        logger.info("Movie initialization completed successfully.");
+    }*/
+
+    // Existing methods remain the same...
     private Country createCountryIfNotExists(String name) {
         return countryRepository.findByName(name)
                 .orElseGet(() -> countryRepository.save(new Country(null, name)));
@@ -175,4 +303,6 @@ public class DataInitializer implements CommandLineRunner {
                     return hallRepository.save(hall);
                 });
     }
+
+
 }

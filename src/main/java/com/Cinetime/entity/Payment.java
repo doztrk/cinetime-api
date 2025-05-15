@@ -29,8 +29,12 @@ public class Payment {
     private Double amount;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "anonymous_user_id")
+    private AnonymousUser anonymousUser;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
@@ -41,6 +45,17 @@ public class Payment {
     @Column(name = "status", nullable = false)
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
+
+    @PrePersist
+    @PreUpdate
+    private void validateUserOrAnonymous() {
+        if (user == null && anonymousUser == null) {
+            throw new IllegalStateException("Ticket must have either a User or AnonymousUser");
+        }
+        if (user != null && anonymousUser != null) {
+            throw new IllegalStateException("Ticket cannot have both User and AnonymousUser");
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -54,4 +69,6 @@ public class Payment {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
 }
