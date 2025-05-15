@@ -36,8 +36,6 @@ public abstract class AbstractMovieRequest {
     @NotNull(message = "Please provide a rating")
     private Double rating;
 
-    @NotNull(message = "Please provide a hall id")
-    private Long hallId;
 
     @NotNull(message = "Please provide a poster image")
     private MultipartFile posterImage;

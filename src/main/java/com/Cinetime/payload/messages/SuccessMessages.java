@@ -9,7 +9,7 @@ public class SuccessMessages {
 
     public static final String USER_FOUND = "User with ID found successfully";
     public static final String TICKETS_FOUND = "Tickets found successfully";
-    public static final String TICKET_RESERVED = "Ticket reserved successfully";
+    public static final String TICKET_RESERVED_SUCCESSFULLY = "Ticket reserved successfully";
     public static final String TICKET_BOUGHT_SUCCESSFULLY = "Ticket has been bought successfully";
 
     public static final String MOVIE_CREATE = "Movie has been created successfully";

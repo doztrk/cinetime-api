@@ -27,14 +27,14 @@ public class MovieResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String posterUrl;
-    private Set<HallResponse> halls; // HallResponse kullanmalıyız
+
 
     // Parametreli constructor'ı doğru şekilde düzenliyoruz
     public MovieResponse(Long id, String title, String slug, String summary, LocalDate releaseDate,
                          Integer duration, Double rating, String director,
                          List<String> cast, List<String> formats, List<String> genre, MovieStatus status,
-                         LocalDateTime createdAt, LocalDateTime updatedAt, String posterUrl,
-                         Set<HallResponse> halls) {
+                         LocalDateTime createdAt, LocalDateTime updatedAt, String posterUrl
+    ) {
         this.id = id;
         this.title = title;
         this.slug = slug;
@@ -50,6 +50,6 @@ public class MovieResponse {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.posterUrl = posterUrl;
-        this.halls = halls;
+
     }
 }

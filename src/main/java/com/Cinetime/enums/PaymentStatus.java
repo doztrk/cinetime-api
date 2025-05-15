@@ -21,6 +21,7 @@ public enum PaymentStatus {
         throw new IllegalArgumentException("Unknown status value: " + value);
     }
 
+
     public int getValue() {
         return value;
     }

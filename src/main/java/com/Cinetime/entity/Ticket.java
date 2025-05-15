@@ -55,7 +55,7 @@ public class Ticket {
 
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) //TODO:Nullable true, hardcoded user anonym
+    @JoinColumn(name = "user_id") //TODO:Nullable true, hardcoded user anonym
     private User user;
 
 
@@ -67,14 +67,26 @@ public class Ticket {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
+    @ManyToOne
+    @JoinColumn(name = "anonymous_user_id")
+    private AnonymousUser anonymousUser;
 
     private LocalDateTime createdAt;
-
-
     private LocalDateTime updatedAt;
+
+
+    private void validateUserOrAnonymous() {
+        if (user == null && anonymousUser == null) {
+            throw new IllegalStateException("Payments must have either a User or AnonymousUser");
+        }
+        if (user != null && anonymousUser != null) {
+            throw new IllegalStateException("Payments cannot have both User and AnonymousUser");
+        }
+    }
 
     @PrePersist
     public void prePersist() {
+        validateUserOrAnonymous();
         LocalDateTime now = LocalDateTime.now();
         if (this.createdAt == null) {
             this.createdAt = now;
@@ -86,6 +98,7 @@ public class Ticket {
 
     @PreUpdate
     public void preUpdate() {
+        validateUserOrAnonymous();
         this.updatedAt = LocalDateTime.now();
     }
 

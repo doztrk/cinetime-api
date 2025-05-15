@@ -30,4 +30,5 @@ public class TicketResponse {
     private String cinemaAdress;
     private LocalDateTime createdAt;
 
+
 }

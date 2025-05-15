@@ -22,7 +22,6 @@ public class MovieHelper extends AbstractMovieValidatorHelper<MovieRequest> {
                 request.getCast(),
                 request.getFormats(),
                 request.getGenre(),
-                request.getHallId(),
                 request.getPosterImage(),
                 null // showtimeId bu request'te yok
         );

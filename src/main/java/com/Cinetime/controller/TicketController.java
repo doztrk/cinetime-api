@@ -1,8 +1,10 @@
 package com.Cinetime.controller;
 
 import com.Cinetime.payload.dto.request.TicketPriceCalculationRequest;
+import com.Cinetime.payload.dto.request.TicketPurchaseGuestRequest;
 import com.Cinetime.payload.dto.request.TicketPurchaseRequest;
 import com.Cinetime.payload.dto.request.TicketReserveRequest;
+import com.Cinetime.payload.dto.response.AnonymousTicketResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.dto.response.TicketResponse;
 import com.Cinetime.service.TicketService;
@@ -54,13 +56,13 @@ public class TicketController {
     }
 
     //T03 reserve movie ticket
-   /* @PostMapping("/reserve/{movieId}")
+    @PostMapping("/reserve-ticket")
     @PreAuthorize("hasAnyRole('MEMBER')")
     public ResponseMessage<List<TicketResponse>> reserveTicket(@Valid
-                                                               @RequestBody TicketReserveRequest request, Long movieId) {
+                                                               @RequestBody TicketReserveRequest request) {
 
-        return ticketService.reserveTicket(request, movieId);
-    }*/
+        return ticketService.reserveTicket(request);
+    }
 
     //T04 Buy Ticket
     // Allowing anonymous users to purchase tickets means there's no way to associate the ticket with a specific user account,
@@ -105,9 +107,27 @@ public class TicketController {
     }
 
     @GetMapping("/calculate-price")
-    public ResponseMessage<Double> calculateTicketPrice(@Valid @RequestBody TicketPriceCalculationRequest request){
+    public ResponseMessage<Double> calculateTicketPrice(@Valid @RequestBody TicketPriceCalculationRequest request) {
         return ticketService.calculateTicketPrice(request);
     }
 
+    @Operation(
+            summary = "Buy Movie Ticket as Guest {T05}",
+            description = "Purchase tickets for a movie as a guest user without requiring authentication. " +
+                    "Automatically creates a temporary user account for the purchase."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tickets successfully purchased",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request - validation errors or no seats specified"),
+            @ApiResponse(responseCode = "404", description = "Movie or showtime not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict - Seats already occupied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping("/buy-ticket-guest")
+    public ResponseMessage<List<AnonymousTicketResponse>> buyTicketsAsGuest(@Valid @RequestBody TicketPurchaseGuestRequest request) {
+        return ticketService.buyTicketsAsGuest(request);
+    }
 
 }

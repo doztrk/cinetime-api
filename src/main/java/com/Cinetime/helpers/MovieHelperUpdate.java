@@ -21,7 +21,6 @@ public class MovieHelperUpdate extends AbstractMovieValidatorHelper<MovieRequest
                 request.getCast(),
                 request.getFormats(),
                 request.getGenre(),
-                request.getHallId(),
                 request.getPosterImage(),
                 request.getShowtimeId()
         );
