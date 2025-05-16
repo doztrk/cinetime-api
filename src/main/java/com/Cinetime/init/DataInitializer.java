@@ -1,12 +1,15 @@
 package com.Cinetime.init;
 
 import com.Cinetime.entity.*;
-import com.Cinetime.enums.MovieStatus;
+import com.Cinetime.enums.Gender;
+import com.Cinetime.enums.RoleName;
 import com.Cinetime.repo.*;
+import com.Cinetime.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,10 @@ public class DataInitializer implements CommandLineRunner {
     private final CinemaRepository cinemaRepository;
     private final HallRepository hallRepository;
     private final MovieRepository movieRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
+    private final ShowtimeRepository showtimeRepository;
 
     @Override
     @Transactional
@@ -38,6 +45,19 @@ public class DataInitializer implements CommandLineRunner {
         } else {
             logger.info("Database already contains data. Skipping initialization.");
         }
+        if (userRepository.findByEmail("admin@cinetime.com").isEmpty()) {
+            createAdminUser();
+        } else {
+            logger.info("Admin user already exists. Skipping creation.");
+        }
+        if (userRepository.findByEmail("member@cinetime.com").isEmpty()) {
+            createMemberUser();
+        } else {
+            logger.info("Member user already exists. Skipping creation.");
+        }
+
+
+        logger.info("User initialization completed.");
 
         // Initialize movies if they don't exist
      /*   if (movieRepository.count() == 0) {
@@ -289,8 +309,54 @@ public class DataInitializer implements CommandLineRunner {
                 });
     }
 
-    private Hall createHallIfNotExists(String name, Integer seatCapacity, Boolean isSpecial, Cinema cinema) {
-        return hallRepository.findByNameAndCinemaId(name, cinema.getId())
+    private void createAdminUser() {
+        logger.info("Creating admin user...");
+
+        Role adminRole = roleService.getRole(RoleName.ADMIN);
+
+        User admin = User.builder()
+                .firstname("Admin")
+                .lastname("User")
+                .email("admin@cinetime.com") //Burayi kendi mailinizle degistirebilirsiniz.
+                .phoneNumber("(555) 555-5555")
+                .password(passwordEncoder.encode("Admin123!"))
+                .gender(Gender.MALE)
+                .dateOfBirth(LocalDate.of(1980, 1, 1))
+                .role(adminRole)
+                .builtIn(true) // Built-in users cannot be deleted/updated
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        userRepository.save(admin);
+        logger.info("Admin user created successfully with email: {}", admin.getEmail());
+    }
+
+    private void createMemberUser() {
+        logger.info("Creating member user...");
+
+        Role memberRole = roleService.getRole(RoleName.MEMBER);
+
+        User member = User.builder()
+                .firstname("John")
+                .lastname("Doe")
+                .email("member@cinetime.com") // Burayi kendi mailinizle degistirebilirsiniz
+                .phoneNumber("(555) 000-0002")
+                .password(passwordEncoder.encode("Member123!"))
+                .gender(Gender.MALE)
+                .dateOfBirth(LocalDate.of(1990, 5, 15))
+                .role(memberRole)
+                .builtIn(false) // Regular user that can be updated/deleted
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        userRepository.save(member);
+        logger.info("Member user created successfully with email: {}", member.getEmail());
+    }
+
+    private void createHallIfNotExists(String name, Integer seatCapacity, Boolean isSpecial, Cinema cinema) {
+        hallRepository.findByNameAndCinemaId(name, cinema.getId())
                 .orElseGet(() -> {
                     Hall hall = Hall.builder()
                             .name(name)
