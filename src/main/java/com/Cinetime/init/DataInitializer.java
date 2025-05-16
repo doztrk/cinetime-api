@@ -53,12 +53,12 @@ public class DataInitializer implements CommandLineRunner {
         } else {
             logger.info("Database already contains data. Skipping initialization.");
         }
-        if (userRepository.findByEmail("admin@cinetime.com").isEmpty()) {
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
             createAdminUser();
         } else {
             logger.info("Admin user already exists. Skipping creation.");
         }
-        if (userRepository.findByEmail("member@cinetime.com").isEmpty()) {
+        if (userRepository.findByEmail(userEmail).isEmpty()) {
             createMemberUser();
         } else {
             logger.info("Member user already exists. Skipping creation.");
