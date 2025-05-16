@@ -8,6 +8,7 @@ import com.Cinetime.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,6 @@ import java.util.*;
 public class DataInitializer implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
-
     private final CountryRepository countryRepository;
     private final CityRepository cityRepository;
     private final DistrictRepository districtRepository;
@@ -33,6 +33,14 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final ShowtimeRepository showtimeRepository;
+    @Value("${Admin.Email}")
+    private String adminEmail;
+    @Value("${Admin.Password}")
+    private String adminPassword;
+    @Value("${User.Email}")
+    private String userEmail;
+    @Value("${User.Password}")
+    private String userPassword;
 
     @Override
     @Transactional
@@ -317,8 +325,8 @@ public class DataInitializer implements CommandLineRunner {
         User admin = User.builder()
                 .firstname("Admin")
                 .lastname("User")
-                .email("admin@cinetime.com") //Burayi kendi mailinizle degistirebilirsiniz.
-                .phoneNumber("(555) 555-5555")
+                .email(adminEmail) //Burayi kendi mailinizle degistirebilirsiniz.
+                .phoneNumber(adminPassword)
                 .password(passwordEncoder.encode("Admin123!"))
                 .gender(Gender.MALE)
                 .dateOfBirth(LocalDate.of(1980, 1, 1))
@@ -340,8 +348,8 @@ public class DataInitializer implements CommandLineRunner {
         User member = User.builder()
                 .firstname("John")
                 .lastname("Doe")
-                .email("member@cinetime.com") // Burayi kendi mailinizle degistirebilirsiniz
-                .phoneNumber("(555) 000-0002")
+                .email(userEmail) // Burayi kendi mailinizle degistirebilirsiniz
+                .phoneNumber(userPassword)
                 .password(passwordEncoder.encode("Member123!"))
                 .gender(Gender.MALE)
                 .dateOfBirth(LocalDate.of(1990, 5, 15))
