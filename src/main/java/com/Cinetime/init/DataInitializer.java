@@ -37,10 +37,14 @@ public class DataInitializer implements CommandLineRunner {
     private String adminEmail;
     @Value("${Admin.Password}")
     private String adminPassword;
+    @Value("${Admin.PhoneNumber}")
+    private String adminPhoneNumber;
     @Value("${User.Email}")
     private String userEmail;
     @Value("${User.Password}")
     private String userPassword;
+    @Value("${User.PhoneNumber}")
+    private String userPhoneNumber;
 
     @Override
     @Transactional
@@ -53,12 +57,12 @@ public class DataInitializer implements CommandLineRunner {
         } else {
             logger.info("Database already contains data. Skipping initialization.");
         }
-        if (userRepository.findByEmail("admin@cinetime.com").isEmpty()) {
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
             createAdminUser();
         } else {
             logger.info("Admin user already exists. Skipping creation.");
         }
-        if (userRepository.findByEmail("member@cinetime.com").isEmpty()) {
+        if (userRepository.findByEmail(userEmail).isEmpty()) {
             createMemberUser();
         } else {
             logger.info("Member user already exists. Skipping creation.");
@@ -326,8 +330,8 @@ public class DataInitializer implements CommandLineRunner {
                 .firstname("Admin")
                 .lastname("User")
                 .email(adminEmail) //Burayi kendi mailinizle degistirebilirsiniz.
-                .phoneNumber(adminPassword)
-                .password(passwordEncoder.encode("Admin123!"))
+                .phoneNumber(adminPhoneNumber)
+                .password(passwordEncoder.encode(adminPassword))
                 .gender(Gender.MALE)
                 .dateOfBirth(LocalDate.of(1980, 1, 1))
                 .role(adminRole)
@@ -349,8 +353,8 @@ public class DataInitializer implements CommandLineRunner {
                 .firstname("John")
                 .lastname("Doe")
                 .email(userEmail) // Burayi kendi mailinizle degistirebilirsiniz
-                .phoneNumber(userPassword)
-                .password(passwordEncoder.encode("Member123!"))
+                .phoneNumber(userPhoneNumber)
+                .password(passwordEncoder.encode(userPassword))
                 .gender(Gender.MALE)
                 .dateOfBirth(LocalDate.of(1990, 5, 15))
                 .role(memberRole)
