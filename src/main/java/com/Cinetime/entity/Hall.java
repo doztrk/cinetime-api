@@ -38,6 +38,7 @@ public class Hall {
     @JoinColumn(name = "cinema_id", nullable = false)
     private Cinema cinema;
 
+
     @OneToMany(mappedBy = "hall", fetch = FetchType.LAZY)
     private Set<Showtime> showtimes = new HashSet<>();
 

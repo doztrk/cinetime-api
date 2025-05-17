@@ -18,8 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/cinemas")
 @RequiredArgsConstructor
@@ -32,9 +30,7 @@ public class CinemaController {
     //C01
     @Operation(
             summary = "Get All Cinemas {C01}",
-            description = "Returns cinemas based on optional city and special hall filters with pagination and sorting options. " +
-                    "Endpoint ID = C01"
-
+            description = "Returns cinemas based on optional city and special hall filters with pagination and sorting options. "
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved cinemas list",
@@ -44,7 +40,7 @@ public class CinemaController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    public ResponseMessage<List<Cinema>> getCinemas(
+    public ResponseMessage<Page<CinemaResponse>> getCinemasByFilters(
             @Parameter(description = "Filter cinemas by city ID") @RequestParam(required = false) Long cityId,
             @Parameter(description = "Filter cinemas by special hall type (e.g., 'imax')") @RequestParam(required = false) String specialHall,
             @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
@@ -95,7 +91,7 @@ public class CinemaController {
     }
 
     @Operation(
-            summary = "Get Cinemas By Movie ID {C06}",
+            summary = "Get Cinemas By Movie ID {C05}",
             description = "Returns a paginated list of cinemas showing a specific movie identified by its ID"
     )
     @ApiResponses(value = {
@@ -106,7 +102,6 @@ public class CinemaController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/movie/{movieId}")
-    @PreAuthorize("hasAnyRole('MEMBER', 'ADMIN', 'EMPLOYEE', 'ANONYMOUS')")
     public ResponseMessage<Page<CinemaResponse>> getCinemasByMovieId(@PathVariable Long movieId,
                                                                      @RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
@@ -115,4 +110,26 @@ public class CinemaController {
         return cinemaService.getCinemasByMovieId(movieId, page, size, sort, type);
     }
 
+
+    @Operation(
+            summary = "Get Cinemas By Hall Name Provided {C06}",
+            description = "Returns a paginated list of cinemas having specific Hall Name given in parameters"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved cinemas list",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseMessage.class))),
+            @ApiResponse(responseCode = "401", description = "Not authorized"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/hall/{hallName}")
+    public ResponseMessage<Page<CinemaResponse>> getCinemasByHallName(@PathVariable String hallName,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size,
+                                                                    @RequestParam(defaultValue = "name") String sort,
+                                                                    @RequestParam(defaultValue = "asc") String type) {
+
+
+        return cinemaService.getCinemasByHallName(hallName, page, size, sort, type);
+    }
 }

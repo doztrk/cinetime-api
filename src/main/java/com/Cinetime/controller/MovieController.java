@@ -162,7 +162,7 @@ public class MovieController {
         return movieService.getMoviesByCinemaSlug(cinemaSlug, page, size, sort, type);
     }
 
-  //TODO: Create Showtime Controller and put this there
+    //TODO: Create Showtime Controller and put this there
 
     //M08
     @Operation(
@@ -278,6 +278,29 @@ public class MovieController {
             @RequestParam(value = "type", defaultValue = "asc") String type) {
 
         return movieService.getAllMovies(page, size, sort, type);
+    }
+
+    @Operation(
+            summary = "Get Movies by Hall ID",
+            description = "Returns a paginated list of movies that are scheduled to be shown in a specific hall"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movies list"),
+            @ApiResponse(responseCode = "404", description = "Hall not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/getMoviesByHallId/{hallId}")
+    public ResponseMessage<Page<MovieResponse>> getMoviesByHallId(
+            @PathVariable Long hallId,
+            @Parameter(description = "Page number (zero-based)")
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @Parameter(description = "Number of records per page")
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by")
+            @RequestParam(value = "sort", defaultValue = "title") String sort,
+            @Parameter(description = "Sort direction (asc or desc)")
+            @RequestParam(value = "type", defaultValue = "asc") String type) {
+        return movieService.getMoviesByHallId(hallId, page, size, sort, type);
     }
 
 

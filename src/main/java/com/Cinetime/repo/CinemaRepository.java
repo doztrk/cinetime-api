@@ -28,4 +28,7 @@ public interface CinemaRepository extends JpaRepository<Cinema, Long> {
     Page<Cinema> findCinemasByMovieId(@Param("movieId") Long movieId, Pageable pageable);
 
     Optional<Cinema> findBySlug(String slug);
+
+    @Query("SELECT DISTINCT c FROM Cinema c JOIN c.halls h WHERE LOWER(h.name) LIKE LOWER(CONCAT('%', :hallName, '%'))")
+    Page<Cinema> findCinemasByHallName(@Param("hallName") String hallName, Pageable pageable);
 }

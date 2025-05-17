@@ -24,7 +24,7 @@ public class HallMapper {
                 .collect(Collectors.toList());
     }
 
-    private HallResponse mapToHallResponse(Hall hall) {
+    public HallResponse mapToHallResponse(Hall hall) {
         if (hall == null) {
             return null;
         }
