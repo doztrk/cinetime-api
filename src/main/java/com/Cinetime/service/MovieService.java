@@ -340,4 +340,24 @@ public class MovieService {
     }
 
 
+    public ResponseMessage<Page<MovieResponse>> getMoviesByHallId(Long hallId, int page, int size, String sort, String type) {
+
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        Page<Movie> moviePage = movieRepository.findMoviesByHallId(hallId, pageable);
+
+        if (moviePage.isEmpty()) {
+            return ResponseMessage.<Page<MovieResponse>>builder()
+                    .message(ErrorMessages.MOVIES_NOT_FOUND)
+                    .httpStatus(HttpStatus.NO_CONTENT)
+                    .build();
+        }
+
+
+        return ResponseMessage.<Page<MovieResponse>>builder()
+                .message("Movies found successfully")
+                .object(moviePage.map(movieMapper::mapMovieToMovieResponse))
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
 }

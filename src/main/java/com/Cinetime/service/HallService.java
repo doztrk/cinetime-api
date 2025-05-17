@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -34,4 +35,25 @@ public class HallService {
                 .build();
     }
 
+    public ResponseMessage<HallResponse> getHallById(Long hallId) {
+
+        Optional<Hall> hallOptional = hallRepository.findById(hallId);
+
+        if (hallOptional.isEmpty()) {
+            return ResponseMessage.<HallResponse>builder()
+                    .message("Hall not found")
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Hall hall = hallOptional.get();
+
+        HallResponse hallResponse = hallMapper.mapToHallResponse(hall);
+
+        return ResponseMessage.<HallResponse>builder()
+                .message("Hall found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(hallResponse)
+                .build();
+    }
 }

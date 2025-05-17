@@ -57,6 +57,9 @@ public class SecurityConfig {
             "/api/seat/**",
             "/api/tickets/**",
             "/api/halls/special-halls",
+            "/api/halls/**",
+            "/api/movies/**",
+            "/api/cinemas/**",
 
 
             // Swagger/OpenAPI
@@ -71,7 +74,6 @@ public class SecurityConfig {
             "/css/**",
             "/js/**",
             "/error",
-
             "/uploads/image/**"
     };
 

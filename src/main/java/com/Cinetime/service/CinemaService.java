@@ -38,7 +38,7 @@ public class CinemaService {
 
 
     //C01
-    public ResponseMessage<List<Cinema>> getCinemasByFilters(Long cityId, String specialHallName, int page, int size, String sort, String type) {
+    public ResponseMessage<Page<CinemaResponse>> getCinemasByFilters(Long cityId, String specialHallName, int page, int size, String sort, String type) {
 
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
@@ -50,15 +50,17 @@ public class CinemaService {
         List<Cinema> cinemas = cinemasPage.getContent();
 
         if (cinemas.isEmpty()) {
-            return ResponseMessage.<List<Cinema>>builder()
+            return ResponseMessage.<Page<CinemaResponse>>builder()
                     .message("No cinemas found")
-                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .httpStatus(HttpStatus.NO_CONTENT)
                     .build();
         }
 
-        return ResponseMessage.<List<Cinema>>builder()
+        Page<CinemaResponse> cinemaResponses = cinemasPage.map(cinemaMapper::mapCinemaToCinemaResponse);
+
+        return ResponseMessage.<Page<CinemaResponse>>builder()
                 .httpStatus(HttpStatus.OK)
-                .object(cinemas)
+                .object(cinemaResponses)
                 .build();
     }
 
@@ -123,7 +125,7 @@ public class CinemaService {
         if (cinemasPage.isEmpty()) {
             return ResponseMessage.<Page<CinemaResponse>>builder()
                     .message(ErrorMessages.CINEMA_NOT_FOUND)
-                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .httpStatus(HttpStatus.NO_CONTENT)
                     .build();
         }
 
@@ -133,6 +135,26 @@ public class CinemaService {
                 .message(SuccessMessages.CINEMA_FOUND)
                 .httpStatus(HttpStatus.OK)
                 .object(cinemaResponses)
+                .build();
+    }
+
+    public ResponseMessage<Page<CinemaResponse>> getCinemasByHallName(String hallName, int page, int size, String sort, String type) {
+
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        Page<Cinema> cinemasPage = cinemaRepository.findCinemasByHallName(hallName, pageable);
+
+        if (cinemasPage.isEmpty()) {
+            return ResponseMessage.<Page<CinemaResponse>>builder()
+                    .message(ErrorMessages.CINEMA_NOT_FOUND)
+                    .httpStatus(HttpStatus.NO_CONTENT)
+                    .build();
+        }
+
+        return ResponseMessage.<Page<CinemaResponse>>builder()
+                .message("Cinemas found successfully")
+                .httpStatus(HttpStatus.OK)
+                .object(cinemasPage.map(cinemaMapper::mapCinemaToCinemaResponse))
                 .build();
     }
 }

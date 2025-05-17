@@ -130,4 +130,7 @@ public class TicketController {
         return ticketService.buyTicketsAsGuest(request);
     }
 
+
+    //TODO: Rezerve Ticket As Guest
+
 }
