@@ -22,10 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class ShowtimeService {
     private final HallRepository hallRepository;
     private final TicketPriceHelper ticketPriceHelper;
 
-    public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimes(int page, int size, String sort, String type, Long movieId) {
+    public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimesForMovieAndCinema(int page, int size, String sort, String type, Long movieId) {
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
         // Şu anki tarih saatinden sonrasında olan tüm showtime'ları alıyoruz
@@ -51,7 +49,7 @@ public class ShowtimeService {
         if (showtimes.isEmpty()) {
             return ResponseMessage.<Page<ShowtimeResponse>>builder()
 
-                    .httpStatus(HttpStatus.OK)
+                    .httpStatus(HttpStatus.NO_CONTENT)
                     .message("Showtimes not found for the given movie")
                     .build();
         }
@@ -148,5 +146,40 @@ public class ShowtimeService {
                 .object(showtimeMapper.mapShowtimeToShowtimeResponse(showtime))
                 .build();
 
+    }
+
+    public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimesForMovieAndCinema(
+            int page, int size, String sort, String type, Long movieId, Long cinemaId) {
+
+        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        Page<Showtime> showtimes;
+
+        if (cinemaId != null) {
+            // Filter showtimes by movie, cinema, and current/future time
+            showtimes = showtimeRepository.findUpcomingShowtimesByMovieAndCinema(
+                    movieId, cinemaId, today, now, pageable
+            );
+        } else {
+            // Fall back to existing method if no cinema is specified
+            showtimes = showtimeRepository.findUpcomingShowtimesByMovieId(
+                    movieId, today, now, pageable
+            );
+        }
+
+        if (showtimes.isEmpty()) {
+            return ResponseMessage.<Page<ShowtimeResponse>>builder()
+                    .httpStatus(HttpStatus.OK)
+                    .message("No showtimes found for the given criteria")
+                    .build();
+        }
+
+        return ResponseMessage.<Page<ShowtimeResponse>>builder()
+                .httpStatus(HttpStatus.OK)
+                .object(showtimeMapper.mapShowtimePageToShowtimeResponse(showtimes))
+                .message("Showtimes found successfully")
+                .build();
     }
 }

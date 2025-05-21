@@ -66,4 +66,20 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
     @Query("SELECT s.price FROM Showtime s WHERE s.id = :showtimeId")
     Double findShowtimePriceByshowtimeId(Long showtimeId);
+
+    @Query("""
+                SELECT s FROM Showtime s 
+                WHERE s.movie.id = :movieId 
+                AND (:cinemaId IS NULL OR s.hall.cinema.id = :cinemaId)
+                AND (s.date > :today OR 
+                     (s.date = :today AND s.startTime > :now))
+                ORDER BY s.date, s.startTime
+            """)
+    Page<Showtime> findUpcomingShowtimesByMovieAndCinema(
+            @Param("movieId") Long movieId,
+            @Param("cinemaId") Long cinemaId,
+            @Param("today") LocalDate today,
+            @Param("now") LocalTime now,
+            Pageable pageable
+    );
 }

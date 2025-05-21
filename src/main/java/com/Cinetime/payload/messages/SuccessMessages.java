@@ -22,4 +22,5 @@ public class SuccessMessages {
     public static final String SHOWTIME_CREATED_SUCCESSFULLY = "Showtime has been created successfully";
     public static final String TICKET_PRICE_FOUND_SUCCESSFULLY = "Ticket price has been found successfully";
     public static final String TICKET_PRICE_CALCULATED_SUCCESSFULLY = "Ticket price has been calculated successfully";
+    public static final String TICKET_RESERVED_SUCCESSFULLY_AS_GUEST = "Ticket reserved successfully as guest";
 }

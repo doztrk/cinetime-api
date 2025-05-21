@@ -75,7 +75,7 @@ public class ShowtimeController {
             @RequestParam(value = "type", defaultValue = "asc") String type,
             @Parameter(description = "ID of the movie to get showtimes for", required = true)
             @PathVariable Long movieId) {
-        return showtimeService.getUpcomingShowtimes(page, size, sort, type, movieId);
+        return showtimeService.getUpcomingShowtimesForMovieAndCinema(page, size, sort, type, movieId);
     }
 
     @Operation(
@@ -123,6 +123,17 @@ public class ShowtimeController {
         return showtimeService.createShowtimeForMovie(showtimeRequest);
     }
 
+    @GetMapping("/upcoming")
+    public ResponseMessage<Page<ShowtimeResponse>> getUpcomingShowtimes(
+            @RequestParam Long movieId,
+            @RequestParam(required = false) Long cinemaId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "date") String sort,
+            @RequestParam(defaultValue = "asc") String type) {
+
+        return showtimeService.getUpcomingShowtimesForMovieAndCinema(page, size, sort, type, movieId, cinemaId);
+    }
 
 
 }
