@@ -3,7 +3,8 @@ package com.Cinetime.service;
 import com.Cinetime.entity.User;
 import com.Cinetime.enums.RoleName;
 import com.Cinetime.helpers.*;
-import com.Cinetime.payload.dto.request.user.UserRequest;
+import com.Cinetime.payload.dto.request.user.UserCreateRequest;
+import com.Cinetime.payload.dto.request.user.UserRegisterRequest;
 import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
 import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
 import com.Cinetime.payload.mappers.UserMapper;
@@ -12,7 +13,6 @@ import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.payload.dto.response.BaseUserResponse;
-import com.Cinetime.security.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,7 +44,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseMessage<BaseUserResponse> register(UserRequest userRequest) {
+    public ResponseMessage<BaseUserResponse> register(UserRegisterRequest userRequest) {
 
         if (!uniquePropertyValidator.uniquePropertyChecker(userRequest.getEmail(), userRequest.getPhoneNumber())) {
             return ResponseMessage.<BaseUserResponse>builder()
@@ -79,7 +79,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseMessage<BaseUserResponse> createUser(UserRequest userCreateDTO) {
+    public ResponseMessage<BaseUserResponse> createUser(UserCreateRequest userCreateDTO) {
 
 
         boolean isUnique =

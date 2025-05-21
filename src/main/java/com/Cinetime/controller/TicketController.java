@@ -132,5 +132,9 @@ public class TicketController {
 
 
     //TODO: Rezerve Ticket As Guest
+    @PostMapping("/reserve-ticket-guest")
+    public ResponseMessage<List<AnonymousTicketResponse>> reserveTicketsAsGuest(@Valid @RequestBody TicketPurchaseGuestRequest request) {
+        return ticketService.reserveTicketAsGuest(request);
+    }
 
 }

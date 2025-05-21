@@ -4,7 +4,8 @@ import com.Cinetime.payload.authentication.LoginRequest;
 import com.Cinetime.payload.dto.request.ForgotPasswordRequest;
 import com.Cinetime.payload.dto.request.ResetCodeRequest;
 import com.Cinetime.payload.dto.request.ResetPasswordRequest;
-import com.Cinetime.payload.dto.request.user.UserRequest;
+import com.Cinetime.payload.dto.request.user.UserCreateRequest;
+import com.Cinetime.payload.dto.request.user.UserRegisterRequest;
 import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
 import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
 import com.Cinetime.payload.dto.response.AuthResponse;
@@ -56,7 +57,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseMessage<BaseUserResponse> register(
             @Parameter(description = "User registration details", required = true)
-            @RequestBody @Valid UserRequest userRegisterDTO) {
+            @RequestBody @Valid UserRegisterRequest userRegisterDTO) {
         return userService.register(userRegisterDTO);
     }
 
@@ -146,7 +147,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseMessage<BaseUserResponse> createUser(
             @Parameter(description = "User details", required = true)
-            @RequestBody @Valid UserRequest userCreateDTO) {
+            @RequestBody @Valid UserCreateRequest userCreateDTO) {
         return userService.createUser(userCreateDTO);
     }
 

@@ -259,11 +259,20 @@ public class TicketService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
+
         List<TicketResponse> ticketResponses = savedPayment
                 .getTickets()
                 .stream()
                 .map(ticketMapper::mapTicketToTicketResponse)
                 .toList();
+        try {
+            sendTicketConfirmationEmailUser(user, movie, showtime, ticketResponses, request.getTicketPrice());
+        } catch (Exception e) {
+            return ResponseMessage.<List<TicketResponse>>builder()
+                    .message("Failed to send email: " + e.getMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
 
         return ResponseMessage.<List<TicketResponse>>builder()
                 .message(SuccessMessages.TICKET_BOUGHT_SUCCESSFULLY)
@@ -309,6 +318,7 @@ public class TicketService {
     @Transactional
     public ResponseMessage<List<AnonymousTicketResponse>> buyTicketsAsGuest(TicketPurchaseGuestRequest request) {
 
+        //TODO: Burayi bir private method icine alip parametrelere gore reserve ya da buy olmasini saglayip kod karmasikligindan kurtulacagiz.
         Optional<Movie> movieOptional = movieRepository.findByTitle(request.getMovieName());
 
         if (movieOptional.isEmpty()) {
@@ -404,7 +414,7 @@ public class TicketService {
                 .toList();
 
         try {
-            sendTicketConfirmationEmail(savedAnonymousUser, movie, showtime, ticketResponses, request.getTicketPrice());
+            sendTicketConfirmationEmailAnonymous(savedAnonymousUser, movie, showtime, ticketResponses, request.getTicketPrice());
         } catch (Exception e) {
             return ResponseMessage.<List<AnonymousTicketResponse>>builder()
                     .message("Failed to send email: " + e.getMessage())
@@ -419,8 +429,8 @@ public class TicketService {
 
     }
 
-    private void sendTicketConfirmationEmail(User user, Movie movie, Showtime showtime,
-                                             List<TicketResponse> tickets, Double totalPrice) {
+    private void sendTicketConfirmationEmailUser(User user, Movie movie, Showtime showtime,
+                                                 List<TicketResponse> tickets, Double totalPrice) {
         MailRequest mailRequest = MailRequest.builder()
                 .to(user.getEmail())
                 .subject("Film adı - " + movie.getTitle())
@@ -441,8 +451,8 @@ public class TicketService {
         emailService.sendMail(mailRequest);
     }
 
-    private void sendTicketConfirmationEmail(AnonymousUser user, Movie movie, Showtime showtime,
-                                             List<AnonymousTicketResponse> tickets, Double totalPrice) {
+    private void sendTicketConfirmationEmailAnonymous(AnonymousUser user, Movie movie, Showtime showtime,
+                                                      List<AnonymousTicketResponse> tickets, Double totalPrice) {
         MailRequest mailRequest = MailRequest.builder()
                 .to(user.getEmail())
                 .subject("Film adı - " + movie.getTitle())
@@ -462,6 +472,117 @@ public class TicketService {
                 .build();
 
         emailService.sendMail(mailRequest);
+    }
+
+    public ResponseMessage<List<AnonymousTicketResponse>> reserveTicketAsGuest(TicketPurchaseGuestRequest request) {
+        //TODO: Burayi bir private method icine alip parametrelere gore reserve ya da buy olmasini saglayip kod karmasikligindan kurtulacagiz.
+        Optional<Movie> movieOptional = movieRepository.findByTitle(request.getMovieName());
+
+        if (movieOptional.isEmpty()) {
+            return ResponseMessage.<List<AnonymousTicketResponse>>builder()
+                    .message(ErrorMessages.MOVIE_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Movie movie = movieOptional.get();
+
+        Optional<Showtime> showTimeOptional = showtimeRepository.findById(request.getShowtimeId());
+
+        if (showTimeOptional.isEmpty()) {
+            return ResponseMessage.<List<AnonymousTicketResponse>>builder()
+                    .message(ErrorMessages.SHOWTIME_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Showtime showtime = showTimeOptional.get();
+
+        Optional<Hall> hallOptional = hallRepository.findById(showtime.getHall().getId());
+        if (hallOptional.isEmpty()) {
+            return ResponseMessage.<List<AnonymousTicketResponse>>builder()
+                    .message(ErrorMessages.HALL_NOT_FOUND)
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
+
+        Hall hall = hallOptional.get();
+
+        List<SeatInfo> requestedSeats = request.getSeatInfos();
+
+        List<String> takenSeats = ticketRepository
+                .findOccupiedSeatsByShowtimeAndStatus(showtime.getId(), List.of(TicketStatus.PAID, TicketStatus.RESERVED));
+
+        List<String> alreadyReservedSeats = requestedSeats
+                .stream()
+                .map(SeatInfo::getFullSeatName)
+                .filter(takenSeats::contains).toList();
+
+        if (!alreadyReservedSeats.isEmpty()) {
+            return ResponseMessage.<List<AnonymousTicketResponse>>builder()
+                    .message(ErrorMessages.SEATS_ARE_OCCUPIED)
+                    .httpStatus(HttpStatus.CONFLICT)
+                    .build();
+        }
+
+        AnonymousUser anonymousUser = new AnonymousUser();
+
+        anonymousUser.setEmail(request.getAnonymousUser().getEmail());
+        anonymousUser.setFullName(request.getAnonymousUser().getFullName());
+        anonymousUser.setPhoneNumber(request.getAnonymousUser().getPhoneNumber());
+        anonymousUser.setRetrievalCode(UUID.randomUUID().toString());
+
+        AnonymousUser savedAnonymousUser = anonymousUserRepository.save(anonymousUser);
+
+        String retrievalCode = savedAnonymousUser.getRetrievalCode();
+
+        Payment payment = new Payment();
+        payment.setAnonymousUser(savedAnonymousUser);
+        payment.setAmount(request.getTicketPrice());
+        payment.setPaymentStatus(PaymentStatus.PENDING);
+
+
+        Set<Ticket> ticketSet = new HashSet<>();
+        payment.setTickets(ticketSet);
+
+        double pricePerTicket = request.getTicketPrice() / requestedSeats.size();
+
+        for (SeatInfo seatInfo : requestedSeats) {
+            Ticket ticket = Ticket.builder()
+                    .movie(movie)
+                    .showtime(showtime)
+                    .anonymousUser(savedAnonymousUser)
+                    .hall(hall)
+                    .seatLetter(seatInfo.getSeatLetter())
+                    .seatNumber(seatInfo.getSeatNumber())
+                    .price(pricePerTicket)
+                    .status(TicketStatus.RESERVED)
+                    .payment(payment)
+                    .build();
+            ticketSet.add(ticket);
+        }
+
+        Payment savedPayment = paymentRepository.save(payment);
+
+        List<AnonymousTicketResponse> ticketResponses = savedPayment
+                .getTickets()
+                .stream()
+                .map(ticket -> ticketMapper.mapTicketToAnonymousTicketResponse(ticket, retrievalCode))
+                .toList();
+
+        try {
+            sendTicketConfirmationEmailAnonymous(savedAnonymousUser, movie, showtime, ticketResponses, request.getTicketPrice());
+        } catch (Exception e) {
+            return ResponseMessage.<List<AnonymousTicketResponse>>builder()
+                    .message("Failed to send email: " + e.getMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
+        return ResponseMessage.<List<AnonymousTicketResponse>>builder()
+                .message(SuccessMessages.TICKET_RESERVED_SUCCESSFULLY_AS_GUEST)
+                .httpStatus(HttpStatus.OK)
+                .object(ticketResponses)
+                .build();
     }
 }
 

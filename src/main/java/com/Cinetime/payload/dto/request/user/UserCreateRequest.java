@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class UserRequest extends AbstractUserRequest {
+public class UserCreateRequest extends AbstractUserRequest {
 
     //Seperated it from AbstractUserRequest
 
