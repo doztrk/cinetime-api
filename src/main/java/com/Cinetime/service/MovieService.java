@@ -3,17 +3,13 @@ package com.Cinetime.service;
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.helpers.MovieHelperUpdate;
 import com.Cinetime.payload.dto.request.MovieRequestUpdate;
-import com.Cinetime.payload.dto.response.CinemaResponse;
 import com.Cinetime.payload.dto.response.MovieResponse;
 import com.Cinetime.payload.dto.response.MovieResponseCinema;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.Cinetime.entity.Hall;
+import org.springframework.transaction.annotation.Transactional;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.enums.MovieStatus;
 import com.Cinetime.exception.ResourceNotFoundException;
@@ -32,18 +28,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class MovieService {
 
     private final MovieRepository movieRepository;
@@ -54,8 +45,7 @@ public class MovieService {
     private final MovieHelper movieHelper;
     private final ShowtimeService showtimeService;
     private final MovieHelperUpdate movieHelperUpdate;
-    @Autowired
-    private Environment env;
+    private final CloudinaryService cloudinaryService;
 
     public ResponseMessage<Page<MovieResponse>> getMovieByHall(int page, int size, String sort, String type, String hallName) {
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
@@ -108,65 +98,63 @@ public class MovieService {
                 .build();
     }
 
+    @Transactional
     public ResponseMessage<MovieResponse> createMovie(MovieRequest movieRequest) {
-        // Validate input
+        // Validate input first
         movieHelper.validateMovieRequest(movieRequest);
 
+        // Map to entity
         Movie newMovie = movieMapper.mapMovieRequestToMovie(movieRequest);
-
-        // Handle Hall relationship
-/*        Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
-        newMovie.getHalls().add(hallToBeSet);
-        hallToBeSet.getMovies().add(newMovie); // Update both sides of the relationship*/
-/*
-        // Handle Showtime relationship
-        Showtime showtimeToBeSet = showtimeRepository.findById(movieRequest.getShowtimeId())
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
-        newMovie.getShowtimes().add(showtimeToBeSet);
-        showtimeToBeSet.setMovie(newMovie); // Update both sides of the relationship
-        */
-
-
-        if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
-            try {
-                String uploadDir = env.getProperty("file.upload-dir");
-                String fileName = UUID.randomUUID() + "_" + movieRequest.getPosterImage().getOriginalFilename();
-                Path uploadPath = Paths.get(uploadDir);
-
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(movieRequest.getPosterImage().getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                // URL'yi ayarla (örneğin: http://localhost:8080/uploads/abc.jpg)
-                String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/uploads/image/")
-                        .path(fileName)
-                        .toUriString();
-
-                newMovie.setPosterUrl(imageUrl);
-
-            } catch (IOException e) {
-                return ResponseMessage.<MovieResponse>builder()
-                        .message("Failed to upload image: " + e.getMessage())
-                        .httpStatus(HttpStatus.BAD_REQUEST)
-                        .build();
-            }
-        }
-
-        // Save the movie
         newMovie.setCreatedAt(LocalDateTime.now());
         newMovie.setUpdatedAt(LocalDateTime.now());
-        Movie savedMovie = movieRepository.save(newMovie);
 
-        return ResponseMessage.<MovieResponse>builder()
-                .message(SuccessMessages.MOVIE_CREATE)
-                .httpStatus(HttpStatus.CREATED)
-                .object(movieMapper.mapMovieToMovieResponse(savedMovie))
-                .build();
+        try {
+            // Save movie first to get the ID (needed for image naming)
+            Movie savedMovie = movieRepository.save(newMovie);
+
+            // Handle poster image upload if provided
+            if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
+                try {
+                    // Upload to cloud storage
+                    String imageUrl = cloudinaryService.uploadMoviePoster(
+                            movieRequest.getPosterImage(),
+                            savedMovie.getId()
+                    );
+
+                    // Update movie with image URL
+                    savedMovie.setPosterUrl(imageUrl);
+                    savedMovie = movieRepository.save(savedMovie);
+
+                    log.info("Movie created successfully with poster: ID={}, URL={}",
+                            savedMovie.getId(), imageUrl);
+
+                } catch (IOException e) {
+                    // CRITICAL: If image upload fails, we need to clean up
+                    log.error("Image upload failed for movie ID: {}", savedMovie.getId(), e);
+
+                    // Delete the movie record since image upload failed
+                    movieRepository.deleteById(savedMovie.getId());
+
+                    return ResponseMessage.<MovieResponse>builder()
+                            .message("Failed to upload movie poster: " + e.getMessage())
+                            .httpStatus(HttpStatus.BAD_REQUEST)
+                            .build();
+                }
+            }
+
+            return ResponseMessage.<MovieResponse>builder()
+                    .message(SuccessMessages.MOVIE_CREATE)
+                    .httpStatus(HttpStatus.CREATED)
+                    .object(movieMapper.mapMovieToMovieResponse(savedMovie))
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Failed to create movie", e);
+            return ResponseMessage.<MovieResponse>builder()
+                    .message("Failed to create movie: " + e.getMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 
     //M01 - Get Movies By Query
@@ -223,99 +211,97 @@ public class MovieService {
         );
     }
 
-    public ResponseMessage<MovieResponse> updateMovie(Long movieId, MovieRequestUpdate movieRequest) throws BadRequestException {
+    @Transactional
+    public ResponseMessage<MovieResponse> updateMovie(Long movieId, MovieRequestUpdate movieRequest)
+            throws BadRequestException {
 
         movieHelperUpdate.validateMovieRequest(movieRequest);
 
         Movie existingMovie = isMovieExist(movieId);
+        String oldImageUrl = existingMovie.getPosterUrl(); // Store for cleanup
 
-        existingMovie.setTitle(movieRequest.getTitle());
-        existingMovie.setSlug(movieRequest.getSlug());
-        existingMovie.setSummary(movieRequest.getSummary());
-        existingMovie.setDuration(movieRequest.getDuration());
-        existingMovie.setRating(movieRequest.getRating());
-        existingMovie.setDirector(movieRequest.getDirector());
-        existingMovie.setCast(movieRequest.getCast());
-        existingMovie.setGenre(movieRequest.getGenre());
-        existingMovie.setFormats(movieRequest.getFormats());
-        existingMovie.setReleaseDate(movieRequest.getReleaseDate());
-        existingMovie.setStatus(movieRequest.getStatus());
+        try {
+            // Update basic movie fields
+            updateMovieFields(existingMovie, movieRequest);
 
-        // Handle Hall relationship update if provided
-       /* if (movieRequest.getHallId() != null) {
-            Hall hallToBeSet = hallRepository.findById(movieRequest.getHallId())
-                    .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.HALL_NOT_FOUND));
-            //existingMovie.getHalls().clear();
-            existingMovie.getHalls().add(hallToBeSet);
-            hallToBeSet.getMovies().add(existingMovie);
-        }*/
-
-
-        // Handle Showtime relationship if necessary (optional)
-        if (movieRequest.getShowtimeId() != null) {
-            Showtime showtimeToBeSet = showtimeRepository.findById(movieRequest.getShowtimeId())
-                    .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
-            showtimeService.showtimeUpdateCheck(
-                    showtimeToBeSet.getId(),
-                    showtimeToBeSet.getHall().getId(),
-                    showtimeToBeSet.getDate(),
-                    showtimeToBeSet.getStartTime(),
-                    showtimeToBeSet.getEndTime()
-            );
-
-
-            //existingMovie.getShowtimes().clear();  // Clear previous showtimes and set the new one
-            existingMovie.getShowtimes().add(showtimeToBeSet);
-            //showtimeToBeSet.getMovie(). // Update both sides of the relationship
-        }
-
-        // Handle poster image update (optional)
-        if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
-            try {
-                String uploadDir = env.getProperty("file.upload-dir");
-                String fileName = UUID.randomUUID().toString() + "_" + movieRequest.getPosterImage().getOriginalFilename();
-                Path uploadPath = Paths.get(uploadDir);
-
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(movieRequest.getPosterImage().getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                // Set the URL for the image
-                String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/uploads/image/")
-                        .path(fileName)
-                        .toUriString();
-
-                existingMovie.setPosterUrl(imageUrl);
-
-            } catch (IOException e) {
-                return ResponseMessage.<MovieResponse>builder()
-                        .message("Failed to upload image: " + e.getMessage())
-                        .httpStatus(HttpStatus.BAD_REQUEST)
-                        .build();
+            // Handle Showtime relationship if provided
+            if (movieRequest.getShowtimeId() != null) {
+                handleShowtimeUpdate(existingMovie, movieRequest.getShowtimeId());
             }
+
+            // Handle poster image update
+            if (movieRequest.getPosterImage() != null && !movieRequest.getPosterImage().isEmpty()) {
+                try {
+                    String newImageUrl = cloudinaryService.updateMoviePoster(
+                            movieRequest.getPosterImage(),
+                            movieId,
+                            oldImageUrl
+                    );
+                    existingMovie.setPosterUrl(newImageUrl);
+
+                    log.info("Movie poster updated successfully: ID={}, New URL={}",
+                            movieId, newImageUrl);
+
+                } catch (IOException e) {
+                    log.error("Failed to update movie poster for ID: {}", movieId, e);
+
+                    return ResponseMessage.<MovieResponse>builder()
+                            .message("Failed to update movie poster: " + e.getMessage())
+                            .httpStatus(HttpStatus.BAD_REQUEST)
+                            .build();
+                }
+            }
+
+            existingMovie.setUpdatedAt(LocalDateTime.now());
+            Movie updatedMovie = movieRepository.save(existingMovie);
+
+            return ResponseMessage.<MovieResponse>builder()
+                    .message(SuccessMessages.MOVIE_UPDATE)
+                    .httpStatus(HttpStatus.OK)
+                    .object(movieMapper.mapMovieToMovieResponse(updatedMovie))
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Failed to update movie ID: {}", movieId, e);
+            return ResponseMessage.<MovieResponse>builder()
+                    .message("Failed to update movie: " + e.getMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-
-
-        existingMovie.setUpdatedAt(LocalDateTime.now());
-        Movie updatedMovie = movieRepository.save(existingMovie);
-
-        return ResponseMessage.<MovieResponse>builder()
-                .message(SuccessMessages.MOVIE_UPDATE)
-                .httpStatus(HttpStatus.OK)
-                .object(movieMapper.mapMovieToMovieResponse(updatedMovie))
-                .build();
     }
 
+    @Transactional
     public ResponseMessage<?> deleteMovieById(Long movieId) {
-        isMovieExist(movieId);
-        return ResponseMessage.builder()
-                .message(SuccessMessages.MOVIE_DELETE)
-                .httpStatus(HttpStatus.OK)
-                .build();
+        Movie movie = isMovieExist(movieId);
+
+        try {
+            // Delete poster from cloud storage first
+            if (movie.getPosterUrl() != null && !movie.getPosterUrl().isEmpty()) {
+                boolean deleted = cloudinaryService.deleteMoviePoster(movie.getPosterUrl());
+                if (!deleted) {
+                    log.warn("Failed to delete movie poster from cloud storage: {}",
+                            movie.getPosterUrl());
+                    // Continue with movie deletion even if image deletion fails
+                }
+            }
+
+            // Delete movie from database
+            movieRepository.deleteById(movieId);
+
+            log.info("Movie deleted successfully: ID={}", movieId);
+
+            return ResponseMessage.builder()
+                    .message(SuccessMessages.MOVIE_DELETE)
+                    .httpStatus(HttpStatus.OK)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("Failed to delete movie ID: {}", movieId, e);
+            return ResponseMessage.builder()
+                    .message("Failed to delete movie: " + e.getMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 
     public ResponseMessage<Page<MovieResponse>> getAllMovies(int page, int size, String sort, String type) {
@@ -359,5 +345,34 @@ public class MovieService {
                 .object(moviePage.map(movieMapper::mapMovieToMovieResponse))
                 .httpStatus(HttpStatus.OK)
                 .build();
+    }
+
+    private void updateMovieFields(Movie movie, MovieRequestUpdate request) {
+        movie.setTitle(request.getTitle());
+        movie.setSlug(request.getSlug());
+        movie.setSummary(request.getSummary());
+        movie.setDuration(request.getDuration());
+        movie.setRating(request.getRating());
+        movie.setDirector(request.getDirector());
+        movie.setCast(request.getCast());
+        movie.setGenre(request.getGenre());
+        movie.setFormats(request.getFormats());
+        movie.setReleaseDate(request.getReleaseDate());
+        movie.setStatus(request.getStatus());
+    }
+
+    private void handleShowtimeUpdate(Movie movie, Long showtimeId) throws BadRequestException {
+        Showtime showtimeToBeSet = showtimeRepository.findById(showtimeId)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.SHOWTIME_NOT_FOUND));
+
+        showtimeService.showtimeUpdateCheck(
+                showtimeToBeSet.getId(),
+                showtimeToBeSet.getHall().getId(),
+                showtimeToBeSet.getDate(),
+                showtimeToBeSet.getStartTime(),
+                showtimeToBeSet.getEndTime()
+        );
+
+        movie.getShowtimes().add(showtimeToBeSet);
     }
 }
