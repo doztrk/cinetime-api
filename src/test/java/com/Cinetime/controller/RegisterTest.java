@@ -4,6 +4,7 @@ import com.Cinetime.enums.Gender;
 import com.Cinetime.payload.dto.request.user.UserRegisterRequest;
 import com.Cinetime.payload.dto.response.BaseUserResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class UserControllerTest {
+class RegisterTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -84,7 +84,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").value("User created successfully"))
                 .andExpect(jsonPath("$.httpStatus").value("CREATED"))
@@ -96,7 +96,7 @@ class UserControllerTest {
     void register_WithDuplicateUser_ShouldReturnConflict() throws Exception {
         // Arrange
         ResponseMessage<BaseUserResponse> conflictResponse = ResponseMessage.<BaseUserResponse>builder()
-                .message("User with this email or phone number already exists")
+                .message(ErrorMessages.DUPLICATE_USER_PROPERTIES)
                 .httpStatus(HttpStatus.CONFLICT)
                 .object(null)
                 .build();
@@ -109,8 +109,8 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User with this email or phone number already exists"))
+                .andExpect(status().isOk()) //Since we are using ResponseMessage Wrapper, it returns ResponseObject as 200 OK. We need to use this to get the error message
+                .andExpect(jsonPath("$.message").value(ErrorMessages.DUPLICATE_USER_PROPERTIES))
                 .andExpect(jsonPath("$.httpStatus").value("CONFLICT"));
     }
 

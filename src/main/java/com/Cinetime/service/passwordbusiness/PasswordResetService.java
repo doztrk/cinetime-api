@@ -4,11 +4,14 @@ import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.request.ForgotPasswordRequest;
 import com.Cinetime.payload.dto.request.ResetCodeRequest;
 import com.Cinetime.payload.dto.request.ResetPasswordRequest;
+import com.Cinetime.payload.dto.response.PasswordResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.repo.UserRepository;
 import com.Cinetime.service.EmailService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PasswordResetService {
 
@@ -27,40 +31,50 @@ public class PasswordResetService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseMessage<?> generateResetPasswordCode(ForgotPasswordRequest request) {
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
-        if (userOptional.isEmpty()) {
-            return ResponseMessage.builder()
-                    .message("If the email exists, a reset code has will be sent")
-                    .httpStatus(HttpStatus.OK)
-                    .build();
-        }
-        User user = userOptional.get();
+    public ResponseMessage<PasswordResponse> generateResetPasswordCode(ForgotPasswordRequest request) {
+        // Always generate code and simulate work to prevent timing attacks
         String resetCode = String.format("%06d", random.nextInt(1000000));
-        user.setResetPasswordCode(resetCode);
-        userRepository.save(user);
 
-        try {
-            emailService.sendPasswordResetEmail(request.getEmail(), resetCode);
-            return ResponseMessage.builder()
-                    .message("Password reset code has been sent")
-                    .httpStatus(HttpStatus.OK)
-                    .build();
-        } catch (Exception e) {
-            return ResponseMessage.builder()
-                    .message("Failed to send password reset email: " + e.getMessage())
-                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            try {
+                // Send email first - only save code if email succeeds
+                emailService.sendPasswordResetEmail(request.getEmail(), resetCode);
+
+                // Only set and save if email was successful
+                user.setResetPasswordCode(resetCode);
+                userRepository.save(user);
+
+            } catch (Exception e) {
+                log.error("Failed to send password reset email to {}: {}", request.getEmail(), e.getMessage());
+                // Don't save the code if email failed
+            }
+        } else {
+            // Simulate email sending delay for invalid emails
+            try {
+                Thread.sleep(100 + random.nextInt(200)); // 100-300ms delay
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
         }
+
+        // Always return same message regardless of email validity
+        return ResponseMessage.<PasswordResponse>builder()
+                .message(SuccessMessages.GENERATE_PASSWORD_HAS_BEEN_SENT)
+                .httpStatus(HttpStatus.OK)
+                .build();
     }
 
 
-    public ResponseMessage<?> resetPassword(ResetPasswordRequest request) {
+    public ResponseMessage<PasswordResponse> resetPassword(ResetPasswordRequest request) {
         Optional<User> userOptional = userRepository.findByResetPasswordCode(request.getResetCode());
 
         //Double defense
         if (userOptional.isEmpty()) {
-            return ResponseMessage.builder()
+            return ResponseMessage.<PasswordResponse>builder()
                     .message("Invalid reset code or already used")
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
@@ -70,7 +84,7 @@ public class PasswordResetService {
 
 
         if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
-            return ResponseMessage.builder()
+            return ResponseMessage.<PasswordResponse>builder()
                     .message("New password cannot be same as old password")
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
@@ -82,26 +96,29 @@ public class PasswordResetService {
         userRepository.save(user);
 
 
-        return ResponseMessage.builder()
+        return ResponseMessage.<PasswordResponse>builder()
                 .message("Password has been changed successfully")
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
 
-    public ResponseMessage<?> validateResetPasswordCode(ResetCodeRequest request) {
+    public ResponseMessage<PasswordResponse> validateResetPasswordCode(ResetCodeRequest request) {
         Optional<User> userOptional = userRepository.findByResetPasswordCode(request.getResetCode());
 
         if (userOptional.isEmpty()) {
-            return ResponseMessage.builder()
+            return ResponseMessage.<PasswordResponse>builder()
                     .message("Invalid or expired reset code")
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
         }
+        PasswordResponse passwordResponse = PasswordResponse.builder()
+                .email(userOptional.get().getEmail())
+                .build();
 
-        return ResponseMessage.builder()
-                .message("Approved")
+        return ResponseMessage.<PasswordResponse>builder()
+                .message("Reset code is valid")
                 .httpStatus(HttpStatus.OK)
-                .object(userOptional.get().getEmail())
+                .object(passwordResponse)
                 .build();
     }
 }

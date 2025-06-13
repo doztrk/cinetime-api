@@ -23,4 +23,5 @@ public class SuccessMessages {
     public static final String TICKET_PRICE_FOUND_SUCCESSFULLY = "Ticket price has been found successfully";
     public static final String TICKET_PRICE_CALCULATED_SUCCESSFULLY = "Ticket price has been calculated successfully";
     public static final String TICKET_RESERVED_SUCCESSFULLY_AS_GUEST = "Ticket reserved successfully as guest";
+    public static final String GENERATE_PASSWORD_HAS_BEEN_SENT = "Password reset code has been sent successfully to this email";
 }

@@ -55,12 +55,13 @@ public class UserService {
         ///DTO -> Entity
         User user = userMapper.mapUserRequestToUser(userRequest);
 
+
+
         //Soru: Role tipi icin her seferinde DB'ye sorgu atmak yerine nasil setleriz ?
         //Cevap ↴
         user.setRole(roleService.getRole(RoleName.MEMBER));
 
         //Password encoding
-        //TODO:DEBUG YAP
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         user.setBuiltIn(false);

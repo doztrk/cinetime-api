@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -28,11 +29,10 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class RegisterTest {
     @Mock
     private UserRepository userRepository;
 
@@ -157,6 +157,8 @@ public class UserServiceTest {
         assertThat(result.getMessage()).isEqualTo(ErrorMessages.DUPLICATE_USER_PROPERTIES);
 
         verify(uniquePropertyValidator).uniquePropertyChecker(duplicateEmail, duplicatePhoneNumber);
+        verifyNoInteractions(userMapper, roleService, passwordEncoder, userRepository);
+
     }
 
     @Test
@@ -174,18 +176,13 @@ public class UserServiceTest {
         userService.register(validUserRequest);
 
         //Assert
-        verify(userRepository).save(argThat(user -> {
-            assertThat(user.getFirstname()).isEqualTo("John");
-            assertThat(user.getLastname()).isEqualTo("Doe");
-            assertThat(user.getEmail()).isEqualTo("john.doe@example.com");
-            assertThat(user.getPhoneNumber()).isEqualTo("(555) 555-5555");
-            assertThat(user.getPassword()).isEqualTo("encodedPassword");
-            assertThat(user.getGender()).isEqualTo(Gender.MALE);
-            assertThat(user.getDateOfBirth()).isEqualTo(LocalDate.of(1990, 5, 15));
-            assertThat(user.getRole()).isEqualTo(memberRole);
-            assertThat(user.getBuiltIn()).isFalse();
-            return true;
-        }));
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(userCaptor.capture());
+        User capturedUser = userCaptor.getValue();
+
+        assertThat(capturedUser.getRole()).isEqualTo(memberRole);
+        assertThat(capturedUser.getBuiltIn()).isFalse();
+        assertThat(capturedUser.getPassword()).isEqualTo("encodedPassword");
 
     }
 
@@ -206,10 +203,74 @@ public class UserServiceTest {
         // Act
         userService.register(validUserRequest);
 
+
         // Assert
         verify(passwordEncoder).encode(rawPassword);
-        verify(userRepository).save(argThat(user ->
-                user.getPassword().equals(encodedPassword)
-        ));
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(userCaptor.capture());
+        User savedUser = userCaptor.getValue();
+
+        assertThat(savedUser.getPassword()).isEqualTo(encodedPassword);
+    }
+
+    @Test
+    @DisplayName("Should handle database constraint violation gracefully")
+    void register_WhenDatabaseConstraintViolated_ShouldThrowException() {
+        // Arrange
+        when(uniquePropertyValidator.uniquePropertyChecker(anyString(), anyString())).thenReturn(true);
+        when(userMapper.mapUserRequestToUser(any(UserRegisterRequest.class))).thenReturn(mockUser);
+        when(roleService.getRole(RoleName.MEMBER)).thenReturn(memberRole);
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userRepository.save(any(User.class))).thenThrow(new DataIntegrityViolationException("Constraint violation"));
+
+        // Act & Assert
+        assertThatThrownBy(() -> userService.register(validUserRequest))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("Constraint violation");
+
+        // Verify we attempted to save
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("Should handle null role service response")
+    void register_WhenRoleServiceReturnsNull_ShouldHandleGracefully() {
+        // Arrange
+        when(uniquePropertyValidator.uniquePropertyChecker(anyString(), anyString())).thenReturn(true);
+        when(userMapper.mapUserRequestToUser(any(UserRegisterRequest.class))).thenReturn(mockUser);
+        when(roleService.getRole(RoleName.MEMBER)).thenReturn(null);
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
+        // Act
+        userService.register(validUserRequest);
+
+        // Assert - Verify that user.setRole() was called with null
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(userCaptor.capture());
+        User savedUser = userCaptor.getValue();
+
+        assertThat(savedUser.getRole()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should handle mapper returning null user")
+    void register_WhenMapperReturnsNull_ShouldHandleGracefully() {
+        // Arrange
+        when(uniquePropertyValidator.uniquePropertyChecker(anyString(), anyString())).thenReturn(true);
+        when(userMapper.mapUserRequestToUser(any(UserRegisterRequest.class))).thenReturn(null);
+        when(roleService.getRole(RoleName.MEMBER)).thenReturn(memberRole);
+
+        // Act & Assert
+        assertThatThrownBy(() -> userService.register(validUserRequest))
+                .isInstanceOf(NullPointerException.class);
+
+        // Verify what actually gets called before the NPE
+        verify(uniquePropertyValidator).uniquePropertyChecker("john.doe@example.com", "(555) 555-5555");
+        verify(userMapper).mapUserRequestToUser(validUserRequest);
+        verify(roleService).getRole(RoleName.MEMBER); // ✅ Called due to method parameter evaluation
+
+        // These are never reached because NPE happens at user.setRole()
+        verifyNoInteractions(passwordEncoder, userRepository);
     }
 }

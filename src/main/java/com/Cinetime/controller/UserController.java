@@ -10,6 +10,7 @@ import com.Cinetime.payload.dto.request.user.UserRequestWithPasswordOnly;
 import com.Cinetime.payload.dto.request.user.UserUpdateRequest;
 import com.Cinetime.payload.dto.response.AuthResponse;
 import com.Cinetime.payload.dto.response.BaseUserResponse;
+import com.Cinetime.payload.dto.response.PasswordResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.service.passwordbusiness.PasswordResetService;
 import com.Cinetime.service.UserService;
@@ -74,7 +75,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> authenticateUser(
+    public ResponseMessage<AuthResponse> authenticateUser(
             @Parameter(description = "Login credentials", required = true)
             @RequestBody @Valid LoginRequest loginRequest) {
         return authenticationService.authenticateUser(loginRequest);
@@ -91,7 +92,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/forgot-password")
-    public ResponseMessage<?> generateResetPasswordCode(
+    public ResponseMessage<PasswordResponse> generateResetPasswordCode(
             @Parameter(description = "Email for password reset", required = true)
             @RequestBody @Valid ForgotPasswordRequest request) {
         return passwordResetService.generateResetPasswordCode(request);
@@ -108,7 +109,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/reset-password")
-    public ResponseMessage<?> resetPassword(
+    public ResponseMessage<PasswordResponse> resetPassword(
             @Parameter(description = "New password and reset code", required = true)
             @RequestBody @Valid ResetPasswordRequest resetPasswordDTO) {
         return passwordResetService.resetPassword(resetPasswordDTO);
@@ -124,7 +125,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/validate-reset-password-code")
-    public ResponseMessage<?> validateResetPasswordCode(
+    public ResponseMessage<PasswordResponse> validateResetPasswordCode(
             @Parameter(description = "Reset code to validate", required = true)
             @RequestBody @Valid ResetCodeRequest resetCodeDTO) {
         return passwordResetService.validateResetPasswordCode(resetCodeDTO);
@@ -304,7 +305,7 @@ public class UserController {
     })
     @GetMapping("/users/auth")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MEMBER')")
-    public ResponseMessage<BaseUserResponse> getAuthenticatedUserDetails(){
+    public ResponseMessage<BaseUserResponse> getAuthenticatedUserDetails() {
         return userService.getAuthenticatedUserDetails();
     }
 }
