@@ -1,4 +1,4 @@
-package com.Cinetime.service;
+package com.Cinetime.service.userservice;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.request.ResetCodeRequest;

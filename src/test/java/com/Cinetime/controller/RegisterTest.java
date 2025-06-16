@@ -6,6 +6,8 @@ import com.Cinetime.payload.dto.response.BaseUserResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.service.UserService;
+import com.Cinetime.service.authentication.AuthenticationService;
+import com.Cinetime.service.passwordbusiness.PasswordResetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,12 @@ class RegisterTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private AuthenticationService authenticationService;
+
+    @MockBean
+    private PasswordResetService passwordResetService;
 
     @MockBean
     private UserService userService;

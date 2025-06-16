@@ -1,4 +1,4 @@
-package com.Cinetime.service;
+package com.Cinetime.service.userservice;
 
 import com.Cinetime.entity.Role;
 import com.Cinetime.entity.User;
@@ -12,6 +12,8 @@ import com.Cinetime.payload.mappers.UserMapper;
 import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.repo.UserRepository;
+import com.Cinetime.service.RoleService;
+import com.Cinetime.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

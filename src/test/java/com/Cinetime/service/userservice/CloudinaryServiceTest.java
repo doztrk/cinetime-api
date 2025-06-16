@@ -1,8 +1,9 @@
 // Create this test to verify your setup works
 // Put this in src/test/java/com/Cinetime/service/CloudinaryServiceTest.java
 
-package com.Cinetime.service;
+package com.Cinetime.service.userservice;
 
+import com.Cinetime.service.CloudinaryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

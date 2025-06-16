@@ -1,4 +1,4 @@
-package com.Cinetime.service;
+package com.Cinetime.service.userservice;
 
 import com.Cinetime.entity.User;
 import com.Cinetime.payload.dto.request.ForgotPasswordRequest;
@@ -6,6 +6,7 @@ import com.Cinetime.payload.dto.response.PasswordResponse;
 import com.Cinetime.payload.dto.response.ResponseMessage;
 import com.Cinetime.payload.messages.SuccessMessages;
 import com.Cinetime.repo.UserRepository;
+import com.Cinetime.service.EmailService;
 import com.Cinetime.service.passwordbusiness.PasswordResetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

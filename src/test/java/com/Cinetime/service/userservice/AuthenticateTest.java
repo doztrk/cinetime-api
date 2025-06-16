@@ -1,4 +1,4 @@
-package com.Cinetime.service;
+package com.Cinetime.service.userservice;
 
 import com.Cinetime.entity.Role;
 import com.Cinetime.entity.User;

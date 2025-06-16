@@ -1,7 +1,5 @@
 package com.Cinetime.controller;
 
-import com.Cinetime.entity.Movie;
-import com.Cinetime.entity.Showtime;
 import com.Cinetime.payload.dto.request.MovieRequest;
 import com.Cinetime.payload.dto.request.MovieRequestUpdate;
 import com.Cinetime.payload.dto.response.*;
@@ -10,16 +8,13 @@ import com.Cinetime.service.ShowtimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -239,7 +234,7 @@ public class MovieController {
             @Parameter(description = "ID of the movie to update", required = true)
             @PathVariable Long movieId,
             @Parameter(description = "Movie data")
-            @ModelAttribute MovieRequestUpdate movieRequestUpdate) throws BadRequestException {
+            @ModelAttribute MovieRequestUpdate movieRequestUpdate)  throws BadRequestException{
         return movieService.updateMovie(movieId, movieRequestUpdate);
     }
 

@@ -56,7 +56,6 @@ public class UserService {
         User user = userMapper.mapUserRequestToUser(userRequest);
 
 
-
         //Soru: Role tipi icin her seferinde DB'ye sorgu atmak yerine nasil setleriz ?
         //Cevap ↴
         user.setRole(roleService.getRole(RoleName.MEMBER));
@@ -111,63 +110,37 @@ public class UserService {
 
         return ResponseMessage.<BaseUserResponse>builder()
                 .message(SuccessMessages.USER_CREATE)
-                .httpStatus(HttpStatus.OK)
+                .httpStatus(HttpStatus.CREATED)
                 .object(userMapper.mapUserToBaseUserResponse(user))
                 .build();
     }
 
     @Transactional
     public ResponseMessage<BaseUserResponse> updateUser(UserUpdateRequest userUpdateRequest) {
+        User user = securityService.getCurrentUser();
 
-        //Istek gonderen kullaniciyi buluyoruz
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String phoneNumber = authentication.getName();
-
-
-        Optional<User> userOptional = userRepository.findByPhoneNumber(phoneNumber);
-
-        if (userOptional.isEmpty()) {
-            return ResponseMessage.<BaseUserResponse>builder()
-                    .message(ErrorMessages.AUTHENTICATION_NOT_FOUND)
-                    .httpStatus(HttpStatus.BAD_REQUEST)
-                    .build();
-        }
-
-        User user = userOptional.get();
-
-        if (user.getBuiltIn().equals(true)) {
+        if (Boolean.TRUE.equals(user.getBuiltIn())) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.BUILTIN_USER_UPDATE)
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
         }
 
-        //Kullanici email'ini guncelleyecekse bu mevcuttakiyle ayni emaili olmamali ve DB'de verdigi email ile ayni bir email kayitli olmamali
-        //Hata mesaji donduruyoruz
-        if (StringUtils.hasText(userUpdateRequest.getEmail()) &&
-                !userUpdateRequest.getEmail().equals(user.getEmail()) &&
-                !uniquePropertyValidator.isEmailUniqueForUpdate(userUpdateRequest.getEmail(), user.getId())) {
-
+        if (isDuplicateEmail(userUpdateRequest, user)) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_EMAIL)
                     .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
 
-        //Same as above but for phone
-        if (StringUtils.hasText(userUpdateRequest.getPhoneNumber()) &&
-                !userUpdateRequest.getPhoneNumber().equals(user.getPhoneNumber()) &&
-                !uniquePropertyValidator.isPhoneNumberUniqueForUpdate(userUpdateRequest.getPhoneNumber(), user.getId())) {
-
+        if (isDuplicatePhoneNumber(userUpdateRequest, user)) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.DUPLICATE_PHONE_NUMBER)
                     .httpStatus(HttpStatus.CONFLICT)
                     .build();
         }
 
-
         User updatedUser = updateUserHelper.updateUserIfUpdatesExistInRequest(userUpdateRequest, user);
-
         userRepository.save(updatedUser);
 
         return ResponseMessage.<BaseUserResponse>builder()
@@ -180,42 +153,40 @@ public class UserService {
     @Transactional
     public ResponseMessage<BaseUserResponse> deleteUser(UserRequestWithPasswordOnly request) {
 
-        String phoneNumber = SecurityHelper.getCurrentUserPhoneNumber();
+        User user = securityService.getCurrentUser();
 
 
-        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
-
-        if (user.isEmpty()) {
+        if (user == null) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message("Authenticated user not found in database. This indicates a system error.")
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
         }
-        if (!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.INVALID_PASSWORD)
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
         }
 
-        if (user.get().getBuiltIn()) {
+        if (user.getBuiltIn()) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.BUILTIN_USER_DELETE)
                     .httpStatus(HttpStatus.BAD_REQUEST)
                     .build();
         }
 
-        if (!ticketHelper.canDeleteUser(user.get())) {
+        if (!ticketHelper.canDeleteUser(user)) {
             return ResponseMessage.<BaseUserResponse>builder()
                     .message(ErrorMessages.USER_HAS_UNUSED_TICKETS)
                     .httpStatus(HttpStatus.BAD_REQUEST)
-                    .object(userMapper.mapUserToBaseUserResponse(user.get()))
+                    .object(userMapper.mapUserToBaseUserResponse(user))
                     .build();
         }
 
-        BaseUserResponse userResponse = userMapper.mapUserToBaseUserResponse(user.get());
+        BaseUserResponse userResponse = userMapper.mapUserToBaseUserResponse(user);
 
-        userRepository.delete(user.get());
+        userRepository.delete(user);
 
         SecurityContextHolder.clearContext(); //Sildikten sonra securitycontexti temizliyoruz
 
@@ -226,13 +197,24 @@ public class UserService {
                 .build();
     }
 
-    public Page<BaseUserResponse> getUserWithParam(String q, int page, int size, String sort, String type) {
+    public ResponseMessage<Page<BaseUserResponse>> getUserWithParam(String q, int page, int size, String sort, String type) {
 
-        Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+        try {
+            Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+            Page<User> users = userRepository.searchUsers(q, pageable);
+            Page<BaseUserResponse> userResponses = users.map(userMapper::mapUserToBaseUserResponse);
 
-        Page<User> users = userRepository.searchUsers(q, pageable);
-
-        return users.map(userMapper::mapUserToBaseUserResponse);
+            return ResponseMessage.<Page<BaseUserResponse>>builder()
+                    .message("Users retrieved successfully")
+                    .httpStatus(HttpStatus.OK)
+                    .object(userResponses)
+                    .build();
+        } catch (Exception e) {
+            return ResponseMessage.<Page<BaseUserResponse>>builder()
+                    .message("Failed to retrieve users: " + e.getMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 
     public ResponseMessage<BaseUserResponse> getUserById(Long userId) {
@@ -258,7 +240,7 @@ public class UserService {
     }
 
 
-    //Method overload
+    //Method overload(Update user by id)
     @Transactional
     public ResponseMessage<BaseUserResponse> updateUser(Long userId, UserUpdateRequest userUpdateRequest) {
 
@@ -339,12 +321,33 @@ public class UserService {
 
     public ResponseMessage<BaseUserResponse> getAuthenticatedUserDetails() {
 
+
         User user = securityService.getCurrentUser();
+
+        if (user == null) {
+            return ResponseMessage.<BaseUserResponse>builder()
+                    .message("Authenticated user not found in database. This indicates a system error.")
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .build();
+        }
 
         return ResponseMessage.<BaseUserResponse>builder()
                 .message(SuccessMessages.USER_FOUND)
                 .httpStatus(HttpStatus.OK)
                 .object(userMapper.mapUserToBaseUserResponse(user))
                 .build();
+    }
+
+
+    private boolean isDuplicateEmail(UserUpdateRequest request, User user) {
+        return StringUtils.hasText(request.getEmail()) &&
+                !request.getEmail().equals(user.getEmail()) &&
+                !uniquePropertyValidator.isEmailUniqueForUpdate(request.getEmail(), user.getId());
+    }
+
+    private boolean isDuplicatePhoneNumber(UserUpdateRequest request, User user) {
+        return StringUtils.hasText(request.getPhoneNumber()) &&
+                !request.getPhoneNumber().equals(user.getPhoneNumber()) &&
+                !uniquePropertyValidator.isPhoneNumberUniqueForUpdate(request.getPhoneNumber(), user.getId());
     }
 }
