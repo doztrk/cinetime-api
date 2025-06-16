@@ -284,6 +284,7 @@ public class MovieController {
             @ApiResponse(responseCode = "404", description = "Hall not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     @GetMapping("/getMoviesByHallId/{hallId}")
     public ResponseMessage<Page<MovieResponse>> getMoviesByHallId(
             @PathVariable Long hallId,
