@@ -4,7 +4,6 @@ import com.Cinetime.entity.Hall;
 import com.Cinetime.entity.Movie;
 import com.Cinetime.entity.Showtime;
 import com.Cinetime.enums.MovieStatus;
-import com.Cinetime.exception.ResourceNotFoundException;
 import com.Cinetime.helpers.MovieHelperUpdate;
 import com.Cinetime.payload.dto.request.MovieRequestUpdate;
 import com.Cinetime.payload.dto.response.MovieResponse;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class MovieServiceUpdateTest {
+class UpdateMovieByIdTest {
 
     @Mock
     private MovieRepository movieRepository;
