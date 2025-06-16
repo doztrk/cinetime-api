@@ -2,11 +2,15 @@ package com.Cinetime.service.authentication;
 
 import com.Cinetime.payload.authentication.LoginRequest;
 import com.Cinetime.payload.dto.response.AuthResponse;
+import com.Cinetime.payload.dto.response.ResponseMessage;
+import com.Cinetime.payload.messages.ErrorMessages;
 import com.Cinetime.security.JwtUtils;
 import com.Cinetime.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,33 +29,50 @@ public class AuthenticationService {
     public final JwtUtils jwtUtils;
     public final AuthenticationManager authenticationManager;
 
-    public ResponseEntity<AuthResponse> authenticateUser(LoginRequest loginRequest) {
+    public ResponseMessage<AuthResponse> authenticateUser(LoginRequest loginRequest) {
 
-        String phoneNumber = loginRequest.getPhoneNumber();
-        String password = loginRequest.getPassword();
+        try {
+            String phoneNumber = loginRequest.getPhoneNumber();
+            String password = loginRequest.getPassword();
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(phoneNumber, password)
-        );
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(phoneNumber, password)
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = "Bearer " + jwtUtils.generateToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = "Bearer " + jwtUtils.generateToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        Set<String> roles = userDetails.getAuthorities()
-                .stream()
-                .map(auth -> auth.getAuthority().replace("ROLE_", ""))//burada string turune ceviren getAuthority methodu ile yapiyoruz
-                .collect(Collectors.toSet());
+            Set<String> roles = userDetails.getAuthorities()
+                    .stream()
+                    .map(auth -> auth.getAuthority().replace("ROLE_", ""))//burada string turune ceviren getAuthority methodu ile yapiyoruz
+                    .collect(Collectors.toSet());
+
+            AuthResponse authResponse = AuthResponse.builder()
+                    .token(token)
+                    .name(userDetails.getUser().getFirstname())
+                    .phone(userDetails.getUser().getPhoneNumber())
+                    .roles(roles)
+                    .build();
+            return ResponseMessage.<AuthResponse>builder()
+                    .message("Authentication successful")
+                    .httpStatus(HttpStatus.OK)
+                    .object(authResponse)
+                    .build();
 
 
+        } catch (BadCredentialsException e) {
+            return ResponseMessage.<AuthResponse>builder()
+                    .message(ErrorMessages.BAD_CREDENTIALS)
+                    .httpStatus(HttpStatus.UNAUTHORIZED)
+                    .build();
 
-        AuthResponse.AuthResponseBuilder authResponse = AuthResponse.builder();
-        authResponse.token(token);
-        authResponse.name(userDetails.getUser().getFirstname());
-        authResponse.phone(userDetails.getUser().getPhoneNumber());
-        authResponse.roles(roles);
-
-        return ResponseEntity.ok(authResponse.build());
+        } catch (Exception e) {
+            return ResponseMessage.<AuthResponse>builder()
+                    .message("Authentication failed")
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 }

@@ -65,18 +65,6 @@ public class Movie {
     private Double rating;
 
 
-/*    // Many-to-many relationship with Hall
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "movie_hall",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "hall_id")
-    )
-    @Builder.Default
-    private Set<Hall> halls = new HashSet<>();*/
-
-    // One-to-many relationship with Showtime
-
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @Builder.Default
     @JsonIgnore

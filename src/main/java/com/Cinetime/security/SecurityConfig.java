@@ -105,6 +105,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
+                        .requestMatchers("/api/users/auth").hasAnyRole("ADMIN", "EMPLOYEE")
 
                         //Cinemas, Movies GET
                         .requestMatchers(HttpMethod.GET, "/api/cinemas").permitAll()
