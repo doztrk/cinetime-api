@@ -21,6 +21,11 @@ public class SeatService {
     private final SeatMapper seatMapper;
 
     public ResponseMessage<List<SeatResponse>> getOccupiedSeats(Long showtimeId) {
+
+        if (showtimeId == null) {
+            throw new IllegalArgumentException("Showtime ID cannot be null");
+        }
+
         // Fetch all reserved seats for the showtime
         List<SeatInfo> reservedSeats = ticketRepository.findOccupiedSeatInfoByShowtimeAndStatus(
                 showtimeId,

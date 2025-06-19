@@ -43,6 +43,8 @@ public class TicketService {
 
 
         Pageable pageable = pageableHelper.pageableSort(page, size, sort, type);
+
+        //Todo: Burayi List'e cevir.DB'den page olarak almamiza gerek yok.
         Page<Ticket> tickets = ticketRepository.findByUserAndStatus(user, TicketStatus.PAID, pageable);
         Page<TicketResponse> ticketResponses = tickets.map(ticketMapper::mapTicketToTicketResponse);
 

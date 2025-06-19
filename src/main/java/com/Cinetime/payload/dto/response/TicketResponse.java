@@ -1,5 +1,6 @@
 package com.Cinetime.payload.dto.response;
 
+import com.Cinetime.enums.TicketStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class TicketResponse {
     private String cinemaName;
     private String cinemaAdress;
     private LocalDateTime createdAt;
+    private TicketStatus status;
 
 
 }
