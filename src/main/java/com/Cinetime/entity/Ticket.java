@@ -5,10 +5,7 @@ import com.Cinetime.converter.TicketStatusConverter;
 import com.Cinetime.enums.TicketStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "TICKET")
 @Builder
+@ToString(exclude = "payment")
 public class Ticket {
 
     @Id
@@ -102,17 +100,35 @@ public class Ticket {
         this.updatedAt = LocalDateTime.now();
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ticket ticket = (Ticket) o;
-        return Objects.equals(id, ticket.id);
+
+        // If both have IDs, compare by ID
+        if (id != null && ticket.id != null) {
+            return Objects.equals(id, ticket.id);
+        }
+
+        // For new entities (id == null), compare by business fields
+        return Objects.equals(seatLetter, ticket.seatLetter) &&
+                Objects.equals(seatNumber, ticket.seatNumber) &&
+                Objects.equals(showtime != null ? showtime.getId() : null,
+                        ticket.showtime != null ? ticket.showtime.getId() : null);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        // If entity has ID, use it
+        if (id != null) {
+            return Objects.hash(id);
+        }
+
+        // For new entities, use business fields
+        return Objects.hash(seatLetter, seatNumber,
+                showtime != null ? showtime.getId() : null);
     }
 
 }
