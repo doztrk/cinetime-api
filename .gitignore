@@ -43,3 +43,29 @@ log/
 
 ## İmage Files
 uploads/
+
+# Ignore unnecessary files during Docker build
+
+!target/*.jar
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# IDE files
+.idea/
+
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Test files
+src/test/.env
+
+.env
